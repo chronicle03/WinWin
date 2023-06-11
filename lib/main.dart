@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:winwin/pages/home/home_page.dart";
 import "package:winwin/pages/login_page.dart";
 import "package:winwin/pages/register_page.dart";
 
@@ -13,6 +14,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         routes: {
           '/' : (context) => LoginPage(),
+          '/home': (context) => HomePage(),
           '/register': (context) => RegisterPage(),
         },
       );
