@@ -163,7 +163,7 @@ class _LoginPageState extends State<LoginPage> {
                       children: [
                         const SizedBox(width: 10),
                         Align(
-                          alignment: Alignment.centerRight,
+                          alignment: Alignment.centerLeft,
                           child: Text(
                             "Forgot Password?",
                             style: textColor1TextStyle.copyWith(
