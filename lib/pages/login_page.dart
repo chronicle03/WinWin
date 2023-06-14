@@ -2,16 +2,14 @@ import "package:flutter/material.dart";
 import "package:flutter_svg/flutter_svg.dart";
 import "package:winwin/pages/constant.dart";
 
-class RegisterPage extends StatefulWidget {
-  const RegisterPage({Key? key}) : super(key: key);
+class LoginPage extends StatefulWidget {
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
-  _RegisterPageState createState() => _RegisterPageState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
-  bool isChecked = false;
-
+class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     Widget emailAddressInput() {
@@ -159,6 +157,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 const SizedBox(height: 12),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
                       children: [
@@ -202,27 +201,27 @@ class _RegisterPageState extends State<RegisterPage> {
                     Expanded(
                       child: Align(
                         alignment: Alignment.center,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              "Don't have an account?",
-                              style: textColor1TextStyle.copyWith(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w500,
+                        child: Padding(
+                          padding: EdgeInsets.only(bottom: 400),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Don't have an account?",
+                                style: textColor1TextStyle.copyWith(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
-                            ),
-                            Text(
-                              " Register Now",
-                              style: textColor3TextStyle.copyWith(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w600,
+                              Text(
+                                " Register Now",
+                                style: textColor3TextStyle.copyWith(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
-                            ),
-                            const SizedBox(
-                              height: 400,
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),

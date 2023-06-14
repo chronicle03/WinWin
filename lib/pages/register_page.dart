@@ -468,27 +468,27 @@ class _RegisterPageState extends State<RegisterPage> {
                     Expanded(
                       child: Align(
                         alignment: Alignment.center,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              "Already have an account?",
-                              style: textColor1TextStyle.copyWith(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w500,
+                        child: Padding(
+                          padding: EdgeInsets.only(bottom: 64),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Already have an account?",
+                                style: textColor1TextStyle.copyWith(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
-                            ),
-                            Text(
-                              " Login Now",
-                              style: textColor3TextStyle.copyWith(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w600,
+                              Text(
+                                " Login Now",
+                                style: textColor3TextStyle.copyWith(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
-                            ),
-                            const SizedBox(
-                              height: 64,
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
