@@ -441,7 +441,6 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 13),
                 Container(
                   width: double.infinity,
                   height: 55,
@@ -461,10 +460,9 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 10),
                 Row(
                   children: [
-                    const SizedBox(height: 13),
+                    const SizedBox(height: 10),
                     Expanded(
                       child: Align(
                         alignment: Alignment.center,

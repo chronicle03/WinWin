@@ -157,9 +157,9 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 const SizedBox(height: 12),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const SizedBox(width: 10),
                         Align(
@@ -174,7 +174,6 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
                 Container(
                   width: double.infinity,
                   height: 55,
@@ -194,10 +193,9 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 10),
                 Row(
                   children: [
-                    const SizedBox(height: 13),
+                    const SizedBox(height: 10),
                     Expanded(
                       child: Align(
                         alignment: Alignment.center,
