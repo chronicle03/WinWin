@@ -11,12 +11,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        routes: {
-          '/' : (context) => LoginPage(),
-          '/home': (context) => HomePage(),
-          '/register': (context) => RegisterPage(),
-        },
-      );
+      debugShowCheckedModeBanner: false,
+      routes: {
+        '/': (context) => LoginPage(),
+        '/home': (context) => HomePage(),
+        '/register': (context) => RegisterPage(),
+      },
+    );
   }
 }
