@@ -55,7 +55,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     Expanded(
                         child: TextFormField(
-                      style: textColor1TextStyle,
+                      style: textButtonTextStyle.copyWith(
+                          fontSize: 13, fontWeight: FontWeight.w600),
                       decoration: InputDecoration.collapsed(
                           hintText: "Full Name",
                           hintStyle: textColor2TextStyle.copyWith(
@@ -96,7 +97,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     Expanded(
                         child: TextFormField(
-                      style: textColor1TextStyle,
+                      style: textButtonTextStyle.copyWith(
+                          fontSize: 13, fontWeight: FontWeight.w600),
                       decoration: InputDecoration.collapsed(
                           hintText: "Username",
                           hintStyle: textColor2TextStyle.copyWith(
@@ -138,8 +140,11 @@ class _RegisterPageState extends State<RegisterPage> {
                           : 'Date of Birth',
                       style: textColor2TextStyle.copyWith(
                         fontSize: 13,
-                        fontWeight: FontWeight.w500,
-                        color: selectedDate != null ? textColor1 : textColor2,
+                        fontWeight: selectedDate != null
+                            ? FontWeight.w600
+                            : FontWeight.w500,
+                        color:
+                            selectedDate != null ? textColorButton : textColor2,
                       )),
                 ),
               ],
@@ -175,7 +180,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     Expanded(
                         child: TextFormField(
-                      style: textColor1TextStyle,
+                      style: textButtonTextStyle.copyWith(
+                          fontSize: 13, fontWeight: FontWeight.w600),
                       decoration: InputDecoration.collapsed(
                           hintText: "Phone Number",
                           hintStyle: textColor2TextStyle.copyWith(
@@ -216,7 +222,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     Expanded(
                         child: TextFormField(
-                      style: textColor1TextStyle,
+                      style: textButtonTextStyle.copyWith(
+                          fontSize: 13, fontWeight: FontWeight.w600),
                       decoration: InputDecoration.collapsed(
                           hintText: "Email Address",
                           hintStyle: textColor2TextStyle.copyWith(
@@ -257,7 +264,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     Expanded(
                         child: TextFormField(
-                      style: textColor1TextStyle,
+                      style: textButtonTextStyle.copyWith(
+                          fontSize: 13, fontWeight: FontWeight.w600),
                       decoration: InputDecoration.collapsed(
                           hintText: "Password",
                           hintStyle: textColor2TextStyle.copyWith(
@@ -306,7 +314,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     Expanded(
                         child: TextFormField(
-                      style: textColor1TextStyle,
+                      style: textButtonTextStyle.copyWith(
+                          fontSize: 13, fontWeight: FontWeight.w600),
                       decoration: InputDecoration.collapsed(
                           hintText: "Confirm Password",
                           hintStyle: textColor2TextStyle.copyWith(

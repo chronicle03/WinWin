@@ -37,13 +37,35 @@ class _LoginPageState extends State<LoginPage> {
                       width: 15,
                     ),
                     Expanded(
-                        child: TextFormField(
-                      style: textColor1TextStyle,
-                      decoration: InputDecoration.collapsed(
-                          hintText: "Email Address",
-                          hintStyle: textColor2TextStyle.copyWith(
-                              fontSize: 13, fontWeight: FontWeight.w500)),
-                    )),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Email/Phone Number/Username",
+                              style: textColor2TextStyle.copyWith(
+                                fontSize: 8,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                top: 2), // Sesuaikan jarak yang diinginkan
+                            child: TextFormField(
+                              decoration: InputDecoration.collapsed(
+                                hintText: "081234567890",
+                                hintStyle: textButtonTextStyle.copyWith(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -157,21 +179,16 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 const SizedBox(height: 12),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const SizedBox(width: 10),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            "Forgot Password?",
-                            style: textColor1TextStyle.copyWith(
-                                fontSize: 10, fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                      ],
+                    Text(
+                      "Forgot Password?",
+                      style: textColor1TextStyle.copyWith(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
+                    const SizedBox(width: 10),
                   ],
                 ),
                 Container(
