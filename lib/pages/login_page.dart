@@ -51,9 +51,10 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(
-                                top: 2), // Sesuaikan jarak yang diinginkan
+                            padding: const EdgeInsets.only(top: 2),
                             child: TextFormField(
+                              style: textButtonTextStyle.copyWith(
+                                  fontSize: 11, fontWeight: FontWeight.w600),
                               decoration: InputDecoration.collapsed(
                                 hintText: "081234567890",
                                 hintStyle: textButtonTextStyle.copyWith(
@@ -100,13 +101,36 @@ class _LoginPageState extends State<LoginPage> {
                       width: 14,
                     ),
                     Expanded(
-                        child: TextFormField(
-                      style: textColor1TextStyle,
-                      decoration: InputDecoration.collapsed(
-                          hintText: "Password",
-                          hintStyle: textColor2TextStyle.copyWith(
-                              fontSize: 13, fontWeight: FontWeight.w500)),
-                    )),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Password",
+                              style: textColor2TextStyle.copyWith(
+                                fontSize: 8,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 2),
+                            child: TextFormField(
+                              style: textButtonTextStyle.copyWith(
+                                  fontSize: 11, fontWeight: FontWeight.w600),
+                              decoration: InputDecoration.collapsed(
+                                hintText: "* * * * * * * *",
+                                hintStyle: textButtonTextStyle.copyWith(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     SvgPicture.asset(
                       "../assets/icon_eye_close.svg",
                       width: 26,
