@@ -1,14 +1,9 @@
 import "package:flutter/material.dart";
 import "package:winwin/pages/constant.dart";
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
 
-  @override
-  _LoginPageState createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     Widget emailAddressInput() {
@@ -29,7 +24,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: Row(
                   children: [
                     Image.asset(
-                      '../assets/icon_email.png',
+                      'assets/icon_email.png',
                       width: 26,
                     ),
                     const SizedBox(
@@ -93,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: Row(
                   children: [
                     Image.asset(
-                      '../assets/icon_password.png',
+                      'assets/icon_password.png',
                       width: 35,
                     ),
                     const SizedBox(
@@ -131,7 +126,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     Image.asset(
-                      '../assets/icon_eye_close.png',
+                      'assets/icon_eye_close.png',
                       width: 26,
                       height: 23,
                     ),
@@ -162,7 +157,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: Row(
                     children: [
                       Image.asset(
-                        '../assets/icon_row_left.png',
+                        'assets/icon_row_left.png',
                         width: 24,
                         height: 24,
                       ),
@@ -251,11 +246,14 @@ class _LoginPageState extends State<LoginPage> {
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
-                              Text(
-                                " Register Now",
-                                style: textColor3TextStyle.copyWith(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w600,
+                              GestureDetector(
+                                onTap: () => Navigator.pushNamed(context, '/register'),
+                                child: Text(
+                                  " Register Now",
+                                  style: textColor3TextStyle.copyWith(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
                               ),
                             ],
