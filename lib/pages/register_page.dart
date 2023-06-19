@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:winwin/bloc/user_bloc.dart";
 import "package:winwin/pages/constant.dart";
+import "package:winwin/pages/widgets/loading_button.dart";
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -14,7 +15,8 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController nameController = TextEditingController(text: '');
   TextEditingController emailController = TextEditingController(text: '');
   TextEditingController usernameController = TextEditingController(text: '');
-  TextEditingController confirmPasswordController = TextEditingController(text: '');
+  TextEditingController confirmPasswordController =
+      TextEditingController(text: '');
   TextEditingController passwordController = TextEditingController(text: '');
   TextEditingController birthdateController = TextEditingController(text: '');
   TextEditingController phoneNumberController = TextEditingController(text: '');
@@ -40,15 +42,14 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     handleRegister(String message) {
-
-      if (isChecked.toString() == "" || nameController.text == "" ||
+      if (isChecked.toString() == "false" ||
+          nameController.text == "" ||
           emailController.text == "" ||
           usernameController.text == "" ||
           phoneNumberController.text == "" ||
           selectedDate! == "" ||
           passwordController.text == "" ||
-          confirmPasswordController.text == "" 
-          ) {
+          confirmPasswordController.text == "") {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             backgroundColor: Colors.yellow,
@@ -81,7 +82,6 @@ class _RegisterPageState extends State<RegisterPage> {
           passwordController.text,
           confirmPasswordController.text,
           isChecked.toString()));
-
     }
 
     Widget header() {
@@ -394,7 +394,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   Expanded(
                       child: TextFormField(
-                        obscureText: true,
+                    obscureText: true,
                     controller: confirmPasswordController,
                     style: textColor2TextStyle,
                     decoration: InputDecoration.collapsed(
@@ -495,44 +495,6 @@ class _RegisterPageState extends State<RegisterPage> {
       );
     }
 
-    Widget loadingButton() {
-      return Container(
-        width: double.infinity,
-        height: 55,
-        margin: const EdgeInsets.symmetric(vertical: 14),
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: buttonColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-          ),
-          onPressed: () {},
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 16,
-                height: 16,
-                child: const CircularProgressIndicator(
-                  strokeWidth: 2.0,
-                  valueColor: AlwaysStoppedAnimation(Color(0xff30444F)),
-                ),
-              ),
-              const SizedBox(
-                width: 4,
-              ),
-              Text(
-                "Loading",
-                style: textButtonTextStyle.copyWith(
-                    fontSize: 18, fontWeight: FontWeight.w600),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-
     Widget footer() {
       return Row(
         children: [
@@ -576,9 +538,9 @@ class _RegisterPageState extends State<RegisterPage> {
           if (state is UserRegisterError) {
             message = state.code;
           } else if (state is UserRegisterSuccess) {
-            return Center(
-              child: Text("Register Success"),
-            );
+            Future.delayed(Duration.zero, () {
+              Navigator.pushNamed(context, '/resend-verify-email');
+            });
           }
 
           return ListView(
@@ -602,7 +564,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     const SizedBox(height: 12),
                     termsOfService(),
                     state is UserRegisterLoading
-                        ? loadingButton()
+                        ? LoadingButton()
                         : buttonSignUp(message),
                     footer(),
                   ],

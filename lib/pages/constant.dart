@@ -11,6 +11,7 @@ Color textColor3 = Color(0xffE7D31F);
 Color checkBoxColor = Color(0xffE7D31F);
 Color textColorButton = Color(0xff30444F);
 Color buttonColor = Color(0xffE7D31F);
+Color textSecondaryColor = Color(0xffE9E9EA);
 
 TextStyle backgroundTextStyle = GoogleFonts.poppins(
   color: backgroundColor,
@@ -33,6 +34,11 @@ TextStyle textColor2TextStyle = GoogleFonts.poppins(
 TextStyle textColor3TextStyle = GoogleFonts.poppins(
   color: textColor3,
 );
+
+TextStyle textSecondaryTextStyle = GoogleFonts.poppins(
+  color: textSecondaryColor,
+);
+
 TextStyle checkBoxTextStyle = GoogleFonts.poppins(
   color: checkBoxColor,
 );
@@ -44,3 +50,4 @@ TextStyle buttonTextStyle = GoogleFonts.poppins(
 );
 
 FontWeight semibold = FontWeight.w600;
+FontWeight medium = FontWeight.w500;

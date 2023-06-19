@@ -6,6 +6,7 @@ import "package:winwin/pages/home/home_page.dart";
 import "package:winwin/pages/landing_page.dart";
 import "package:winwin/pages/login_page.dart";
 import "package:winwin/pages/register_page.dart";
+import "package:winwin/pages/verify_email_page.dart";
 
 void main() {
   runApp(MyApp());
@@ -21,11 +22,15 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => LandingPage(),
         '/login': (context) => LoginPage(),
+        '/resend-verify-email': (context) => BlocProvider(
+              create: (context) => UserBloc(userRepository),
+              child: VerifyEmailPage(),
+            ),
         '/home': (context) => HomePage(),
         '/register': (context) => BlocProvider(
-          create: (context) => UserBloc(userRepository),
-          child: RegisterPage(),
-        ),
+              create: (context) => UserBloc(userRepository),
+              child: RegisterPage(),
+            ),
       },
     );
   }

@@ -34,6 +34,21 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           emit(UserRegisterError(e.toString().replaceAll('Exception: ', '')));
         }
       }
+
+      if (event is UserPostResendEmailVerify) {
+        emit(UserRegisterLoading());
+        try {
+          await Future.delayed(const Duration(seconds: 2), () async {
+          data = await userRepository.resendEmail(
+            event.email
+          );
+          emit(UserRegisterSuccess());
+        });
+        } catch (e) {
+          // print(e);
+          emit(UserRegisterError(e.toString().replaceAll('Exception: ', '')));
+        }
+      }
     });
   }
 }

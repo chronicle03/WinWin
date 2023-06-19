@@ -23,3 +23,10 @@ class UserPostRegister extends UserEvent{
     this.isChecked
   );
 }
+
+class UserPostResendEmailVerify extends UserEvent{
+  final String email;
+  UserPostResendEmailVerify(
+    this.email
+  );
+}
