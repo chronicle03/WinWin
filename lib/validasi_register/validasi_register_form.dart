@@ -8,16 +8,16 @@ class ValidasiForm extends StatelessWidget {
     return Column(
       children: [
         SizedBox(height: 50.0),
-        _buildFillInformation(),
+        _buildValidasiRegister1(),
         SizedBox(height: 20.0),
-        _buildSuccessLogging(),
+        _buildValidasiRegister2(),
         SizedBox(height: 40.0),
-        _buildIncorrectFill(),
+        _buildValidasiRegister3(),
       ],
     );
   }
 
-  Widget _buildFillInformation() {
+  Widget _buildValidasiRegister1() {
     return Container(
       padding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
       decoration: BoxDecoration(
@@ -47,6 +47,7 @@ class ValidasiForm extends StatelessWidget {
                 fontSize: 18.0,
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
+                decoration: TextDecoration.none
               ),
             ),
           ),
@@ -55,7 +56,7 @@ class ValidasiForm extends StatelessWidget {
     );
   }
 
-  Widget _buildSuccessLogging() {
+  Widget _buildValidasiRegister2() {
     return Container(
       padding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
       decoration: BoxDecoration(
@@ -80,11 +81,12 @@ class ValidasiForm extends StatelessWidget {
           SizedBox(width: 16.0),
           Expanded(
             child: Text(
-              'Congratulations, you have successfully registered!!',
+              'Congratulations, you have successfully registered!',
               style: TextStyle(
                 fontSize: 18.0,
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
+                decoration: TextDecoration.none
               ),
             ),
           ),
@@ -93,7 +95,7 @@ class ValidasiForm extends StatelessWidget {
     );
   }
 
-  Widget _buildIncorrectFill() {
+  Widget _buildValidasiRegister3() {
     return Container(
       padding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
       decoration: BoxDecoration(
@@ -118,11 +120,12 @@ class ValidasiForm extends StatelessWidget {
           SizedBox(width: 16.0),
           Expanded(
             child: Text(
-              'Oops! The password you entered is incorrect.!',
+              'Oops! The password you entered is incorrect.',
               style: TextStyle(
                 fontSize: 18.0,
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
+                decoration: TextDecoration.none
               ),
             ),
           ),
