@@ -1,5 +1,4 @@
 import "package:flutter/material.dart";
-import "package:flutter_svg/flutter_svg.dart";
 import "package:winwin/pages/constant.dart";
 
 class RegisterPage extends StatefulWidget {
@@ -46,8 +45,8 @@ class _RegisterPageState extends State<RegisterPage> {
               child: Center(
                 child: Row(
                   children: [
-                    SvgPicture.asset(
-                      "../assets/icon_profile_default.svg",
+                    Image.asset(
+                      '../assets/icon_profile_default.png',
                       width: 26,
                     ),
                     const SizedBox(
@@ -88,8 +87,8 @@ class _RegisterPageState extends State<RegisterPage> {
               child: Center(
                 child: Row(
                   children: [
-                    SvgPicture.asset(
-                      "../assets/icon_profile_add.svg",
+                    Image.asset(
+                      '../assets/icon_profile_add.png',
                       width: 26,
                     ),
                     const SizedBox(
@@ -128,8 +127,8 @@ class _RegisterPageState extends State<RegisterPage> {
           child: Center(
             child: Row(
               children: [
-                SvgPicture.asset(
-                  "../assets/icon_calendar.svg",
+                Image.asset(
+                  '../assets/icon_calendar.png',
                   width: 26,
                 ),
                 const SizedBox(width: 14),
@@ -171,8 +170,8 @@ class _RegisterPageState extends State<RegisterPage> {
               child: Center(
                 child: Row(
                   children: [
-                    SvgPicture.asset(
-                      "../assets/icon_call.svg",
+                    Image.asset(
+                      '../assets/icon_call.png',
                       width: 26,
                     ),
                     const SizedBox(
@@ -213,8 +212,8 @@ class _RegisterPageState extends State<RegisterPage> {
               child: Center(
                 child: Row(
                   children: [
-                    SvgPicture.asset(
-                      "../assets/icon_email.svg",
+                    Image.asset(
+                      '../assets/icon_email.png',
                       width: 26,
                     ),
                     const SizedBox(
@@ -255,8 +254,8 @@ class _RegisterPageState extends State<RegisterPage> {
               child: Center(
                 child: Row(
                   children: [
-                    SvgPicture.asset(
-                      "../assets/icon_password.svg",
+                    Image.asset(
+                      '../assets/icon_password.png',
                       width: 35,
                     ),
                     const SizedBox(
@@ -271,8 +270,8 @@ class _RegisterPageState extends State<RegisterPage> {
                           hintStyle: textColor2TextStyle.copyWith(
                               fontSize: 13, fontWeight: FontWeight.w500)),
                     )),
-                    SvgPicture.asset(
-                      "../assets/icon_eye_close.svg",
+                    Image.asset(
+                      '../assets/icon_eye_close.png',
                       width: 26,
                       height: 23,
                     ),
@@ -305,8 +304,8 @@ class _RegisterPageState extends State<RegisterPage> {
               child: Center(
                 child: Row(
                   children: [
-                    SvgPicture.asset(
-                      "../assets/icon_password_confirm.svg",
+                    Image.asset(
+                      '../assets/icon_password_confirm.png',
                       width: 26,
                     ),
                     const SizedBox(
@@ -321,8 +320,8 @@ class _RegisterPageState extends State<RegisterPage> {
                           hintStyle: textColor2TextStyle.copyWith(
                               fontSize: 13, fontWeight: FontWeight.w500)),
                     )),
-                    SvgPicture.asset(
-                      "../assets/icon_eye_close.svg",
+                    Image.asset(
+                      '../assets/icon_eye_close.png',
                       width: 26,
                       height: 23,
                     ),
@@ -352,8 +351,8 @@ class _RegisterPageState extends State<RegisterPage> {
                   alignment: Alignment.centerLeft,
                   child: Row(
                     children: [
-                      SvgPicture.asset(
-                        "../assets/icon_row_left.svg",
+                      Image.asset(
+                        '../assets/icon_row_left.png',
                         width: 24,
                         height: 24,
                       ),

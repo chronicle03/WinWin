@@ -1,5 +1,4 @@
 import "package:flutter/material.dart";
-import "package:flutter_svg/flutter_svg.dart";
 import "package:winwin/pages/constant.dart";
 
 class LoginPage extends StatefulWidget {
@@ -29,8 +28,8 @@ class _LoginPageState extends State<LoginPage> {
               child: Center(
                 child: Row(
                   children: [
-                    SvgPicture.asset(
-                      "../assets/icon_email.svg",
+                    Image.asset(
+                      '../assets/icon_email.png',
                       width: 26,
                     ),
                     const SizedBox(
@@ -93,8 +92,8 @@ class _LoginPageState extends State<LoginPage> {
               child: Center(
                 child: Row(
                   children: [
-                    SvgPicture.asset(
-                      "../assets/icon_password.svg",
+                    Image.asset(
+                      '../assets/icon_password.png',
                       width: 35,
                     ),
                     const SizedBox(
@@ -131,8 +130,8 @@ class _LoginPageState extends State<LoginPage> {
                         ],
                       ),
                     ),
-                    SvgPicture.asset(
-                      "../assets/icon_eye_close.svg",
+                    Image.asset(
+                      '../assets/icon_eye_close.png',
                       width: 26,
                       height: 23,
                     ),
@@ -162,8 +161,8 @@ class _LoginPageState extends State<LoginPage> {
                   alignment: Alignment.centerLeft,
                   child: Row(
                     children: [
-                      SvgPicture.asset(
-                        "../assets/icon_row_left.svg",
+                      Image.asset(
+                        '../assets/icon_row_left.png',
                         width: 24,
                         height: 24,
                       ),
