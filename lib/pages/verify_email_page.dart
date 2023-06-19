@@ -100,7 +100,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
               ),
             ),
           ),
-          const SizedBox(height: 139),
+          const SizedBox(height: 150),
           Center(
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -207,12 +207,19 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
                                     ),
                                   ),
                                 ),
-                                const SizedBox(height: 139),
+                                const SizedBox(height: 150),
                                 Image.asset(
                                   "assets/icon_email_verify.png",
                                   width: 160,
                                   height: 160,
                                 ),
+                                const SizedBox(height: 3),
+                                Text(
+                                    "Please input your email for link verification",
+                                    style: textSecondaryTextStyle.copyWith(
+                                        fontSize: 13,
+                                        fontWeight: medium,
+                                        decoration: TextDecoration.none)),
                                 const SizedBox(height: 23),
                                 emailInput(),
                                 const SizedBox(height: 13),
