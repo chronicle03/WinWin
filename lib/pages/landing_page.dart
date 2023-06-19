@@ -68,34 +68,34 @@ class _LandingPageState extends State<LandingPage> {
             Column(
               children: [
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Image.asset(
                       '../assets/lingkaran-1.png',
                       width: 59,
                       height: 15,
                     ),
+                    Container(
+                      width: 177,
+                      height: 54,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: buttonColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                        ),
+                        onPressed: () {},
+                        child: Text(
+                          "Skip",
+                          style: textButtonTextStyle.copyWith(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
-                ),
-                Container(
-                  width: double.infinity,
-                  height: 54,
-                  margin: EdgeInsets.symmetric(vertical: 14, horizontal: 62),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: buttonColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                    ),
-                    onPressed: () {},
-                    child: Text(
-                      "Skip",
-                      style: textButtonTextStyle.copyWith(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
                 ),
               ],
             ),
