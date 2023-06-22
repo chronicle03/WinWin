@@ -220,7 +220,9 @@ class LoginPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/home');
+                    },
                     child: Text(
                       "Login",
                       style: textButtonTextStyle.copyWith(
