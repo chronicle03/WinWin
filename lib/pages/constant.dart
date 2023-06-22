@@ -16,6 +16,11 @@ Color textSecondaryColor = Color(0xffE9E9EA);
 TextStyle backgroundTextStyle = GoogleFonts.poppins(
   color: backgroundColor,
 );
+
+TextStyle textPrimaryStyle = GoogleFonts.poppins(
+  color: backgroundColor,
+);
+
 TextStyle buttonBackTextStyle = GoogleFonts.poppins(
   color: buttonBackColor,
 );
