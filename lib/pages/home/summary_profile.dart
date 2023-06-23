@@ -3,13 +3,24 @@ import 'package:flutter_svg/svg.dart';
 import 'package:winwin/data/models/user_model.dart';
 import 'package:winwin/pages/constant.dart';
 import 'package:winwin/pages/widgets/painter.dart';
-import 'package:date_format/date_format.dart';
+import 'package:intl/intl.dart';
+
 
 class SummaryProfileWidget extends StatelessWidget {
   final UserModel user;
   final List<String> skill;
-  const SummaryProfileWidget(
-      {super.key, required this.user, required this.skill, });
+  late DateTime dateOfBirth;
+late DateTime now;
+late Duration ageDuration;
+late int ageYears;
+  SummaryProfileWidget({super.key, required this.user, required this.skill}) {
+    dateOfBirth = DateFormat('yyyy-MM-dd').parse(user.birthdate);
+    now = DateTime.now();
+    ageDuration = now.difference(dateOfBirth);
+    ageYears = ageDuration.inDays ~/ 365;
+  }
+  
+
   
 
   Widget skills(String value) {
@@ -80,7 +91,7 @@ class SummaryProfileWidget extends StatelessWidget {
               child: Container(
                 width: 276,
                 height: 205,
-                margin: EdgeInsets.only(top: 380, left: 35, right: 25),
+                margin: EdgeInsets.only(top: 380, left: 25, right: 25),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -88,7 +99,7 @@ class SummaryProfileWidget extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "${user.name}, ${user.birthdate}th ",
+                          "${user.name}, ${ageYears}th ",
                           style: textPrimaryStyle.copyWith(
                             fontSize: 17,
                             fontWeight: semibold,
