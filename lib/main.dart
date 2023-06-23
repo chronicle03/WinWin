@@ -20,8 +20,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       routes: {
-        '/': (context) => LandingPage(),
-        '/login': (context) => LoginPage(),
+        // '/': (context) => LandingPage(),
+        '/': (context) => BlocProvider(
+              create: (context) => UserBloc(userRepository),
+              child: LoginPage(),
+            ),
         '/resend-verify-email': (context) => BlocProvider(
               create: (context) => UserBloc(userRepository),
               child: VerifyEmailPage(),

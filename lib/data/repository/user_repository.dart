@@ -16,8 +16,10 @@ abstract class UserRepository {
 }
 
 class UserRepositoryImpl extends UserRepository {
-  String baserUrl = "http://192.168.231.46:8000/api";
-  // String baserUrl = "http://192.168.100.241:8000/api";
+  String baserUrl = "http://localhost:8000/api";
+   //String baserUrl = "http://192.168.100.241:8000/api";
+  
+  //String baserUrl = "http://192.168.231.46:8000/api";
 
   @override
   Future<UserModel> register(
@@ -65,6 +67,40 @@ class UserRepositoryImpl extends UserRepository {
       var data = jsonDecode(response.body)['data'];
       UserModel user =
           UserModel.fromJson(data['user'], isResendEmailVerify: true);
+      return user;
+    } else {
+      Map<String, dynamic> responseData = jsonDecode(response.body);
+    
+      throw Exception(responseData['data']['errors']);
+    }
+  }
+
+  Future Login(String email, username, phoneNumber, password) async{
+   final response = await http.post(Uri.parse('$baserUrl/login'), body: {
+      "email": email, "username": username, "phonenumber": phoneNumber,
+    });
+    print("response body: ${response.body} ");
+    if (response.statusCode == 200) {//logic login
+      var data = jsonDecode(response.body)['data'];
+      UserModel user =
+          UserModel.fromJson(data['user'], isLogin: true);
+      return user;
+    } else {
+      Map<String, dynamic> responseData = jsonDecode(response.body);
+    
+      throw Exception(responseData['data']['errors']);
+    }
+  }
+
+  Future ForgotPassword(String email) async{
+   final response = await http.post(Uri.parse('$baserUrl/forgotpassword'), body: {
+      "email": email,
+    });
+    print("response body: ${response.body} ");
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body)['data'];
+      UserModel user =
+          UserModel.fromJson(data['user'], isForgotPassword: true);
       return user;
     } else {
       Map<String, dynamic> responseData = jsonDecode(response.body);

@@ -14,3 +14,21 @@ class UserRegisterError extends UserState {
   UserRegisterError(this.code);
 
 }
+
+class UserLoginLoading extends UserState{}
+class UserLoginSuccess extends UserState{}
+class UserLoginError extends UserState{
+  final String code;
+
+  UserLoginError(this.code);
+}
+
+class UserForgotPasswordLoading extends UserState{}
+class UserForgotPasswordSuccess extends UserState{}
+class UserForgotPasswordError extends UserState{
+  final String code;
+
+  UserForgotPasswordError(this.code);
+}
+
+ 

@@ -49,6 +49,43 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           emit(UserRegisterError(e.toString().replaceAll('Exception: ', '')));
         }
       }
+
+     if (event is UserPostLogin) {
+      print("start");
+        emit(UserRegisterLoading());
+        try {
+          await Future.delayed(const Duration(seconds: 2), () async {
+          data = await userRepository.Login(
+            event.email,
+            event.username,
+            event.phoneNumber,
+            event.password,
+          );
+          
+          emit(UserRegisterSuccess());
+        });
+        } catch (e) {
+          // print(e);
+          emit(UserRegisterError(e.toString().replaceAll('Exception: ', '')));
+        }
+      }
+
+      if (event is UserPostForgotPassword) {
+        emit(UserForgotPasswordLoading());
+        try {
+          await Future.delayed(const Duration(seconds: 2), () async {
+          data = await userRepository.ForgotPassword(
+            event.email,
+          );
+          
+          emit(UserForgotPasswordSuccess());
+        });
+        } catch (e) {
+          // print(e);
+          emit(UserForgotPasswordError(e.toString().replaceAll('Exception: ', '')));
+        }
+      }
+
     });
   }
 }
