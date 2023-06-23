@@ -16,8 +16,8 @@ abstract class UserRepository {
 }
 
 class UserRepositoryImpl extends UserRepository {
-  String baserUrl = "http://192.168.231.46:8000/api";
-  // String baserUrl = "http://192.168.100.241:8000/api";
+  String baserUrl = "http://192.168.100.241:8000/api";
+  // String baserUrl = "http://192.168.231.46:8000/api";
 
   @override
   Future<UserModel> register(
@@ -57,7 +57,8 @@ class UserRepositoryImpl extends UserRepository {
   }
 
   Future resendEmail(String email) async {
-    final response = await http.post(Uri.parse('$baserUrl/email/resend'), body: {
+    final response =
+        await http.post(Uri.parse('$baserUrl/email/resend'), body: {
       "email": email,
     });
     print("response body: ${response.body} ");
@@ -68,7 +69,7 @@ class UserRepositoryImpl extends UserRepository {
       return user;
     } else {
       Map<String, dynamic> responseData = jsonDecode(response.body);
-    
+
       throw Exception(responseData['data']['errors']);
     }
   }

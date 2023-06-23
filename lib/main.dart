@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:winwin/bloc/user_bloc.dart";
 import "package:winwin/data/repository/user_repository.dart";
+import 'package:winwin/pages/home/edit_profile.dart';
 import "package:winwin/pages/home/home_page.dart";
 import "package:winwin/pages/landing_page.dart";
 import "package:winwin/pages/login_page.dart";
