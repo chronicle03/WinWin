@@ -33,14 +33,14 @@ class UserPostResendEmailVerify extends UserEvent{
 
 class UserPostLogin extends UserEvent{
   final String email;
-  final String username;
-  final String phoneNumber;
+  //final String username;
+  //final String phoneNumber;
   final String password;  
 
    UserPostLogin(
     this.email,
-    this.username,
-    this.phoneNumber,
+    //this.username,
+    //this.phoneNumber,
     this.password, 
   );
 }

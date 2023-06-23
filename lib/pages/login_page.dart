@@ -24,8 +24,6 @@ class _LoginPageState extends State<LoginPage> {
     //handle
     handleLogin(String message){
        if (emailController.text == "" || //buat logic login
-          usernameController.text == "" ||
-          phoneNumberController.text == "" ||
           passwordController.text == "" ) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -52,8 +50,8 @@ class _LoginPageState extends State<LoginPage> {
 
       BlocProvider.of<UserBloc>(context).add(UserPostLogin(
           emailController.text,
-          usernameController.text,
-          phoneNumberController.text,
+          //usernameController.text,
+          //phoneNumberController.text,
           passwordController.text,));
     }
     Widget emailAddressInput() {
@@ -98,7 +96,7 @@ class _LoginPageState extends State<LoginPage> {
                             padding: const EdgeInsets.only(top: 2),
                             child: TextFormField(
                               //controller: ,
-                              controller: emailController ,
+                              controller: emailController,
                               style: textButtonTextStyle.copyWith(
                                   fontSize: 11, fontWeight: FontWeight.w600),
                               decoration: InputDecoration.collapsed(

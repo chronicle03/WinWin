@@ -57,8 +57,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           await Future.delayed(const Duration(seconds: 2), () async {
           data = await userRepository.Login(
             event.email,
-            event.username,
-            event.phoneNumber,
+            //event.username,
+            //event.phoneNumber,
             event.password,
           );
           

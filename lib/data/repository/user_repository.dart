@@ -75,9 +75,9 @@ class UserRepositoryImpl extends UserRepository {
     }
   }
 
-  Future Login(String email, username, phoneNumber, password) async{
+  Future Login(String email, password) async{
    final response = await http.post(Uri.parse('$baserUrl/login'), body: {
-      "email": email, "username": username, "phonenumber": phoneNumber,
+      "email": email, "password": password,
     });
     print("response body: ${response.body} ");
     if (response.statusCode == 200) {//logic login
