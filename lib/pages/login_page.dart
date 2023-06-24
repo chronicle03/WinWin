@@ -50,7 +50,7 @@ class LoginPage extends StatelessWidget {
                               style: textButtonTextStyle.copyWith(
                                   fontSize: 11, fontWeight: FontWeight.w600),
                               decoration: InputDecoration.collapsed(
-                                hintText: "",
+                                hintText: "081234567890",
                                 hintStyle: textButtonTextStyle.copyWith(
                                   fontSize: 11,
                                   fontWeight: FontWeight.w600,
@@ -114,7 +114,7 @@ class LoginPage extends StatelessWidget {
                               style: textButtonTextStyle.copyWith(
                                   fontSize: 11, fontWeight: FontWeight.w600),
                               decoration: InputDecoration.collapsed(
-                                hintText: "",
+                                hintText: "* * * * * * * *",
                                 hintStyle: textButtonTextStyle.copyWith(
                                   fontSize: 11,
                                   fontWeight: FontWeight.w600,
@@ -125,15 +125,10 @@ class LoginPage extends StatelessWidget {
                         ],
                       ),
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        // Tambahkan logika untuk mengubah visibilitas password
-                      },
-                      child: Image.asset(
-                        'assets/icon_eye_close.png',
-                        width: 26,
-                        height: 23,
-                      ),
+                    Image.asset(
+                      'assets/icon_eye_close.png',
+                      width: 26,
+                      height: 23,
                     ),
                     const SizedBox(
                       width: 9,
@@ -225,7 +220,9 @@ class LoginPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/home');
+                    },
                     child: Text(
                       "Login",
                       style: textButtonTextStyle.copyWith(
