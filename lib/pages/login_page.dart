@@ -1,15 +1,9 @@
 import "package:flutter/material.dart";
-import "package:flutter_svg/flutter_svg.dart";
 import "package:winwin/pages/constant.dart";
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
 
-  @override
-  _LoginPageState createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     Widget emailAddressInput() {
@@ -29,8 +23,8 @@ class _LoginPageState extends State<LoginPage> {
               child: Center(
                 child: Row(
                   children: [
-                    SvgPicture.asset(
-                      "../assets/icon_email.svg",
+                    Image.asset(
+                      'assets/icon_email.png',
                       width: 26,
                     ),
                     const SizedBox(
@@ -51,9 +45,10 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(
-                                top: 2), // Sesuaikan jarak yang diinginkan
+                            padding: const EdgeInsets.only(top: 2),
                             child: TextFormField(
+                              style: textButtonTextStyle.copyWith(
+                                  fontSize: 11, fontWeight: FontWeight.w600),
                               decoration: InputDecoration.collapsed(
                                 hintText: "081234567890",
                                 hintStyle: textButtonTextStyle.copyWith(
@@ -92,23 +87,46 @@ class _LoginPageState extends State<LoginPage> {
               child: Center(
                 child: Row(
                   children: [
-                    SvgPicture.asset(
-                      "../assets/icon_password.svg",
+                    Image.asset(
+                      'assets/icon_password.png',
                       width: 35,
                     ),
                     const SizedBox(
                       width: 14,
                     ),
                     Expanded(
-                        child: TextFormField(
-                      style: textColor1TextStyle,
-                      decoration: InputDecoration.collapsed(
-                          hintText: "Password",
-                          hintStyle: textColor2TextStyle.copyWith(
-                              fontSize: 13, fontWeight: FontWeight.w500)),
-                    )),
-                    SvgPicture.asset(
-                      "../assets/icon_eye_close.svg",
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Password",
+                              style: textColor2TextStyle.copyWith(
+                                fontSize: 8,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 2),
+                            child: TextFormField(
+                              style: textButtonTextStyle.copyWith(
+                                  fontSize: 11, fontWeight: FontWeight.w600),
+                              decoration: InputDecoration.collapsed(
+                                hintText: "* * * * * * * *",
+                                hintStyle: textButtonTextStyle.copyWith(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Image.asset(
+                      'assets/icon_eye_close.png',
                       width: 26,
                       height: 23,
                     ),
@@ -138,8 +156,8 @@ class _LoginPageState extends State<LoginPage> {
                   alignment: Alignment.centerLeft,
                   child: Row(
                     children: [
-                      SvgPicture.asset(
-                        "../assets/icon_row_left.svg",
+                      Image.asset(
+                        'assets/icon_row_left.png',
                         width: 24,
                         height: 24,
                       ),
@@ -228,11 +246,14 @@ class _LoginPageState extends State<LoginPage> {
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
-                              Text(
-                                " Register Now",
-                                style: textColor3TextStyle.copyWith(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w600,
+                              GestureDetector(
+                                onTap: () => Navigator.pushNamed(context, '/register'),
+                                child: Text(
+                                  " Register Now",
+                                  style: textColor3TextStyle.copyWith(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
                               ),
                             ],
