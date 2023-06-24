@@ -16,7 +16,7 @@ abstract class UserRepository {
 }
 
 class UserRepositoryImpl extends UserRepository {
-  String baserUrl = "http://192.168.231.46:8000/api";
+  String baserUrl = "http://192.168.100.242:8000/api";
   // String baserUrl = "http://192.168.100.241:8000/api";
 
   @override
@@ -39,7 +39,7 @@ class UserRepositoryImpl extends UserRepository {
       "confirm_password": confirmPassword,
       "is_checked": isChecked
     });
-
+    print("response: ${response.body}");
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body)['data'];
       UserModel user = UserModel.fromJson(data['user'], isRegister: true);

@@ -3,6 +3,7 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:winwin/bloc/user_bloc.dart";
 import "package:winwin/pages/constant.dart";
 import "package:winwin/pages/widgets/loading_button.dart";
+import "package:winwin/pages/widgets/snackbar.dart";
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -50,29 +51,20 @@ class _RegisterPageState extends State<RegisterPage> {
           selectedDate! == "" ||
           passwordController.text == "" ||
           confirmPasswordController.text == "") {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: Colors.yellow,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            content: Text("Field Must Be filled"),
-          ),
-        );
+        ScaffoldMessenger.of(context).showSnackBar(CustomSnackbar(
+          color: Colors.orangeAccent,
+          icon: Icons.warning,
+          message: "Please fill in all the necessary information!",
+        ));
       } else if (message != "null") {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: Colors.red,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            content: Text(message),
-          ),
-        );
+        ScaffoldMessenger.of(context).showSnackBar(CustomSnackbar(
+          color: Colors.red,
+          icon: Icons.warning,
+          message: message,
+        ));
+        
       }
-
+      
       BlocProvider.of<UserBloc>(context).add(UserPostRegister(
           nameController.text,
           emailController.text,
@@ -82,6 +74,11 @@ class _RegisterPageState extends State<RegisterPage> {
           passwordController.text,
           confirmPasswordController.text,
           isChecked.toString()));
+          setState(() {
+          message = "null";
+        });
+      print(message);
+      
     }
 
     Widget header() {
@@ -471,7 +468,7 @@ class _RegisterPageState extends State<RegisterPage> {
       );
     }
 
-    Widget buttonSignUp(String message) {
+    Widget buttonSignUp(String message, UserState state) {
       return Container(
         width: double.infinity,
         height: 55,
@@ -484,7 +481,13 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
           ),
           onPressed: () {
-            handleRegister(message);
+              if (state is UserPostLoading){
+                message="null";
+              }
+              handleRegister(message);
+              print(message);
+            
+            
           },
           child: Text(
             "Sign Up",
@@ -535,9 +538,9 @@ class _RegisterPageState extends State<RegisterPage> {
       body: BlocConsumer<UserBloc, UserState>(
         listener: (context, state) {},
         builder: (context, state) {
-          if (state is UserRegisterError) {
+          if (state is UserPostError) {
             message = state.code;
-          } else if (state is UserRegisterSuccess) {
+          } else if (state is UserPostSuccess) {
             Future.delayed(Duration.zero, () {
               Navigator.pushNamed(context, '/resend-verify-email');
             });
@@ -563,9 +566,9 @@ class _RegisterPageState extends State<RegisterPage> {
                     confirmPasswordInput(),
                     const SizedBox(height: 12),
                     termsOfService(),
-                    state is UserRegisterLoading
+                    state is UserPostLoading
                         ? LoadingButton()
-                        : buttonSignUp(message),
+                        : buttonSignUp(message, state),
                     footer(),
                   ],
                 ),

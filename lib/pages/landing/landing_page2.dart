@@ -1,6 +1,8 @@
+import "dart:async";
+
 import "package:flutter/material.dart";
 import "package:winwin/pages/constant.dart";
-import "package:winwin/pages/landing_page3.dart";
+import "package:winwin/pages/landing/landing_page3.dart";
 
 class LandingPage2 extends StatefulWidget {
   const LandingPage2({Key? key}) : super(key: key);
@@ -10,16 +12,48 @@ class LandingPage2 extends StatefulWidget {
 }
 
 class _LandingPage2State extends State<LandingPage2> {
+  bool isSkip = false;
+  late Timer _timer;
+
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(seconds: 5), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => LandingPage3()),
-      );
+    _startTimer();
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  void _startTimer() {
+    _timer = Timer(Duration(seconds: 5), () {
+      if (!isSkip) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LandingPage3()),
+        );
+      }
     });
   }
+
+  void _navigateToLoginPage() {
+    setState(() {
+      isSkip = true;
+    });
+    _timer.cancel();
+    Navigator.pushNamed(context, '/login').then((_) {
+      if (ModalRoute.of(context)?.isCurrent == true) {
+        // Kembali ke halaman ini setelah login
+        setState(() {
+          isSkip = false;
+        });
+        _startTimer();
+      }
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +132,7 @@ class _LandingPage2State extends State<LandingPage2> {
                           ),
                         ),
                         onPressed: () {
-                          Navigator.pushNamed(context, '/login');
+                          _navigateToLoginPage();
                         },
                         child: Text(
                           "Skip",
