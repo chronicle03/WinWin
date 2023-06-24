@@ -1,39 +1,72 @@
+import "dart:async";
+
 import "package:flutter/material.dart";
 import "package:winwin/pages/constant.dart";
-import "package:winwin/pages/landing_page4.dart";
+import "package:winwin/pages/login_page.dart";
 
-class LandingPage3 extends StatefulWidget {
-  const LandingPage3({Key? key}) : super(key: key);
+class LandingPage4 extends StatefulWidget {
+  const LandingPage4({Key? key}) : super(key: key);
 
   @override
-  State<LandingPage3> createState() => _LandingPage3State();
+  State<LandingPage4> createState() => _LandingPage4State();
 }
 
-class _LandingPage3State extends State<LandingPage3> {
+class _LandingPage4State extends State<LandingPage4> {
+ bool isSkip = false;
+  late Timer _timer;
+
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(seconds: 5), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => LandingPage4()),
-      );
+    _startTimer();
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  void _startTimer() {
+    _timer = Timer(Duration(seconds: 5), () {
+      if (!isSkip) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LoginPage()),
+        );
+      }
+    });
+  }
+
+   void _navigateToLoginPage() {
+    setState(() {
+      isSkip = true;
+    });
+    _timer.cancel();
+    Navigator.pushNamed(context, '/login').then((_) {
+      if (ModalRoute.of(context)?.isCurrent == true) {
+        // Kembali ke halaman ini setelah login
+        setState(() {
+          isSkip = false;
+        });
+        _startTimer();
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget welcomingPage3Input() {
+    Widget welcomingPage4Input() {
       return Container(
-        padding: EdgeInsets.only(top: 60, left: 61, right: 62),
+        padding: EdgeInsets.only(top: 70, left: 61, right: 62),
         child: Column(
           children: [
             Align(
               alignment: Alignment.center,
               child: Image.asset(
-                'assets/wp3.png',
-                height: 237,
-                width: 237,
+                'assets/wp4.png',
+                height: 176,
+                width: 244,
               ),
             ),
             const SizedBox(height: 60),
@@ -42,7 +75,7 @@ class _LandingPage3State extends State<LandingPage3> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    "Build Your Social",
+                    "Join Us and Star",
                     style: textColor1TextStyle.copyWith(
                       fontSize: 35,
                       fontWeight: FontWeight.w700,
@@ -52,7 +85,7 @@ class _LandingPage3State extends State<LandingPage3> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    "Relations",
+                    "Your Journey!",
                     style: textColor1TextStyle.copyWith(
                       fontSize: 35,
                       fontWeight: FontWeight.w700,
@@ -67,7 +100,7 @@ class _LandingPage3State extends State<LandingPage3> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    "Build valuable friendships, mentorships,",
+                    "Register now to become part of our",
                     style: textColor1TextStyle.copyWith(
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
@@ -77,7 +110,27 @@ class _LandingPage3State extends State<LandingPage3> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    "or professional connections.",
+                    "community and start your journey",
+                    style: textColor1TextStyle.copyWith(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "towards building valuable relationships",
+                    style: textColor1TextStyle.copyWith(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "with fellow users.",
                     style: textColor1TextStyle.copyWith(
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
@@ -86,14 +139,14 @@ class _LandingPage3State extends State<LandingPage3> {
                 ),
               ],
             ),
-            const SizedBox(height: 60),
+            const SizedBox(height: 70),
             Column(
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Image.asset(
-                      'assets/lingkaran-2.png',
+                      'assets/lingkaran-3.png',
                       width: 59,
                       height: 15,
                     ),
@@ -108,7 +161,7 @@ class _LandingPage3State extends State<LandingPage3> {
                           ),
                         ),
                         onPressed: () {
-                          Navigator.pushNamed(context, '/login');
+                          _navigateToLoginPage();
                         },
                         child: Text(
                           "Skip",
@@ -133,7 +186,7 @@ class _LandingPage3State extends State<LandingPage3> {
       backgroundColor: backgroundColor,
       body: Column(
         children: [
-          welcomingPage3Input(),
+          welcomingPage4Input(),
         ],
       ),
     );

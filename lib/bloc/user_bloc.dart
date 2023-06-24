@@ -13,7 +13,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   UserBloc(this.userRepository) : super(UserInitial()) {
     on<UserEvent>((event, emit) async{
       if (event is UserPostRegister) {
-        emit(UserRegisterLoading());
+        emit(UserPostLoading());
         try {
           await Future.delayed(const Duration(seconds: 2), () async {
           data = await userRepository.register(
@@ -27,26 +27,28 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             event.isChecked,
           );
           
-          emit(UserRegisterSuccess());
+          emit(UserPostSuccess());
         });
         } catch (e) {
           // print(e);
-          emit(UserRegisterError(e.toString().replaceAll('Exception: ', '')));
+          var err = e.toString().replaceAll('Exception: ', '');
+          emit(UserPostError(err));
         }
+
       }
 
       if (event is UserPostResendEmailVerify) {
-        emit(UserRegisterLoading());
+        emit(UserPostLoading());
         try {
           await Future.delayed(const Duration(seconds: 2), () async {
           data = await userRepository.resendEmail(
             event.email
           );
-          emit(UserRegisterSuccess());
+          emit(UserPostSuccess());
         });
         } catch (e) {
           // print(e);
-          emit(UserRegisterError(e.toString().replaceAll('Exception: ', '')));
+          emit(UserPostError(e.toString().replaceAll('Exception: ', '')));
         }
       }
     });
