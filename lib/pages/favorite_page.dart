@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:winwin/pages/constant.dart';
+//import 'package:winwin/pages/main_page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class NotificationPage extends StatelessWidget{
-  const NotificationPage({super.key});
-   @override
+class FavoritePage extends StatelessWidget {
+  const FavoritePage({super.key});
+
+  @override
   Widget build(BuildContext context) {
     Widget search() {
       return Container(
@@ -39,7 +41,7 @@ class NotificationPage extends StatelessWidget{
         Container(
           height: 55,
           width: 310,
-          margin: const EdgeInsets.only(top: 30.0,),
+          margin: const EdgeInsets.only(top: 30.0),
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8),
           decoration: BoxDecoration(
               color: appBarColor, borderRadius: BorderRadius.circular(10.0)),
@@ -305,7 +307,4 @@ class NotificationPage extends StatelessWidget{
       ),
     );
   }
-  
-
-
 }

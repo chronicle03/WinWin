@@ -8,6 +8,7 @@ import "package:winwin/pages/login_page.dart";
 import "package:winwin/pages/register_page.dart";
 import "package:winwin/pages/verify_email_page.dart";
 import "package:winwin/pages/notification_page.dart";
+import "package:winwin/pages/favorite_page.dart";
 
 void main() {
   runApp(MyApp());
