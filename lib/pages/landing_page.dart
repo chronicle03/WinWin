@@ -13,7 +13,7 @@ class _LandingPageState extends State<LandingPage> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(seconds: 3), () {
+    Future.delayed(Duration(seconds: 10), () {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => LandingPage2()),
@@ -25,14 +25,28 @@ class _LandingPageState extends State<LandingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundColor,
-      body: Container(
-        alignment: Alignment.center,
-        padding: EdgeInsets.only(top: 259, bottom: 259, left: 57, right: 21),
-        child: Image.asset(
-          'assets/Logo.png',
-          height: 282,
-          width: 282,
-        ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            alignment: Alignment.center,
+            padding: EdgeInsets.only(top: 100, left: 57, right: 21),
+            child: Column(
+              children: [
+                Image.asset(
+                  'assets/Logo.png',
+                  height: 282,
+                  width: 282,
+                ),
+              ],
+            ),
+          ),
+          Container(
+            alignment: Alignment.center,
+            padding: EdgeInsets.only(bottom: 200),
+            child: CircularProgressIndicator(color: buttonColor),
+          ),
+        ],
       ),
     );
   }
