@@ -30,26 +30,3 @@ class UserPostResendEmailVerify extends UserEvent{
     this.email
   );
 }
-
-class UserPostLogin extends UserEvent{
-  final String email;
-  //final String username;
-  //final String phoneNumber;
-  final String password;  
-
-   UserPostLogin(
-    this.email,
-    //this.username,
-    //this.phoneNumber,
-    this.password, 
-  );
-}
-
-class UserPostForgotPassword extends UserEvent{
-  final String email; 
-
-   UserPostForgotPassword(
-    this.email,
-   
-  );
-}

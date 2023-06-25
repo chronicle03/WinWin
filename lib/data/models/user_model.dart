@@ -23,7 +23,7 @@ class UserModel{
     this.token
   });
 
-  UserModel.fromJson(Map<String, dynamic> json, {bool isRegister = false, bool isResendEmailVerify = false, bool isLogin = false, bool isForgotPassword = false}) {
+  UserModel.fromJson(Map<String, dynamic> json, {bool isRegister = false, bool isResendEmailVerify = false}) {
     if (isRegister) {
       id = json['id'];
       name = json['name'];
@@ -35,14 +35,6 @@ class UserModel{
       token = json['token'];
     } 
     else if(isResendEmailVerify){
-      email = json['email'];
-    }
-    else if(isLogin){
-      email = json['email'];
-      username = json['username'];
-      phoneNumber = json['phone_number'];
-    }
-    else if(isForgotPassword){
       email = json['email'];
     }
     else {
