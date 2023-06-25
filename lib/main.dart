@@ -7,6 +7,7 @@ import "package:winwin/pages/landing_page.dart";
 import "package:winwin/pages/login_page.dart";
 import "package:winwin/pages/register_page.dart";
 import "package:winwin/pages/verify_email_page.dart";
+import "package:winwin/pages/notification_page.dart";
 
 void main() {
   runApp(MyApp());
@@ -20,8 +21,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       routes: {
-        // '/': (context) => LandingPage(),
-        '/': (context) => BlocProvider(
+        '/': (context) => NotificationPage(),
+        '/sfadg': (context) => BlocProvider(
               create: (context) => UserBloc(userRepository),
               child: LoginPage(),
             ),
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
               create: (context) => UserBloc(userRepository),
               child: RegisterPage(),
             ),
+        '/notification' :(context) => NotificationPage(),
       },
     );
   }
