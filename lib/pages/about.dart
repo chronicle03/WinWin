@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class AboutPage extends StatelessWidget {
+class About extends StatelessWidget {
+  const About({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,10 +28,10 @@ class AboutPage extends StatelessWidget {
             SizedBox(height: 20),
             Image.asset(
               'assets/logo.png',
-              width: 300,
-              height: 250,
+              width: 250,
+              height: 200,
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 30),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Text(
@@ -44,7 +46,7 @@ class AboutPage extends StatelessWidget {
                 textAlign: TextAlign.center, // Mengatur perataan teks menjadi tengah
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 30),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Align(
@@ -60,7 +62,7 @@ class AboutPage extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 30),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
@@ -70,15 +72,16 @@ class AboutPage extends StatelessWidget {
                     children: [
                       CircleAvatar(
                         radius: 50,
-                        backgroundImage: AssetImage('assets/photo1.png'),
+                        backgroundImage: AssetImage('assets/img_alvin.png'),
                       ),
                       SizedBox(height: 8),
                       Text(
-                        'Alvin Fandi Syahrizal',
+                        'Alvin Fandi \n Syahrizal',
                         style: GoogleFonts.poppins(
                           color: Colors.white,
                           fontSize: 16,
                         ),
+                        textAlign: TextAlign.center,
                       ),
                     ],
                   ),
@@ -87,15 +90,16 @@ class AboutPage extends StatelessWidget {
                     children: [
                       CircleAvatar(
                         radius: 50,
-                        backgroundImage: AssetImage('assets/photo1.png'),
+                        backgroundImage: AssetImage('assets/img_tija.png'),
                       ),
                       SizedBox(height: 8),
                       Text(
-                        'Martiza Aurelia Ahmad',
+                        'Martiza Aurelia \n Ahmad',
                         style: GoogleFonts.poppins(
                           color: Colors.white,
                           fontSize: 16,
                         ),
+                        textAlign: TextAlign.center,
                       ),
                     ],
                   ),
@@ -104,15 +108,16 @@ class AboutPage extends StatelessWidget {
                     children: [
                       CircleAvatar(
                         radius: 50,
-                        backgroundImage: AssetImage('assets/photo1.png'),
+                        backgroundImage: AssetImage('assets/img_sayyid.png'),
                       ),
                       SizedBox(height: 8),
                       Text(
-                        'Muhammad Sayyid Rifqi',
+                        'Muhammad Sayyid \n Rifqi',
                         style: GoogleFonts.poppins(
                           color: Colors.white,
                           fontSize: 16,
                         ),
+                        textAlign: TextAlign.center,
                       ),
                     ],
                   ),
@@ -121,15 +126,16 @@ class AboutPage extends StatelessWidget {
                     children: [
                       CircleAvatar(
                         radius: 50,
-                        backgroundImage: AssetImage('assets/photo1.png'),
+                        backgroundImage: AssetImage('assets/img_yajid.png'),
                       ),
                       SizedBox(height: 8),
                       Text(
-                        'Muhammad Yazid Baihaqi',
+                        'Muhammad Yazid \n Baihaqi',
                         style: GoogleFonts.poppins(
                           color: Colors.white,
                           fontSize: 16,
                         ),
+                        textAlign: TextAlign.center,
                       ),
                     ],
                   ),
@@ -138,15 +144,16 @@ class AboutPage extends StatelessWidget {
                     children: [
                       CircleAvatar(
                         radius: 50,
-                        backgroundImage: AssetImage('assets/photo1.png'),
+                        backgroundImage: AssetImage('assets/img_raisa.png'),
                       ),
                       SizedBox(height: 8),
                       Text(
-                        'Raisa Aqila Araend',
+                        'Raisa Akilah \n Araend',
                         style: GoogleFonts.poppins(
                           color: Colors.white,
                           fontSize: 16,
                         ),
+                        textAlign: TextAlign.center,
                       ),
                     ],
                   ),
