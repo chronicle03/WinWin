@@ -40,7 +40,6 @@ class MyApp extends StatelessWidget {
               create: (context) => UserBloc(userRepository),
               child: RegisterPage(),
             ),
-        '/profil': (context) => ProfilePage(),
         '/about': (context) => About(),
       },
     );

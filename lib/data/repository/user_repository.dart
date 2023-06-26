@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'package:cookie_jar/cookie_jar.dart';
-import 'package:dio/dio.dart';
 
 import 'package:winwin/data/models/user_model.dart';
 import 'package:http/http.dart' as http;
