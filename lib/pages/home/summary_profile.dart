@@ -5,23 +5,18 @@ import 'package:winwin/pages/constant.dart';
 import 'package:winwin/pages/widgets/painter.dart';
 import 'package:intl/intl.dart';
 
-
 class SummaryProfileWidget extends StatelessWidget {
   final UserModel user;
-  final List<String> skill;
   late DateTime dateOfBirth;
-late DateTime now;
-late Duration ageDuration;
-late int ageYears;
-  SummaryProfileWidget({super.key, required this.user, required this.skill}) {
-    dateOfBirth = DateFormat('yyyy-MM-dd').parse(user.birthdate);
+  late DateTime now;
+  late Duration ageDuration;
+  late int ageYears;
+  SummaryProfileWidget({super.key, required this.user}) {
+    dateOfBirth = DateFormat('yyyy-MM-dd').parse(user.birthdate!);
     now = DateTime.now();
     ageDuration = now.difference(dateOfBirth);
     ageYears = ageDuration.inDays ~/ 365;
   }
-  
-
-  
 
   Widget skills(String value) {
     return ClipRRect(
@@ -45,7 +40,6 @@ late int ageYears;
 
   Widget content() {
     return Container(
-
       margin: EdgeInsets.only(top: 40, right: 20, left: 20),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
@@ -54,18 +48,24 @@ late int ageYears;
       child: Stack(
         children: [
           ClipRRect(
-            clipBehavior: Clip.antiAlias,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(12),
-              topRight: Radius.circular(12),
-            ),
-            child: Image.asset(
-              user.profilePhotoUrl,
-              width: double.infinity,
-              height: 390,
-              fit: BoxFit.cover,
-            ),
-          ),
+              clipBehavior: Clip.antiAlias,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(12),
+                topRight: Radius.circular(12),
+              ),
+              child: user.profilePhotoPath != null
+                  ? Image.network(
+                      "http://192.168.100.242:8000${user.profilePhotoPath!}",
+                      width: double.infinity,
+                      height: 390,
+                      fit: BoxFit.cover,
+                    )
+                  : Image.asset(
+                      "assets/rose.jpg",
+                      width: double.infinity,
+                      height: 390,
+                      fit: BoxFit.cover,
+                    )),
           Positioned(
             top: 1,
             child: Container(
@@ -91,7 +91,7 @@ late int ageYears;
               child: Container(
                 width: 276,
                 height: 205,
-                margin: EdgeInsets.only(top: 380, left: 25, right: 25),
+                margin: EdgeInsets.only(top: 380, left: 35, right: 25),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -99,14 +99,16 @@ late int ageYears;
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "${user.name}, ${ageYears}th ",
+                          user.birthdate != null
+                              ? "${user.name!}, ${ageYears}th"
+                              : user.name!,
                           style: textPrimaryStyle.copyWith(
                             fontSize: 17,
                             fontWeight: semibold,
                           ),
                         ),
                         SvgPicture.asset(
-                              'assets/svg/icon_male.svg',
+                          'assets/svg/icon_male.svg',
                           width: 18,
                           height: 18,
                         ),
@@ -124,7 +126,7 @@ late int ageYears;
                           width: 5,
                         ),
                         Text(
-                          user.location,
+                          user.location != null ? "${user.location!}" : " ",
                           style: iconTextStyle.copyWith(
                             fontSize: 11,
                             fontWeight: medium,
@@ -136,7 +138,7 @@ late int ageYears;
                       height: 12,
                     ),
                     Text(
-                      user.bio,
+                      user.bio != null ? user.bio! : "No bio",
                       style: iconTextStyle.copyWith(
                         fontSize: 12,
                         fontWeight: medium,
@@ -149,10 +151,11 @@ late int ageYears;
                       height: 10,
                     ),
                     Row(
-                      children: skill.map((e) => skills(e)).toList()
+                      children: user.ability!
+                          .map((ability) => skills(ability.skills![0].name!))
+                          .toList(),
                     ),
                   ],
-                  
                 ),
               ),
             ),
@@ -166,5 +169,4 @@ late int ageYears;
   Widget build(BuildContext context) {
     return content();
   }
-
 }

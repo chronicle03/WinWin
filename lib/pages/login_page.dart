@@ -1,11 +1,60 @@
 import "package:flutter/material.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
+import "package:winwin/data/models/user_model.dart";
 import "package:winwin/pages/constant.dart";
+import "package:winwin/pages/widgets/loading_button.dart";
 
-class LoginPage extends StatelessWidget {
+import "../bloc/user_bloc.dart";
+
+class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
   @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  TextEditingController emailController = TextEditingController(text: '');
+  TextEditingController usernameController = TextEditingController(text: '');
+  TextEditingController passwordController = TextEditingController(text: '');
+  TextEditingController phoneNumberController = TextEditingController(text: '');
+
+  String message = "null";
+  @override
   Widget build(BuildContext context) {
+    //handle
+    handleLogin(String message){
+       if (emailController.text == "" || //buat logic login
+          passwordController.text == "" ) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.yellow,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            content: Text("Field Must Be filled"),
+          ),
+        );
+      } else if (message != "null" && message.isNotEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            content: Text(message),
+          ),
+        );
+      }
+
+      BlocProvider.of<UserBloc>(context).add(UserPostLogin(
+          emailController.text,
+          //usernameController.text,
+          //phoneNumberController.text,
+          passwordController.text,));
+    }
     Widget emailAddressInput() {
       return Container(
         child: Column(
@@ -37,7 +86,7 @@ class LoginPage extends StatelessWidget {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              "Email/Phone Number/Username",
+                              "Email",
                               style: textColor2TextStyle.copyWith(
                                 fontSize: 8,
                                 fontWeight: FontWeight.w500,
@@ -47,13 +96,15 @@ class LoginPage extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.only(top: 2),
                             child: TextFormField(
+                              //controller: ,
+                              controller: emailController,
                               style: textButtonTextStyle.copyWith(
                                   fontSize: 11, fontWeight: FontWeight.w600),
                               decoration: InputDecoration.collapsed(
-                                hintText: "081234567890",
+                                hintText: "example@gmail.com",
                                 hintStyle: textButtonTextStyle.copyWith(
                                   fontSize: 11,
-                                  fontWeight: FontWeight.w600,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
                             ),
@@ -111,13 +162,14 @@ class LoginPage extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.only(top: 2),
                             child: TextFormField(
+                              controller: passwordController,
                               style: textButtonTextStyle.copyWith(
                                   fontSize: 11, fontWeight: FontWeight.w600),
                               decoration: InputDecoration.collapsed(
                                 hintText: "* * * * * * * *",
                                 hintStyle: textButtonTextStyle.copyWith(
                                   fontSize: 11,
-                                  fontWeight: FontWeight.w600,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
                             ),
@@ -142,11 +194,47 @@ class LoginPage extends StatelessWidget {
       );
     }
 
+    Widget buttonLogin(String message) {
+            return Container(
+              width: double.infinity,
+              height: 55,
+              margin: const EdgeInsets.symmetric(vertical: 14),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: buttonColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+                onPressed: () {
+                  handleLogin(message);
+                },
+                child: Text(
+                  "Login",
+                  style: textButtonTextStyle.copyWith(
+                      fontSize: 18, fontWeight: FontWeight.w600),
+                ),
+              ),
+            );
+          }
+
     return Scaffold(
       backgroundColor: backgroundColor,
-      body: ListView(
-        children: [
-          Container(
+      body: BlocConsumer<UserBloc, UserState>(
+        listener: (context, state) {},
+        builder: (context, state) {
+          if (state is UserPostError) {
+            message = state.code;
+          } else if (state is UserPostLoginSuccess) {
+            UserModel user = state.user;
+            // print("user login: ${user.name}");
+            Future.delayed(Duration.zero, () {
+              Navigator.pushNamed(context, '/home', arguments: user);
+            });
+          }
+
+          return Container(
+            margin: EdgeInsets.only(top: 25),
             padding: EdgeInsets.symmetric(horizontal: 25),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -162,7 +250,8 @@ class LoginPage extends StatelessWidget {
                         height: 24,
                       ),
                       Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 5.0)),
+                          padding:
+                              const EdgeInsets.symmetric(horizontal: 5.0)),
                       Text(
                         "Login",
                         style: textColor1TextStyle.copyWith(
@@ -210,25 +299,11 @@ class LoginPage extends StatelessWidget {
                   ],
                 ),
                 Container(
-                  width: double.infinity,
-                  height: 55,
                   margin: EdgeInsets.symmetric(vertical: 14),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: buttonColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                    ),
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/home');
-                    },
-                    child: Text(
-                      "Login",
-                      style: textButtonTextStyle.copyWith(
-                          fontSize: 18, fontWeight: FontWeight.w600),
-                    ),
-                  ),
+                  child: state is UserPostLoading
+                    ? LoadingButton()
+                    : buttonLogin(message),
+                   
                 ),
                 Row(
                   children: [
@@ -236,30 +311,28 @@ class LoginPage extends StatelessWidget {
                     Expanded(
                       child: Align(
                         alignment: Alignment.center,
-                        child: Padding(
-                          padding: EdgeInsets.only(bottom: 400),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "Don't have an account?",
-                                style: textColor1TextStyle.copyWith(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Don't have an account?",
+                              style: textColor1TextStyle.copyWith(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () => Navigator.pushNamed(
+                                  context, '/register'),
+                              child: Text(
+                                " Register Now",
+                                style: textColor3TextStyle.copyWith(
                                   fontSize: 10,
-                                  fontWeight: FontWeight.w500,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
-                              GestureDetector(
-                                onTap: () => Navigator.pushNamed(context, '/register'),
-                                child: Text(
-                                  " Register Now",
-                                  style: textColor3TextStyle.copyWith(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -267,8 +340,8 @@ class LoginPage extends StatelessWidget {
                 ),
               ],
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }

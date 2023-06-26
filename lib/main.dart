@@ -5,7 +5,7 @@ import "package:winwin/data/repository/user_repository.dart";
 import "package:winwin/pages/about.dart";
 import "package:winwin/pages/landing/landing_page.dart";
 import "package:winwin/pages/login_page.dart";
-import "package:winwin/pages/profile.dart";
+import 'package:winwin/pages/profile/profile_settings_page.dart';
 import "package:winwin/pages/register_page.dart";
 import "package:winwin/pages/verify_email_page.dart";
 import 'package:winwin/pages/main_page.dart';
@@ -24,17 +24,22 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routes: {
         '/': (context) => LandingPage(),
-        '/login': (context) => LoginPage(),
-        '/resend-verify-email': (context) => BlocProvider(
+        '/login': (context) => BlocProvider<UserBloc>(
+              create: (context) => UserBloc(userRepository),
+              child: LoginPage(),
+            ),
+        '/resend-verify-email': (context) => BlocProvider<UserBloc>(
               create: (context) => UserBloc(userRepository),
               child: VerifyEmailPage(),
             ),
-        '/home': (context) => MainPage(),
-        '/register': (context) => BlocProvider(
+        '/home': (context) => BlocProvider<UserBloc>(
+              create: (context) => UserBloc(userRepository),
+              child: MainPage(),
+            ),
+        '/register': (context) => BlocProvider<UserBloc>(
               create: (context) => UserBloc(userRepository),
               child: RegisterPage(),
             ),
-        '/profil': (context) => ProfilePage(),
         '/about': (context) => About(),
       },
     );
