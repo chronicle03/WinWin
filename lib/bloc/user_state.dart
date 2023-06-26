@@ -1,6 +1,7 @@
 part of 'user_bloc.dart';
 
-abstract class UserState {}
+abstract class UserState {
+}
 
 class UserInitial extends UserState {}
 
@@ -13,4 +14,20 @@ class UserPostError extends UserState {
 
   UserPostError(this.code);
 
+}
+
+class UserPostLoginSuccess extends UserState {
+  final UserModel user;
+  UserPostLoginSuccess(this.user);
+  
+  @override
+  List<Object?> get props => [user];
+}
+
+class GetUsersLoaded extends UserState {
+  final List<UserModel> users;
+  GetUsersLoaded(this.users);
+  
+  @override
+  List<Object?> get props => [users];
 }

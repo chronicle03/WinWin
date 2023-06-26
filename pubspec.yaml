@@ -41,6 +41,9 @@ dependencies:
   swipeable_cards_stack: ^1.0.2+1
   date_format: ^2.0.7
   intl: ^0.18.1
+  cookie_jar: ^4.0.5
+  dio: ^5.2.1+1
+  equatable: ^2.0.5
 
 dev_dependencies:
   flutter_test:

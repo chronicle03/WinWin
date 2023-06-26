@@ -1,9 +1,12 @@
 import "dart:async";
 
 import "package:flutter/material.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_svg/flutter_svg.dart";
 import "package:swipeable_cards_stack/swipeable_cards_stack.dart";
+import "package:winwin/bloc/user_bloc.dart";
 import "package:winwin/data/models/user_model.dart";
+import "package:winwin/data/repository/user_repository.dart";
 import "package:winwin/pages/home/summary_profile.dart";
 import "package:winwin/pages/notif_page.dart";
 
@@ -17,6 +20,22 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late UserBloc _userBloc;
+  
+  @override
+  void initState() {
+    super.initState();
+    _userBloc = BlocProvider.of<UserBloc>(context);
+    _userBloc.add(
+        GetUsers()); // Memanggil event GetUsers untuk memuat daftar pengguna
+  }
+
+  // @override
+  // void dispose() {
+  //   _userBloc.close(); // Menutup Bloc ketika widget dihapus
+  //   super.dispose();
+  // }
+
   bool isFavoriteTap = false;
 
   bool isSkipTap = false;
@@ -24,131 +43,11 @@ class _HomePageState extends State<HomePage> {
 
   final _cardController = SwipeableCardsStackController();
 
-  List<UserModel> users = [
-  UserModel(
-    id: 1,
-    name: "Alice Johnson",
-    email: "alicejohnson@example.com",
-    username: "alicejohnson",
-    bio: "Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet",
-    location: "Chicago",
-    phoneNumber: "+1 5555555555",
-    birthdate: "1985-12-10",
-    profilePhotoUrl: "assets/john_mayer.jpg",
-    token: "dummy_token_1",
-  ),
-  UserModel(
-    id: 2,
-    name: "John Smith",
-    email: "johnsmith@example.com",
-    username: "johnsmith",
-    bio: "Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet",
-    location: "New York",
-    phoneNumber: "+1 5555555555",
-    birthdate: "1990-05-15",
-    profilePhotoUrl: "assets/coding.jpg",
-    token: "dummy_token_2",
-  ),
-  UserModel(
-    id: 3,
-    name: "Bob Williams",
-    email: "bobwilliams@example.com",
-    username: "bobwilliams",
-    bio: "Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet",
-    location: "Los Angeles",
-    phoneNumber: "+1 5555555555",
-    birthdate: "1987-07-20",
-    profilePhotoUrl: "assets/picture2.jpg",
-    token: "dummy_token_3",
-  ),
-  UserModel(
-    id: 4,
-    name: "Sarah Davis",
-    email: "sarahdavis@example.com",
-    username: "sarahdavis",
-    bio: "Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet",
-    location: "San Francisco",
-    phoneNumber: "+1 5555555555",
-    birthdate: "1992-03-18",
-    profilePhotoUrl: "assets/picture1.jpg",
-    token: "dummy_token_4",
-  ),
-  UserModel(
-    id: 5,
-    name: "Michael Johnson",
-    email: "michaeljohnson@example.com",
-    username: "michaeljohnson",
-    bio: "Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet",
-    location: "Miami",
-    phoneNumber: "+1 5555555555",
-    birthdate: "1984-09-26",
-    profilePhotoUrl: "assets/picture3.jpeg",
-    token: "dummy_token_5",
-  ),
-  UserModel(
-    id: 6,
-    name: "Emily Wilson",
-    email: "emilywilson@example.com",
-    username: "emilywilson",
-    bio: "Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet",
-    location: "Seattle",
-    phoneNumber: "+1 5555555555",
-    birthdate: "1993-11-05",
-    profilePhotoUrl: "assets/picture4.jpeg",
-    token: "dummy_token_6",
-  ),
-  UserModel(
-    id: 7,
-    name: "David Thompson",
-    email: "davidthompson@example.com",
-    username: "davidthompson",
-    bio: "Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet",
-    location: "Denver",
-    phoneNumber: "+1 5555555555",
-    birthdate: "1989-06-12",
-    profilePhotoUrl: "assets/picture5.jpg",
-    token: "dummy_token_7",
-  ),
-  UserModel(
-    id: 8,
-    name: "Olivia Harris",
-    email: "oliviaharris@example.com",
-    username: "oliviaharris",
-    bio: "Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet",
-    location: "Boston",
-    phoneNumber: "+1 5555555555",
-    birthdate: "1991-08-30",
-    profilePhotoUrl: "assets/rose.jpg",
-    token: "dummy_token_8",
-  ),
-  UserModel(
-    id: 9,
-    name: "Daniel Martin",
-    email: "danielmartin@example.com",
-    username: "danielmartin",
-    bio: "Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet",
-    location: "Houston",
-    phoneNumber: "+1 5555555555",
-    birthdate: "1988-02-22",
-    profilePhotoUrl: "assets/picture6.jpeg",
-    token: "dummy_token_9",
-  ),
-  UserModel(
-    id: 10,
-    name: "Sophia Thompson",
-    email: "sophiathompson@example.com",
-    username: "sophiathompson",
-    bio: "Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet",
-    location: "Austin",
-    phoneNumber: "+1 5555555555",
-    birthdate: "1994-07-08",
-    profilePhotoUrl: "assets/picture1.jpg",
-    token: "dummy_token_10",
-  ),
-];
 
   @override
   Widget build(BuildContext context) {
+    UserModel user = ModalRoute.of(context)!.settings.arguments as UserModel;
+    // print("BLOC: ${_userBloc.userList}");
     Widget header() {
       return Container(
         margin: EdgeInsets.symmetric(horizontal: 24),
@@ -156,8 +55,8 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             ClipOval(
-              child: Image.asset(
-                'assets/rose.jpg',
+              child: Image.network(
+                'http://192.168.100.242:8000${user.profilePhotoPath}',
                 fit: BoxFit.cover,
                 width: 60,
                 height: 60,
@@ -165,12 +64,12 @@ class _HomePageState extends State<HomePage> {
             ),
             const SizedBox(width: 9),
             Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
                     Text(
-                      "Hi, Your Name",
+                      "Hi, ${user.name}",
                       style: textColor1TextStyle.copyWith(
                         fontWeight: FontWeight.bold,
                         fontSize: 17,
@@ -178,7 +77,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     SizedBox(width: 4),
                     Image.asset(
-                      'assets/icon_female.png',
+                      'assets/icon_male_white.png',
                       width: 18,
                       height: 18,
                     ),
@@ -194,7 +93,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     SizedBox(width: 4),
                     Text(
-                      "Location Unknown",
+                      "${user.location}",
                       style: textSecondaryTextStyle.copyWith(
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
@@ -275,59 +174,67 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             header(),
-            SwipeableCardsStack(
-              cardController: _cardController,
-              cardHeightTopMul: 0.75,
-              cardHeightBottomMul: 0.5,
-              context: context,
-              items: users
-                  .map((e) =>
-                      SummaryProfileWidget(user: e, skill: ['guitar', 'music']))
-                  .toList(),
-              onCardSwiped: (dir, index, widget) {
-                // Add the next card using _cardController
-                
-                 if (i < users.length) {
-                  print(i);
-                  print(users[i].name);
-                   _cardController.addItem(SummaryProfileWidget(user: users[i], skill: ['guitar', 'music']));
-                   i++;
-                 }
+            BlocBuilder<UserBloc, UserState>(
+              builder: (context, state) {
+                if (state is GetUsersLoaded) {
+                  print("state: ${state.users}");
+                  print("state: ${state.users[0].ability![1].skills![0].name}");
 
-                if (dir == AxisDirection.right) {
-                 
-                  setState(() {
-                    isFavoriteTap = true;
-                  });
-                 
+                  return SwipeableCardsStack(
+                    cardController: _cardController,
+                    cardHeightTopMul: 0.75,
+                    cardHeightBottomMul: 0.5,
+                    context: context,
+                    items: state.users.where((element) => element.id != user.id)
+                        .map((e) => SummaryProfileWidget(
+                            user: e))
+                        .toList(),
+                    onCardSwiped: (dir, index, widget) {
+                      // Add the next card using _cardController
 
-                  Timer(Duration(milliseconds: 400), () {
-                    setState(() {
-                      isFavoriteTap = false;
-                    });
-                  });
+                      if (i < state.users.length) {
+                        print(i);
+                        print(state.users[i].name);
+                        _cardController.addItem(SummaryProfileWidget(
+                            user: state.users[i]));
+                        i++;
+                      }
+
+                      if (dir == AxisDirection.right) {
+                        setState(() {
+                          isFavoriteTap = true;
+                        });
+
+                        Timer(Duration(milliseconds: 400), () {
+                          setState(() {
+                            isFavoriteTap = false;
+                          });
+                        });
+                      }
+
+                      if (dir == AxisDirection.left) {
+                        setState(() {
+                          isSkipTap = true;
+                        });
+
+                        Timer(Duration(milliseconds: 400), () {
+                          setState(() {
+                            isSkipTap = false;
+                          });
+                        });
+                      }
+
+                      // Take action on the swiped widget based on the direction of swipe
+                      // Return false to not animate cards
+                    },
+                    enableSwipeUp: false,
+                    enableSwipeDown: false,
+                  );
+                } else {
+                  return Text("loading");
                 }
-            
-
-                if (dir == AxisDirection.left) {
-                 
-                  setState(() {
-                    isSkipTap = true;
-                  });
-                 
-                  
-                  Timer(Duration(milliseconds: 400), () {
-                    setState(() {
-                      isSkipTap = false;
-                    });
-                  });
-                }
-
-                // Take action on the swiped widget based on the direction of swipe
-                // Return false to not animate cards
               },
-              enableSwipeUp: false,
-              enableSwipeDown: false,
+              
             ),
             Container(
               width: 200,

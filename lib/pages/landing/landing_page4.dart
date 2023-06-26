@@ -30,10 +30,9 @@ class _LandingPage4State extends State<LandingPage4> {
   void _startTimer() {
     _timer = Timer(Duration(seconds: 5), () {
       if (!isSkip) {
-        Navigator.pushReplacement(
+        Navigator.pushNamed(
           context,
-          MaterialPageRoute(builder: (context) => LoginPage()),
-        );
+          '/login');
       }
     });
   }

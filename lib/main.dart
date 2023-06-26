@@ -21,13 +21,19 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routes: {
         '/': (context) => LandingPage(),
-        '/login': (context) => LoginPage(),
-        '/resend-verify-email': (context) => BlocProvider(
+        '/login': (context) => BlocProvider<UserBloc>(
+              create: (context) => UserBloc(userRepository),
+              child: LoginPage(),
+            ),
+        '/resend-verify-email': (context) => BlocProvider<UserBloc>(
               create: (context) => UserBloc(userRepository),
               child: VerifyEmailPage(),
             ),
-        '/home': (context) => MainPage(),
-        '/register': (context) => BlocProvider(
+        '/home': (context) => BlocProvider<UserBloc>(
+              create: (context) => UserBloc(userRepository),
+              child: MainPage(),
+            ),
+        '/register': (context) => BlocProvider<UserBloc>(
               create: (context) => UserBloc(userRepository),
               child: RegisterPage(),
             ),

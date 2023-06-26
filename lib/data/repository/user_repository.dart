@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:cookie_jar/cookie_jar.dart';
+import 'package:dio/dio.dart';
 
 import 'package:winwin/data/models/user_model.dart';
 import 'package:http/http.dart' as http;
@@ -19,6 +21,7 @@ class UserRepositoryImpl extends UserRepository {
   String baserUrl = "http://192.168.100.242:8000/api";
   // String baserUrl = "http://192.168.100.241:8000/api";
 
+  Map<String, String> headers = {};
   @override
   Future<UserModel> register(
       String name,
@@ -42,7 +45,7 @@ class UserRepositoryImpl extends UserRepository {
     print("response: ${response.body}");
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body)['data'];
-      UserModel user = UserModel.fromJson(data['user'], isRegister: true);
+      UserModel user = UserModel.fromJson(data['user']);
       user.token = data['token_type'] + " " + data['access_token'];
       return user;
     } else {
@@ -57,18 +60,93 @@ class UserRepositoryImpl extends UserRepository {
   }
 
   Future resendEmail(String email) async {
-    final response = await http.post(Uri.parse('$baserUrl/email/resend'), body: {
+    final response =
+        await http.post(Uri.parse('$baserUrl/email/resend'), body: {
       "email": email,
+    }, headers: {
+      'Content-Type': 'application/json',
+      'Authorization': "Bearer"
     });
     print("response body: ${response.body} ");
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body)['data'];
       UserModel user =
-          UserModel.fromJson(data['user'], isResendEmailVerify: true);
+          UserModel.fromJson(data['user']);
       return user;
     } else {
       Map<String, dynamic> responseData = jsonDecode(response.body);
-    
+
+      throw Exception(responseData['data']['errors']);
+    }
+  }
+
+  Future<UserModel> login(String email, password) async {
+    final response = await http.post(Uri.parse('$baserUrl/login'), body: {
+      "email": email,
+      "password": password,
+    });
+
+    print("response body: ${response.body} ");
+    // print("response body abilities: ${response.body} ");
+    if (response.statusCode == 200) {
+      //logic login
+      var data = jsonDecode(response.body)['data'];
+      // print("response body abilities: ${data['user']['ability']} ");
+      UserModel user = UserModel.fromJson(data['user']);
+      user.token = data['token_type'] + " " + data['access_token'];
+
+      // print("data: ${data['user']}");
+      // print("name: ${user.name}");
+      // print("ability: ${user.abilities?[0].skills[0].name}");
+      // updateCookie(response, user.token!);
+
+      return user;
+    } else {
+      Map<String, dynamic> responseData = jsonDecode(response.body);
+
+      throw Exception(responseData['data']['errors']);
+    }
+  }
+
+  Future ForgotPassword(String email) async {
+    final response =
+        await http.post(Uri.parse('$baserUrl/forgotpassword'), body: {
+      "email": email,
+    });
+    print("response body: ${response.body} ");
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body)['data'];
+      UserModel user = UserModel.fromJson(data['user']);
+      return user;
+    } else {
+      Map<String, dynamic> responseData = jsonDecode(response.body);
+
+      throw Exception(responseData['data']['errors']);
+    }
+  }
+
+  Future<List<UserModel>> getUsers() async {
+    print("start getUsers repo");
+    final response = await http.get(Uri.parse('$baserUrl/users'), headers: {
+      'Authorization': "Bearer 285|oLDF9RCYmLsNV0ZPuvDVToMCqehWYYaoxpN6hXTH",
+      'Accept': 'applcation/json'
+    });
+
+    // print("response: ${response.body}");
+    if (response.statusCode == 200) {
+      print("response code: ${response.statusCode}");
+      var data = jsonDecode(response.body)['data']['users'];
+      print("data: ${data[0]['id']}");
+      List<UserModel> users = [];
+      data.forEach((userData) {
+        print("add user model: ${userData}");
+        UserModel user = UserModel.fromJson(userData);
+        print("success add user model: ${user}");
+        users.add(user);
+      });
+      return users;
+    } else {
+      Map<String, dynamic> responseData = jsonDecode(response.body);
       throw Exception(responseData['data']['errors']);
     }
   }
