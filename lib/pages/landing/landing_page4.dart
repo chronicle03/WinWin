@@ -57,7 +57,7 @@ class _LandingPage4State extends State<LandingPage4> {
   Widget build(BuildContext context) {
     Widget welcomingPage4Input() {
       return Container(
-        padding: EdgeInsets.only(top: 70, left: 61, right: 62),
+        padding: EdgeInsets.only(top: 130, left: 25, right: 25),
         child: Column(
           children: [
             Align(
@@ -68,7 +68,7 @@ class _LandingPage4State extends State<LandingPage4> {
                 width: 244,
               ),
             ),
-            const SizedBox(height: 60),
+            const SizedBox(height: 117),
             Column(
               children: [
                 Align(

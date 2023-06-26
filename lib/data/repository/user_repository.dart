@@ -126,7 +126,7 @@ class UserRepositoryImpl extends UserRepository {
   }
 
   Future<List<UserModel>> getUsers() async {
-    print("start getUsers repo");
+    // print("start getUsers repo");
     final response = await http.get(Uri.parse('$baserUrl/users'), headers: {
       'Authorization': "Bearer 285|oLDF9RCYmLsNV0ZPuvDVToMCqehWYYaoxpN6hXTH",
       'Accept': 'applcation/json'
@@ -134,14 +134,14 @@ class UserRepositoryImpl extends UserRepository {
 
     // print("response: ${response.body}");
     if (response.statusCode == 200) {
-      print("response code: ${response.statusCode}");
+      // print("response code: ${response.statusCode}");
       var data = jsonDecode(response.body)['data']['users'];
-      print("data: ${data[0]['id']}");
+      // print("data: ${data[0]['id']}");
       List<UserModel> users = [];
       data.forEach((userData) {
-        print("add user model: ${userData}");
+        // print("add user model: ${userData}");
         UserModel user = UserModel.fromJson(userData);
-        print("success add user model: ${user}");
+        // print("success add user model: ${user}");
         users.add(user);
       });
       return users;

@@ -70,7 +70,7 @@ class _LandingPage2State extends State<LandingPage2> {
                 width: 237,
               ),
             ),
-            const SizedBox(height: 60),
+            const SizedBox(height: 110),
             Column(
               children: [
                 Align(

@@ -58,7 +58,7 @@ class _LandingPage3State extends State<LandingPage3> {
   Widget build(BuildContext context) {
     Widget welcomingPage3Input() {
       return Container(
-        padding: EdgeInsets.only(top: 60, left: 61, right: 62),
+        padding: EdgeInsets.only(top: 130, left: 25, right: 25),
         child: Column(
           children: [
             Align(
@@ -69,7 +69,7 @@ class _LandingPage3State extends State<LandingPage3> {
                 width: 237,
               ),
             ),
-            const SizedBox(height: 60),
+            const SizedBox(height: 105),
             Column(
               children: [
                 Align(
@@ -119,7 +119,7 @@ class _LandingPage3State extends State<LandingPage3> {
                 ),
               ],
             ),
-            const SizedBox(height: 60),
+            const SizedBox(height: 70),
             Column(
               children: [
                 Row(

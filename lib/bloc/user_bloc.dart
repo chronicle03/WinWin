@@ -8,6 +8,7 @@ part 'user_state.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
   UserModel? user;
+  static UserModel? loggedInUser;
   List<UserModel>? userList;
   String? token;
   final UserRepositoryImpl userRepository;
@@ -63,9 +64,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
               //event.phoneNumber,
               event.password,
             );
-            user = user;
             token = user!.token;
-            print("token: $token");
+            loggedInUser =user;
+            print("loggedInUser bloc login: ${loggedInUser!.email}");
+            print("user bloc login: ${user!.email}");
             // print("user bloc: ${user!.name}");
             emit(UserPostLoginSuccess(user!));
           });
@@ -94,16 +96,16 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
       if (event is GetUsers) {
         
-        print("start");
-        print("token: $token");
+        // print("start");
+        // print("token: $token");
         emit(UserPostLoading());
         try {
           await Future.delayed(const Duration(seconds: 2), () async {
-            print("start2");
+            // print("start2");
             userList = await userRepository.getUsers();
           });
-          print("done");
-          print("user bloc: ${userList}");
+          // print("done");
+          // print("user bloc: ${userList}");
           emit(GetUsersLoaded(userList!));
         } catch (e) {
           emit(UserPostError(e.toString().replaceAll('Exception: ', '')));

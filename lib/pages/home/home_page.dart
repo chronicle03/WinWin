@@ -55,8 +55,13 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             ClipOval(
-              child: Image.network(
+              child: user.profilePhotoPath != null ? Image.network(
                 'http://192.168.100.242:8000${user.profilePhotoPath}',
+                fit: BoxFit.cover,
+                width: 60,
+                height: 60,
+              ) : Image.asset(
+                'assets/picture1.jpg',
                 fit: BoxFit.cover,
                 width: 60,
                 height: 60,
