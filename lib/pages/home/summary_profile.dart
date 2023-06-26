@@ -91,7 +91,7 @@ class SummaryProfileWidget extends StatelessWidget {
               child: Container(
                 width: 276,
                 height: 205,
-                margin: EdgeInsets.only(top: 380, left: 25, right: 25),
+                margin: EdgeInsets.only(top: 380, left: 35, right: 25),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [

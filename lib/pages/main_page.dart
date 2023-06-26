@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:winwin/pages/favorite_page.dart';
 import 'package:winwin/pages/home/home_page.dart';
-import 'package:winwin/pages/profile.dart';
+import 'package:winwin/pages/profile/profile_settings_page.dart';
 
 import 'constant.dart';
-import 'home/edit_profile.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -76,7 +75,7 @@ class _MainPageState extends State<MainPage> {
       case 1:
         return FavoritePage();
       case 2:
-        return EditProfilePage();
+        return ProfileSettingsPage();
       default:
         return HomePage();
     }

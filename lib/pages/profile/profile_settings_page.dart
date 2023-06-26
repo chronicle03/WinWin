@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:winwin/pages/about.dart';
 
-class ProfilePage extends StatelessWidget {
-  const ProfilePage({Key? key});
+class ProfileSettingsPage extends StatelessWidget {
+  const ProfileSettingsPage({Key? key});
 
   @override
   Widget build(BuildContext context) {
