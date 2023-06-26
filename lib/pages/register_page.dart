@@ -17,7 +17,7 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController emailController = TextEditingController(text: '');
   TextEditingController usernameController = TextEditingController(text: '');
   TextEditingController confirmPasswordController =
-      TextEditingController(text: '');
+  TextEditingController(text: '');
   TextEditingController passwordController = TextEditingController(text: '');
   TextEditingController birthdateController = TextEditingController(text: '');
   TextEditingController phoneNumberController = TextEditingController(text: '');
@@ -152,13 +152,13 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   Expanded(
                       child: TextFormField(
-                    controller: nameController,
-                    style: textColor2TextStyle,
-                    decoration: InputDecoration.collapsed(
-                        hintText: "Full Name",
-                        hintStyle: textColor2TextStyle.copyWith(
-                            fontSize: 13, fontWeight: FontWeight.w500)),
-                  )),
+                        controller: nameController,
+                        style: textColor2TextStyle,
+                        decoration: InputDecoration.collapsed(
+                            hintText: "Full Name",
+                            hintStyle: textColor2TextStyle.copyWith(
+                                fontSize: 13, fontWeight: FontWeight.w500)),
+                      )),
                 ],
               ),
             ),
@@ -191,13 +191,13 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   Expanded(
                       child: TextFormField(
-                    controller: usernameController,
-                    style: textColor2TextStyle,
-                    decoration: InputDecoration.collapsed(
-                        hintText: "Username",
-                        hintStyle: textColor2TextStyle.copyWith(
-                            fontSize: 13, fontWeight: FontWeight.w500)),
-                  )),
+                        controller: usernameController,
+                        style: textColor2TextStyle,
+                        decoration: InputDecoration.collapsed(
+                            hintText: "Username",
+                            hintStyle: textColor2TextStyle.copyWith(
+                                fontSize: 13, fontWeight: FontWeight.w500)),
+                      )),
                 ],
               ),
             ),
@@ -265,13 +265,13 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   Expanded(
                       child: TextFormField(
-                    controller: phoneNumberController,
-                    style: textColor2TextStyle,
-                    decoration: InputDecoration.collapsed(
-                        hintText: "Phone Number",
-                        hintStyle: textColor2TextStyle.copyWith(
-                            fontSize: 13, fontWeight: FontWeight.w500)),
-                  )),
+                        controller: phoneNumberController,
+                        style: textColor2TextStyle,
+                        decoration: InputDecoration.collapsed(
+                            hintText: "Phone Number",
+                            hintStyle: textColor2TextStyle.copyWith(
+                                fontSize: 13, fontWeight: FontWeight.w500)),
+                      )),
                 ],
               ),
             ),
@@ -304,13 +304,13 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   Expanded(
                       child: TextFormField(
-                    controller: emailController,
-                    style: textColor2TextStyle,
-                    decoration: InputDecoration.collapsed(
-                        hintText: "Email Address",
-                        hintStyle: textColor2TextStyle.copyWith(
-                            fontSize: 13, fontWeight: FontWeight.w500)),
-                  )),
+                        controller: emailController,
+                        style: textColor2TextStyle,
+                        decoration: InputDecoration.collapsed(
+                            hintText: "Email Address",
+                            hintStyle: textColor2TextStyle.copyWith(
+                                fontSize: 13, fontWeight: FontWeight.w500)),
+                      )),
                 ],
               ),
             ),
@@ -343,14 +343,14 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   Expanded(
                       child: TextFormField(
-                    controller: passwordController,
-                    obscureText: true,
-                    style: textColor2TextStyle,
-                    decoration: InputDecoration.collapsed(
-                        hintText: "Password",
-                        hintStyle: textColor2TextStyle.copyWith(
-                            fontSize: 13, fontWeight: FontWeight.w500)),
-                  )),
+                        controller: passwordController,
+                        obscureText: true,
+                        style: textColor2TextStyle,
+                        decoration: InputDecoration.collapsed(
+                            hintText: "Password",
+                            hintStyle: textColor2TextStyle.copyWith(
+                                fontSize: 13, fontWeight: FontWeight.w500)),
+                      )),
                   Image.asset(
                     "assets/icon_eye_close.png",
                     width: 26,
@@ -391,14 +391,14 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   Expanded(
                       child: TextFormField(
-                    obscureText: true,
-                    controller: confirmPasswordController,
-                    style: textColor2TextStyle,
-                    decoration: InputDecoration.collapsed(
-                        hintText: "Confirm Password",
-                        hintStyle: textColor2TextStyle.copyWith(
-                            fontSize: 13, fontWeight: FontWeight.w500)),
-                  )),
+                        obscureText: true,
+                        controller: confirmPasswordController,
+                        style: textColor2TextStyle,
+                        decoration: InputDecoration.collapsed(
+                            hintText: "Confirm Password",
+                            hintStyle: textColor2TextStyle.copyWith(
+                                fontSize: 13, fontWeight: FontWeight.w500)),
+                      )),
                   Image.asset(
                     "assets/icon_eye_close.png",
                     width: 26,
