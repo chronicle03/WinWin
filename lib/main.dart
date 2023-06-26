@@ -23,8 +23,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       routes: {
-        '/': (context) => FavoritePage(),
-        '/sfadg': (context) => BlocProvider(
+        '/': (context) => NotificationPage2(),
+        '/vhh': (context) => BlocProvider(
               create: (context) => UserBloc(userRepository),
               child: LoginPage(),
             ),

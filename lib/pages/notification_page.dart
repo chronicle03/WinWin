@@ -7,32 +7,36 @@ class NotificationPage extends StatelessWidget{
    @override
   Widget build(BuildContext context) {
     Widget header() {
-      return Column(
-        children: [
-          const SizedBox(height: 13),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Row(
-              children: [
-                GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: Image.asset(
-                    "assets/icon_row_left.png",
-                    width: 24,
-                    height: 24,
+      return 
+      Container(
+        padding: EdgeInsets.symmetric(horizontal: 25),
+        child: Column(
+          children: [
+            const SizedBox(height: 13),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Row(
+                children: [
+                  GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: Image.asset(
+                      "assets/icon_row_left.png",
+                      width: 24,
+                      height: 24,
+                    ),
                   ),
-                ),
-                Padding(padding: const EdgeInsets.symmetric(horizontal: 5.0)),
-                Text(
-                  "Notifications",
-                  style: textColor1TextStyle.copyWith(
-                      fontSize: 20, fontWeight: FontWeight.w600),
-                ),
-              ],
+                  Padding(padding: const EdgeInsets.symmetric(horizontal: 5.0)),
+                  Text(
+                    "Notifications",
+                    style: textColor1TextStyle.copyWith(
+                        fontSize: 20, fontWeight: FontWeight.w600),
+                  ),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 20),
-        ],
+            const SizedBox(height: 20),
+          ],
+        ),
       );
     }
     Widget search() {
