@@ -8,6 +8,7 @@ import "package:winwin/pages/login_page.dart";
 import "package:winwin/pages/register_page.dart";
 import "package:winwin/pages/verify_email_page.dart";
 import "package:winwin/pages/notification_page.dart";
+import "package:winwin/pages/notification_page2.dart";
 import "package:winwin/pages/favorite_page.dart";
 
 void main() {
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       routes: {
-        '/': (context) => NotificationPage(),
+        '/': (context) => FavoritePage(),
         '/sfadg': (context) => BlocProvider(
               create: (context) => UserBloc(userRepository),
               child: LoginPage(),
