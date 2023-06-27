@@ -18,7 +18,7 @@ class _NotificationPage2State extends State<NotificationPage2> {
         padding: EdgeInsets.symmetric(horizontal: 25),
         child: Column(
           children: [
-            const SizedBox(height: 13),
+            const SizedBox(height: 60),
             Align(
               alignment: Alignment.centerLeft,
               child: Row(
@@ -54,7 +54,7 @@ class _NotificationPage2State extends State<NotificationPage2> {
             width: 310,
             height: 35,
             margin: EdgeInsets.only(top: 5, right: 25, left: 25),
-            padding: EdgeInsets.only(top: 5, right: 20, left: 20, bottom: 10),
+            padding: EdgeInsets.only(top: 2, right: 20, left: 20, bottom: 10),
             decoration: BoxDecoration(
               color: appBarColor,
               borderRadius: BorderRadius.circular(10),

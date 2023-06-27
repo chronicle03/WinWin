@@ -8,7 +8,8 @@ part 'favorite_state.dart';
 class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
 
   late FavoriteModel data;
-  final FavoriteRepositoryImpl userRepository;
+  final FavoriteRepositoryImpl FavoriteRepository;
+  
 
   FavoriteBloc(this.FavoriteRepository) : super(FavoriteInitial()) {
     on<FavoriteEvent>((event, emit) async{
@@ -29,20 +30,20 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
         }
       }
 
-      if (event is UserPostResendEmailVerify) {
-        emit(UserRegisterLoading());
+      /*if (event is FavoriteGetFavorites) {
+        emit(FavoriteGetFavoritesLoading());
         try {
           await Future.delayed(const Duration(seconds: 2), () async {
-          data = await userRepository.resendEmail(
-            event.email
+          data = await FavoriteRepository.FavoriteGetFavorites(
+            event.user_id,
           );
-          emit(UserRegisterSuccess());
+          emit(FavoriteGetFavoritesSuccess());
         });
         } catch (e) {
           // print(e);
-          emit(UserRegisterError(e.toString().replaceAll('Exception: ', '')));
+          emit(FavoriteGetFavoriteError(e.toString().replaceAll('Exception: ', '')));
         }
-      }
+      }*/
     });
   }
 }

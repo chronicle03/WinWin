@@ -14,3 +14,11 @@ class CreateFavoriteError extends FavoriteState {
   CreateFavoriteError(this.code);
 
 }
+
+class FavoriteGetFavoritesLoading extends FavoriteState{}
+class FavoriteGetFavoritesSuccess extends FavoriteState{}
+class FavoriteGetFavoriteError extends FavoriteState{
+  final String code;
+
+  FavoriteGetFavoriteError(this.code);
+}

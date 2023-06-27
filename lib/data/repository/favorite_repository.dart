@@ -23,7 +23,7 @@ class FavoriteRepositoryImpl extends FavoriteRepository {
 
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body)['data'];
-      FavoriteModel favorites = FavoriteModel.fromJson(data['user'], iscreateFavorite: true);
+      FavoriteModel favorites = FavoriteModel.fromJson(data['user']);
       return favorites;
     } else {
       Map<String, dynamic> responseData = jsonDecode(response.body);
@@ -36,3 +36,21 @@ class FavoriteRepositoryImpl extends FavoriteRepository {
     }
   }
 }
+
+/*Future getFavorite(String email) async {
+    
+    final response = await http.post(Uri.parse('$baserUrl/favorites'), body: {
+      "user_id": "user_id"
+    });
+    print("response body: ${response.body} ");
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body)['data'];
+      FavoriteModel user =
+          FavoriteModel.fromJson(data['user'], isResendEmailVerify: true);
+      return user;
+    } else {
+      Map<String, dynamic> responseData = jsonDecode(response.body);
+    
+      throw Exception(responseData['data']['errors']);
+    }
+  }*/

@@ -7,12 +7,12 @@ class NotificationPage extends StatelessWidget{
    @override
   Widget build(BuildContext context) {
     Widget header() {
-      return 
+      return
       Container(
         padding: EdgeInsets.symmetric(horizontal: 25),
         child: Column(
           children: [
-            const SizedBox(height: 13),
+            const SizedBox(height: 60),
             Align(
               alignment: Alignment.centerLeft,
               child: Row(

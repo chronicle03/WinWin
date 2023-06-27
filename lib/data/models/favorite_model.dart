@@ -1,41 +1,32 @@
 class FavoriteModel {
-  late int id;
-  late String user_id;
-  late String user_favorite_id;
+  int? id;
+  int? userId;
+  int? userFavoriteId;
+  String? createdAt;
+  String? updatedAt;
 
-  FavoriteModel({
-    required this.id,
-    required this.user_id,
-    required this.user_favorite_id,
-  });
+  FavoriteModel(
+      {this.id,
+      this.userId,
+      this.userFavoriteId,
+      this.createdAt,
+      this.updatedAt});
 
-  FavoriteModel.fromJson(Map<String, dynamic> json, {bool iscreateFavorite = false, bool isgetFavorites = false}) {
-    if (iscreateFavorite) {
-      id = json['id'];
-      user_id = json['user_id'];
-      user_favorite_id = json['user_favorite_id'];
-    }
-    else if (isgetFavorites){
-      user_id = json['user_id'];
-    }
-    else {
-      user_id = json['user_id'];
-      user_favorite_id = json['user_favorite_id'];
-    }
+  FavoriteModel.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    userId = json['user_id'];
+    userFavoriteId = json['user_favorite_id'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
   }
 
-  Map<String, dynamic> toJson({bool iscreateFavorite = false}) {
-    if (iscreateFavorite) {
-      return {
-        'id': id,
-        'user_id': user_id,
-        'user_favorite_id': user_favorite_id,
-      };
-    } else {
-      return {
-        'user_id': user_id,
-        'user_favorite_id': user_favorite_id,
-      };
-    }
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['user_id'] = this.userId;
+    data['user_favorite_id'] = this.userFavoriteId;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    return data;
   }
 }
