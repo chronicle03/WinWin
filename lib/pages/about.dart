@@ -27,7 +27,7 @@ class About extends StatelessWidget {
           children: [
             SizedBox(height: 20),
             Image.asset(
-              'assets/logo.png',
+              'assets/Logo.png',
               width: 250,
               height: 200,
             ),

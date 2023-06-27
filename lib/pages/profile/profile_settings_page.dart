@@ -1,13 +1,35 @@
-import 'package:winwin/pages/main_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:winwin/bloc/user_bloc.dart';
+import 'package:winwin/data/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:winwin/pages/about.dart';
+import 'package:winwin/pages/constant.dart';
+import 'package:winwin/pages/profile/edit_profile.dart';
 
-class ProfileSettingsPage extends StatelessWidget {
+class ProfileSettingsPage extends StatefulWidget {
   const ProfileSettingsPage({Key? key});
 
   @override
+  State<ProfileSettingsPage> createState() => _ProfileSettingsPageState();
+}
+
+class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
+  late UserBloc _userBloc;
+  UserModel? loggedInUser; // Add this variable
+  String baseUrl = "http://192.168.102.10:8000";
+
+  @override
+  void initState() {
+    super.initState();
+    _userBloc = BlocProvider.of<UserBloc>(context);
+    loggedInUser = UserBloc.loggedInUser; // Retrieve the logged-in user data
+  }
+
+  @override
   Widget build(BuildContext context) {
+    String? profilePhotoPath = loggedInUser?.profilePhotoPath;
     return Scaffold(
       body: Container(
         color: Color(0xff30444F),
@@ -21,10 +43,20 @@ class ProfileSettingsPage extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CircleAvatar(
-                      radius: 50,
-                      backgroundImage: AssetImage('assets/rose.jpg'),
-                    ),
+                    profilePhotoPath != null
+                        ? ClipOval(
+                            child: Image.network(
+                              baseUrl + profilePhotoPath,
+                              height: 60,
+                              width: 60,
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                        : Image.asset(
+                            'assets/photoProfile.png',
+                            height: 60,
+                            width: 60,
+                          ),
                     SizedBox(width: 8.0),
                     Padding(
                       padding: EdgeInsets.only(top: 8.0),
@@ -34,7 +66,7 @@ class ProfileSettingsPage extends StatelessWidget {
                           Row(
                             children: [
                               Text(
-                                'Your Name',
+                                loggedInUser!.name!,
                                 style: GoogleFonts.poppins(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
@@ -42,16 +74,17 @@ class ProfileSettingsPage extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(width: 4.0),
-                              Image.asset(
-                                'assets/icon_female_white.png',
-                                width: 16,
-                                height: 16,
-                              ),
+                              loggedInUser?.gender != null ?
+                        SvgPicture.asset(
+                          'assets/svg/icon_male.svg',
+                          width: 18,
+                          height: 18,
+                        ) : SizedBox(),
                             ],
                           ),
                           SizedBox(height: 8.0),
                           Text(
-                            '(+62) 812 3456 7890',
+                            loggedInUser!.phoneNumber!,
                             style: GoogleFonts.poppins(
                               fontSize: 16,
                               color: Colors.white,
@@ -77,32 +110,39 @@ class ProfileSettingsPage extends StatelessWidget {
                       children: [
                         Text(
                           'Profile and Security',
-                          style: GoogleFonts.poppins(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
+                          style: textButtonTextStyle.copyWith(
+                            fontSize: 17, fontWeight: FontWeight.w700,
+                          )
                         ),
                         SizedBox(height: 16.0),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Row(
-                              children: [
-                                Image.asset(
-                                  'assets/icon_person.png',
-                                  width: 22,
-                                  height: 22,
-                                ),
-                                SizedBox(width: 8.0),
-                                Text(
-                                  'Profile Settings',
-                                  style: GoogleFonts.poppins(
-                                      fontSize: 16,
-                                  color: Color(0xff30444F),
+                            GestureDetector(
+                              onTap: () { 
+                                 Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => EditProfilePage(loggedInUser!))
+                                );
+                              },
+                              child: Row(
+                                children: [
+                                  Image.asset(
+                                    'assets/icon_person.png',
+                                    width: 22,
+                                    height: 22,
                                   ),
-                                ),
-                              ],
+                                  SizedBox(width: 8.0),
+                                  Text(
+                                    'Profile Settings',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 16,
+                                      color: Color(0xff30444F),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                             Image.asset(
                               'assets/icon_arrow_right.png',
@@ -114,44 +154,44 @@ class ProfileSettingsPage extends StatelessWidget {
                         SizedBox(height: 20.0),
                         Text(
                           'General',
-                          style: GoogleFonts.poppins(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
+                          style: textButtonTextStyle.copyWith(
+                            fontSize: 17, fontWeight: FontWeight.w700,
+                          )
                         ),
                         SizedBox(height: 20.0),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Row(
-                              children: [
-                                Image.asset(
-                                  'assets/icon_help.png',
-                                  width: 32,
-                                  height: 32,
-                                ),
-                                SizedBox(width: 8.0),
-                                Text(
-                                  'About WinWin',
-                                  style: GoogleFonts.poppins(
-                                      fontSize: 16,
-                                    color: Color(0xff30444F), ),
-                                ),
-                              ],
-                            ),
                             GestureDetector(
                               onTap: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => About()),
+                                  MaterialPageRoute(
+                                      builder: (context) => About()),
                                 );
                               },
-                              child: Image.asset(
-                                'assets/icon_arrow_right.png',
-                                width: 26,
-                                height: 26,
+                              child: Row(
+                                children: [
+                                  Image.asset(
+                                    'assets/icon_help.png',
+                                    width: 32,
+                                    height: 32,
+                                  ),
+                                  SizedBox(width: 8.0),
+                                  Text(
+                                    'About WinWin',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 16,
+                                      color: Color(0xff30444F),
+                                    ),
+                                  ),
+                                ],
                               ),
+                            ),
+                            Image.asset(
+                              'assets/icon_arrow_right.png',
+                              width: 26,
+                              height: 26,
                             ),
                           ],
                         ),
@@ -170,7 +210,7 @@ class ProfileSettingsPage extends StatelessWidget {
                                 Text(
                                   'Terms & Conditions',
                                   style: GoogleFonts.poppins(
-                                      fontSize: 16,
+                                    fontSize: 16,
                                     color: Color(0xff30444F),
                                   ),
                                 ),
@@ -198,7 +238,7 @@ class ProfileSettingsPage extends StatelessWidget {
                                 Text(
                                   'Privacy Policy',
                                   style: GoogleFonts.poppins(
-                                      fontSize: 16,
+                                    fontSize: 16,
                                     color: Color(0xff30444F),
                                   ),
                                 ),
@@ -225,7 +265,7 @@ class ProfileSettingsPage extends StatelessWidget {
                               child: Text(
                                 'Logout',
                                 style: GoogleFonts.poppins(
-                                    fontSize: 16,
+                                  fontSize: 16,
                                   color: Color(0xff30444F),
                                 ),
                               ),

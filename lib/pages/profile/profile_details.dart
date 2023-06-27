@@ -20,7 +20,7 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
                 child: Image.asset(
                   'assets/user2.png',
                   fit: BoxFit.cover,
-                  height: 500,
+                  height: 550,
                 ),
               ),
               Column(
@@ -52,16 +52,16 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
                 ],
               ),
               Container(
-                margin: EdgeInsets.only(top: 405),
+                margin: EdgeInsets.only(top: 433),
                 child: Image.asset(
                   'assets/background.png',
                   fit: BoxFit.fill,
-                  height: 403,
+                  height: 410,
                   width: double.infinity,
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(top: 475),
+                margin: EdgeInsets.only(top: 508),
                 child: Column(
                   children: [
                     Row(

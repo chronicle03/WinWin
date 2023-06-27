@@ -5,27 +5,29 @@ import "package:winwin/data/models/user_model.dart";
 import "package:winwin/pages/constant.dart";
 
 class EditProfilePage extends StatefulWidget {
-  const EditProfilePage({Key? key}) : super(key: key);
+   
+  final UserModel loggedInUser;
+  const EditProfilePage(this.loggedInUser);
 
   @override
   _EditProfilePageState createState() => _EditProfilePageState();
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
-  late UserBloc _userBloc;
-  UserModel? loggedInUser; // Add this variable
+  // late UserBloc _userBloc;
+  // UserModel? loggedInUser; // Add this variable
   
-  @override
-  void initState() {
-    super.initState();
-    _userBloc = BlocProvider.of<UserBloc>(context);
-    loggedInUser = UserBloc.loggedInUser; // Retrieve the logged-in user data
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _userBloc = BlocProvider.of<UserBloc>(context);
+  //   loggedInUser = UserBloc.loggedInUser; // Retrieve the logged-in user data
+  // }
 
   String message = "null";
   bool isChecked = false;
   String? selectedDate;
-  String baseUrl = "http://192.168.100.242:8000";
+  String baseUrl = "http://192.168.102.10:8000";
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -51,11 +53,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   Widget build(BuildContext context) {
   
-    print("loggedInUser: $loggedInUser");
+    print("loggedInUser: ${widget.loggedInUser}");
     // Access the properties of the logged-in user
-    String? username = loggedInUser?.username;
-    String? email = loggedInUser?.email;
-    String? profilePhotoPath = loggedInUser?.profilePhotoPath;
+    String? username = widget.loggedInUser.username;
+    String? email = widget.loggedInUser.email;
+    String? profilePhotoPath = widget.loggedInUser.profilePhotoPath;
     print("username: $username");
     print("email: $email");
 
@@ -148,7 +150,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     style: textButtonTextStyle.copyWith(
                         fontSize: 13, fontWeight: FontWeight.w500),
                     decoration: InputDecoration.collapsed(
-                        hintText: loggedInUser!.name,
+                        hintText: widget.loggedInUser.name,
                         hintStyle: textButtonTextStyle.copyWith(
                             fontSize: 13, fontWeight: FontWeight.w500)),
                   )),
@@ -198,7 +200,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     const SizedBox(width: 14),
                     Expanded(
                       child: Text(
-                        selectedDate ?? loggedInUser!.birthdate!,
+                        selectedDate ?? widget.loggedInUser.birthdate!,
                         style: textButtonTextStyle.copyWith(
                           fontSize: 13,
                           fontWeight: FontWeight.w500,
@@ -253,7 +255,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     style: textButtonTextStyle.copyWith(
                         fontSize: 13, fontWeight: FontWeight.w500),
                     decoration: InputDecoration.collapsed(
-                        hintText: loggedInUser!.location ??  "",
+                        hintText: widget.loggedInUser.location ??  "",
                         hintStyle: textButtonTextStyle.copyWith(
                             fontSize: 13, fontWeight: FontWeight.w500)),
                   )),
@@ -422,7 +424,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     style: textButtonTextStyle.copyWith(
                         fontSize: 13, fontWeight: FontWeight.w500),
                     decoration: InputDecoration.collapsed(
-                        hintText: loggedInUser!.phoneNumber ??  "",
+                        hintText: widget.loggedInUser.phoneNumber ??  "",
                         hintStyle: textButtonTextStyle.copyWith(
                             fontSize: 13, fontWeight: FontWeight.w500)),
                   )),
@@ -472,7 +474,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     style: textButtonTextStyle.copyWith(
                         fontSize: 13, fontWeight: FontWeight.w500),
                     decoration: InputDecoration.collapsed(
-                        hintText: loggedInUser!.email ??  "",
+                        hintText: widget.loggedInUser.email ??  "",
                         hintStyle: textButtonTextStyle.copyWith(
                             fontSize: 13, fontWeight: FontWeight.w500)),
                   )),
@@ -581,7 +583,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     style: textButtonTextStyle.copyWith(
                         fontSize: 13, fontWeight: FontWeight.w500),
                     decoration: InputDecoration.collapsed(
-                        hintText: loggedInUser!.jobStatus ??  "",
+                        hintText: widget.loggedInUser.jobStatus ??  "",
                         hintStyle: textButtonTextStyle.copyWith(
                             fontSize: 13, fontWeight: FontWeight.w500)),
                   )),
@@ -693,7 +695,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           ),
                           decoration: InputDecoration.collapsed(
                             hintText:
-                                loggedInUser!.bio ??  "",
+                                widget.loggedInUser.bio ??  "",
                             hintStyle: textButtonTextStyle.copyWith(
                               fontSize: 13,
                               fontWeight: FontWeight.w500,
