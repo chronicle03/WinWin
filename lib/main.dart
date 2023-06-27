@@ -5,11 +5,9 @@ import "package:winwin/data/repository/user_repository.dart";
 import "package:winwin/pages/about.dart";
 import "package:winwin/pages/landing/landing_page.dart";
 import "package:winwin/pages/login_page.dart";
-import 'package:winwin/pages/profile/profile_settings_page.dart';
+import "package:winwin/pages/main_page.dart";
 import "package:winwin/pages/register_page.dart";
 import "package:winwin/pages/verify_email_page.dart";
-import 'package:winwin/pages/main_page.dart';
-
 
 void main() {
   runApp(MyApp());

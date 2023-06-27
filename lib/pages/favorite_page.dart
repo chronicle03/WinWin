@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:winwin/pages/constant.dart';
 import 'package:winwin/pages/main_page.dart';
+//import 'package:winwin/pages/main_page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class FavoritePage extends StatelessWidget {
