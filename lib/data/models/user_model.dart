@@ -12,6 +12,7 @@ class UserModel {
   String? location;
   String? jobStatus;
   String? profilePhotoPath;
+  String? gender;
   String? createdAt;
   String? updatedAt;
   String? token;
@@ -30,6 +31,7 @@ class UserModel {
       this.jobStatus,
       this.profilePhotoPath,
       this.token,
+      this.gender,
       this.createdAt,
       this.updatedAt,
       this.ability});
@@ -43,6 +45,7 @@ class UserModel {
     birthdate = json['birthdate'];
     phoneNumber = json['phone_number'];
     bio = json['bio'];
+    gender = json['gender'];
     location = json['location'];
     jobStatus = json['job_status'];
     profilePhotoPath = json['profile_photo_path'];
@@ -61,6 +64,7 @@ class UserModel {
     data['id'] = this.id;
     data['name'] = this.name;
     data['username'] = this.username;
+    data['gender'] = this.gender;
     data['email'] = this.email;
     data['email_verified_at'] = this.emailVerifiedAt;
     data['birthdate'] = this.birthdate;

@@ -16,7 +16,7 @@ abstract class UserRepository {
 }
 
 class UserRepositoryImpl extends UserRepository {
-  String baserUrl = "http://192.168.100.242:8000/api";
+  String baserUrl = "http://192.168.102.10:8000/api";
   // String baserUrl = "http://192.168.100.241:8000/api";
 
   Map<String, String> headers = {};
@@ -61,16 +61,13 @@ class UserRepositoryImpl extends UserRepository {
     final response =
         await http.post(Uri.parse('$baserUrl/email/resend'), body: {
       "email": email,
-    }, headers: {
-      'Content-Type': 'application/json',
-      'Authorization': "Bearer"
     });
     print("response body: ${response.body} ");
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body)['data'];
-      UserModel user =
-          UserModel.fromJson(data['user']);
-      return user;
+     
+     print("data: $data");
+      return data;
     } else {
       Map<String, dynamic> responseData = jsonDecode(response.body);
 
@@ -126,18 +123,18 @@ class UserRepositoryImpl extends UserRepository {
   Future<List<UserModel>> getUsers() async {
     // print("start getUsers repo");
     final response = await http.get(Uri.parse('$baserUrl/users'), headers: {
-      'Authorization': "Bearer 285|oLDF9RCYmLsNV0ZPuvDVToMCqehWYYaoxpN6hXTH",
+      'Authorization': "Bearer 5|jsKv12NXJuAaRzz4Br1NaGWNam9ip2vk7hnvWlwl",
       'Accept': 'applcation/json'
     });
 
-    // print("response: ${response.body}");
+    print("response: ${response.body}");
     if (response.statusCode == 200) {
       // print("response code: ${response.statusCode}");
       var data = jsonDecode(response.body)['data']['users'];
       // print("data: ${data[0]['id']}");
       List<UserModel> users = [];
       data.forEach((userData) {
-        // print("add user model: ${userData}");
+        print("add user model: ${userData}");
         UserModel user = UserModel.fromJson(userData);
         // print("success add user model: ${user}");
         users.add(user);

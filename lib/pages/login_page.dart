@@ -3,6 +3,7 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:winwin/data/models/user_model.dart";
 import "package:winwin/pages/constant.dart";
 import "package:winwin/pages/widgets/loading_button.dart";
+import "package:winwin/pages/widgets/snackbar.dart";
 
 import "../bloc/user_bloc.dart";
 
@@ -26,27 +27,18 @@ class _LoginPageState extends State<LoginPage> {
     handleLogin(String message){
        if (emailController.text == "" || //buat logic login
           passwordController.text == "" ) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: Colors.yellow,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            content: Text("Field Must Be filled"),
-          ),
-        );
+        ScaffoldMessenger.of(context).showSnackBar(CustomSnackbar(
+          color: Colors.orangeAccent,
+          icon: Icons.warning,
+          message: "Please fill in all the necessary information!",
+        ));
+      
       } else if (message != "null" && message.isNotEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: Colors.red,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            content: Text(message),
-          ),
-        );
+        ScaffoldMessenger.of(context).showSnackBar(CustomSnackbar(
+          color: Colors.red,
+          icon: Icons.warning,
+          message: message,
+        ));
       }
 
       BlocProvider.of<UserBloc>(context).add(UserPostLogin(

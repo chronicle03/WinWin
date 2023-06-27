@@ -9,6 +9,7 @@ import "package:winwin/data/models/user_model.dart";
 import "package:winwin/data/repository/user_repository.dart";
 import "package:winwin/pages/home/summary_profile.dart";
 import "package:winwin/pages/notif_page.dart";
+import "package:winwin/pages/notification_page.dart";
 
 import "../constant.dart";
 
@@ -56,12 +57,12 @@ class _HomePageState extends State<HomePage> {
           children: [
             ClipOval(
               child: user.profilePhotoPath != null ? Image.network(
-                'http://192.168.100.242:8000${user.profilePhotoPath}',
+                'http://192.168.102.10:8000${user.profilePhotoPath}',
                 fit: BoxFit.cover,
                 width: 60,
                 height: 60,
               ) : Image.asset(
-                'assets/picture1.jpg',
+                'assets/photoProfile.png',
                 fit: BoxFit.cover,
                 width: 60,
                 height: 60,
@@ -159,10 +160,15 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ],
                 ),
-                child: SvgPicture.asset(
-                  'assets/svg/icon_notif.svg',
-                  width: 50,
-                  height: 50,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationPage()));
+                  },
+                  child: SvgPicture.asset(
+                    'assets/svg/icon_notif.svg',
+                    width: 50,
+                    height: 50,
+                  ),
                 ),
               ),
             ),
@@ -183,7 +189,7 @@ class _HomePageState extends State<HomePage> {
               builder: (context, state) {
                 if (state is GetUsersLoaded) {
                   print("state: ${state.users}");
-                  print("state: ${state.users[0].ability![1].skills![0].name}");
+                  // print("state: ${state.users[0].ability![1].skills![0].name}");
 
                   return SwipeableCardsStack(
                     cardController: _cardController,

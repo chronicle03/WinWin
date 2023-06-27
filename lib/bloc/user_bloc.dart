@@ -42,7 +42,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       if (event is UserPostResendEmailVerify) {
         emit(UserPostLoading());
         try {
+           print("event email: ${event.email}");
           await Future.delayed(const Duration(seconds: 2), () async {
+            print("event email: ${event.email}");
             user = await userRepository.resendEmail(event.email);
             emit(UserPostSuccess());
           });
