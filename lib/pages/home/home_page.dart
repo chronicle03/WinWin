@@ -1,15 +1,18 @@
 import "dart:async";
+import "dart:convert";
 
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_svg/flutter_svg.dart";
+import "package:shared_preferences/shared_preferences.dart";
 import "package:swipeable_cards_stack/swipeable_cards_stack.dart";
 import "package:winwin/bloc/user_bloc.dart";
 import "package:winwin/data/models/user_model.dart";
 import "package:winwin/data/repository/user_repository.dart";
+import "package:winwin/data/singleton/user_data.dart";
 import "package:winwin/pages/home/summary_profile.dart";
-import "package:winwin/pages/notif_page.dart";
-import "package:winwin/pages/notification_page.dart";
+import "package:winwin/pages/notification/notification_page.dart";
+import "package:winwin/pages/landing/landing_page.dart";
 
 import "../constant.dart";
 
@@ -22,33 +25,35 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late UserBloc _userBloc;
-  
+  UserModel? user;
   @override
   void initState() {
     super.initState();
-    _userBloc = BlocProvider.of<UserBloc>(context);
-    _userBloc.add(
-        GetUsers()); // Memanggil event GetUsers untuk memuat daftar pengguna
+    UserData.loadUser();
+    user = UserData.user;
   }
 
-  // @override
-  // void dispose() {
-  //   _userBloc.close(); // Menutup Bloc ketika widget dihapus
-  //   super.dispose();
-  // }
+  List<UserModel> users = [];
 
   bool isFavoriteTap = false;
-
   bool isSkipTap = false;
-  var i = 3;
+
+  var i = 0;
 
   final _cardController = SwipeableCardsStackController();
 
-
   @override
   Widget build(BuildContext context) {
-    UserModel user = ModalRoute.of(context)!.settings.arguments as UserModel;
-    // print("BLOC: ${_userBloc.userList}");
+    users = UserBloc.userList;
+
+    try{
+      print("user home: ${user?.email}");
+    }catch (e){
+      print("error: ${e}");
+    }
+
+    // users.map((e) => print("userList: ${e.name}")).toList();
+
     Widget header() {
       return Container(
         margin: EdgeInsets.symmetric(horizontal: 24),
@@ -56,17 +61,19 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             ClipOval(
-              child: user.profilePhotoPath != null ? Image.network(
-                'http://192.168.102.10:8000${user.profilePhotoPath}',
-                fit: BoxFit.cover,
-                width: 60,
-                height: 60,
-              ) : Image.asset(
-                'assets/photoProfile.png',
-                fit: BoxFit.cover,
-                width: 60,
-                height: 60,
-              ),
+              child: user?.profilePhotoPath != null
+                  ? Image.network(
+                      '$baseUrlImage${user!.profilePhotoPath}',
+                      fit: BoxFit.cover,
+                      width: 60,
+                      height: 60,
+                    )
+                  : Image.asset(
+                      'assets/photoProfile.png',
+                      fit: BoxFit.cover,
+                      width: 60,
+                      height: 60,
+                    ),
             ),
             const SizedBox(width: 9),
             Column(
@@ -75,7 +82,7 @@ class _HomePageState extends State<HomePage> {
                 Row(
                   children: [
                     Text(
-                      "Hi, ${user.name}",
+                      "Hi, ${user!.name}",
                       style: textColor1TextStyle.copyWith(
                         fontWeight: FontWeight.bold,
                         fontSize: 17,
@@ -99,7 +106,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     SizedBox(width: 4),
                     Text(
-                      "${user.location}",
+                      "${user!.location}",
                       style: textSecondaryTextStyle.copyWith(
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
@@ -143,8 +150,10 @@ class _HomePageState extends State<HomePage> {
             InkResponse(
               highlightShape: BoxShape.circle,
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => NotifPage()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => NotificationPage()));
               },
               splashColor: Colors.black.withOpacity(0.1), // Warna efek splash
               radius: 32,
@@ -162,7 +171,10 @@ class _HomePageState extends State<HomePage> {
                 ),
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationPage()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => NotificationPage()));
                   },
                   child: SvgPicture.asset(
                     'assets/svg/icon_notif.svg',
@@ -185,67 +197,54 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             header(),
-            BlocBuilder<UserBloc, UserState>(
-              builder: (context, state) {
-                if (state is GetUsersLoaded) {
-                  print("state: ${state.users}");
-                  // print("state: ${state.users[0].ability![1].skills![0].name}");
+            SwipeableCardsStack(
+              cardController: _cardController,
+              cardHeightTopMul: 0.75,
+              cardHeightBottomMul: 0.5,
+              context: context,
+              items: users
+                  .where((element) => element.id != user?.id)
+                  .map((e) => SummaryProfileWidget(user: e))
+                  .toList(),
+              onCardSwiped: (dir, index, widget) {
+                // Add the next card using _cardController
 
-                  return SwipeableCardsStack(
-                    cardController: _cardController,
-                    cardHeightTopMul: 0.75,
-                    cardHeightBottomMul: 0.5,
-                    context: context,
-                    items: state.users.where((element) => element.id != user.id)
-                        .map((e) => SummaryProfileWidget(
-                            user: e))
-                        .toList(),
-                    onCardSwiped: (dir, index, widget) {
-                      // Add the next card using _cardController
-
-                      if (i < state.users.length) {
-                        print(i);
-                        print(state.users[i].name);
-                        _cardController.addItem(SummaryProfileWidget(
-                            user: state.users[i]));
-                        i++;
-                      }
-
-                      if (dir == AxisDirection.right) {
-                        setState(() {
-                          isFavoriteTap = true;
-                        });
-
-                        Timer(Duration(milliseconds: 400), () {
-                          setState(() {
-                            isFavoriteTap = false;
-                          });
-                        });
-                      }
-
-                      if (dir == AxisDirection.left) {
-                        setState(() {
-                          isSkipTap = true;
-                        });
-
-                        Timer(Duration(milliseconds: 400), () {
-                          setState(() {
-                            isSkipTap = false;
-                          });
-                        });
-                      }
-
-                      // Take action on the swiped widget based on the direction of swipe
-                      // Return false to not animate cards
-                    },
-                    enableSwipeUp: false,
-                    enableSwipeDown: false,
-                  );
-                } else {
-                  return Text("loading");
+                if (i < users.length) {
+                  print(i);
+                  print(users[i].name);
+                  _cardController.addItem(SummaryProfileWidget(user: users[i]));
+                  i++;
                 }
+
+                if (dir == AxisDirection.right) {
+                  setState(() {
+                    isFavoriteTap = true;
+                  });
+
+                  Timer(Duration(milliseconds: 400), () {
+                    setState(() {
+                      isFavoriteTap = false;
+                    });
+                  });
+                }
+
+                if (dir == AxisDirection.left) {
+                  setState(() {
+                    isSkipTap = true;
+                  });
+
+                  Timer(Duration(milliseconds: 400), () {
+                    setState(() {
+                      isSkipTap = false;
+                    });
+                  });
+                }
+
+                // Take action on the swiped widget based on the direction of swipe
+                // Return false to not animate cards
               },
-              
+              enableSwipeUp: false,
+              enableSwipeDown: false,
             ),
             Container(
               width: 200,
