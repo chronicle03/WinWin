@@ -16,7 +16,7 @@ abstract class UserRepository {
 }
 
 class UserRepositoryImpl extends UserRepository {
-  String baserUrl = "http://192.168.102.10:8000/api";
+  String baserUrl = "http://localhost:8000/api";
   // String baserUrl = "http://192.168.100.241:8000/api";
   // String baserUrl = "http://localhost:8000/api";
    //String baserUrl = "http://192.168.100.241:8000/api";
