@@ -7,14 +7,15 @@ import 'package:winwin/pages/profile/profile_settings_page.dart';
 import 'constant.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+  int currentIndex = 0;
+  MainPage(this.currentIndex, {super.key});
 
   @override
   State<MainPage> createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage> {
-  int currentIndex = 0;
+
 
   Widget navigation() {
     return ClipRRect(
@@ -23,10 +24,10 @@ class _MainPageState extends State<MainPage> {
       child: BottomNavigationBar(
           unselectedItemColor: backgroundColor,
           fixedColor: buttonColor,
-          currentIndex: currentIndex,
+          currentIndex: widget.currentIndex,
           onTap: (value) {
             setState(() {
-              currentIndex = value;
+              widget.currentIndex = value;
             });
           },
           backgroundColor: appBarColor,
@@ -35,7 +36,7 @@ class _MainPageState extends State<MainPage> {
             BottomNavigationBarItem(
               icon: SvgPicture.asset(
                 'assets/svg/icon_home.svg',
-                color: currentIndex == 0 ? buttonColor : backgroundColor,
+                color: widget.currentIndex == 0 ? buttonColor : backgroundColor,
                 width: 34,
                 height: 30,
               ),
@@ -44,7 +45,7 @@ class _MainPageState extends State<MainPage> {
             BottomNavigationBarItem(
                 icon: SvgPicture.asset(
                   'assets/svg/icon_contact.svg',
-                  color: currentIndex == 1 ? buttonColor : backgroundColor,
+                  color: widget.currentIndex == 1 ? buttonColor : backgroundColor,
                   width: 34,
                   height: 30,
                 ),
@@ -59,7 +60,7 @@ class _MainPageState extends State<MainPage> {
             BottomNavigationBarItem(
                 icon: SvgPicture.asset(
                   'assets/svg/icon_person.svg',
-                  color: currentIndex == 2 ? buttonColor : backgroundColor,
+                  color: widget.currentIndex == 2 ? buttonColor : backgroundColor,
                   width: 34,
                   height: 30,
                 ),
@@ -69,7 +70,7 @@ class _MainPageState extends State<MainPage> {
   }
 
   Widget body() {
-    switch (currentIndex) {
+    switch (widget.currentIndex) {
       case 0:
         return HomePage();
       case 1:

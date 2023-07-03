@@ -1,6 +1,16 @@
+import "dart:convert";
+
 import "package:flutter/material.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
+import "package:shared_preferences/shared_preferences.dart";
+import "package:winwin/bloc/user_bloc.dart";
+import "package:winwin/data/models/user_model.dart";
+import "package:winwin/data/repository/user_repository.dart";
 import "package:winwin/pages/constant.dart";
 import "package:winwin/pages/landing/landing_page2.dart";
+import "package:winwin/pages/login_page.dart";
+
+import "../../data/singleton/user_data.dart";
 
 
 class LandingPage extends StatefulWidget {
@@ -11,16 +21,90 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
+  // late UserBloc _userBloc;
+  late UserBloc _userBloc;
+
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(seconds: 10), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => LandingPage2()),
-      );
-    });
+
+    _userBloc = BlocProvider.of<UserBloc>(context);
+      _userBloc.add(
+          GetUsers()); // Memanggil event GetUsers untuk memuat daftar pengguna
+      checkFirstLaunch();
+    UserData.loadUser();
   }
+
+  void checkFirstLaunch() async {
+    bool isFirstLaunch = await getFirstLaunch();
+    // UserData.user = await getUser();
+    String token = await getToken();
+    print("token landing: $token");
+
+    if (!isFirstLaunch) {
+      setFirstLaunch(true);
+      Future.delayed(Duration(seconds: 10), () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LandingPage2()),
+        );
+      });
+    } else {
+      if (token != '') {
+        Future.delayed(Duration(seconds: 5), () {
+          Navigator.pushReplacementNamed(
+            context,
+            '/home',
+          );
+        });
+      } else {
+        Navigator.pushNamed(
+          context,
+          '/login',
+        );
+      }
+    }
+  }
+
+  setFirstLaunch(bool isTrue) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isFirstLaunch', isTrue);
+  }
+
+  Future<bool> getFirstLaunch() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool? isFirstLaunch = prefs.getBool('isFirstLaunch');
+    return isFirstLaunch ?? true;
+  }
+
+  Future<bool> isLogin() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool? isLogin = prefs.getBool('isLogin');
+    return isLogin ?? true;
+  }
+
+  Future<String> getToken() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+    return token ?? '';
+  }
+
+  // Future<UserModel?> getUser() async {
+  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  //   // Ambil data user dari SharedPreferences berdasarkan key 'user'
+  //   String? userJson = prefs.getString('user');
+
+  //   if (userJson != null) {
+  //     // Jika data userJson ada, konversi kembali ke UserModel menggunakan fromJson()
+  //     Map<String, dynamic> userData = jsonDecode(userJson);
+  //     UserModel user = UserModel.fromJson(userData);
+  //     return user;
+  //   } else {
+  //     // Jika data userJson tidak ada, kembalikan nilai null
+  //     return null;
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {

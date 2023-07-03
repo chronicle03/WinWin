@@ -1,11 +1,18 @@
+import 'dart:convert';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:winwin/bloc/user_bloc.dart';
 import 'package:winwin/data/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:winwin/data/repository/user_repository.dart';
+import 'package:winwin/data/singleton/user_data.dart';
 import 'package:winwin/pages/about.dart';
 import 'package:winwin/pages/constant.dart';
+import 'package:winwin/pages/home/home_page.dart';
+import 'package:winwin/pages/landing/landing_page.dart';
 import 'package:winwin/pages/profile/edit_profile.dart';
 
 class ProfileSettingsPage extends StatefulWidget {
@@ -16,20 +23,28 @@ class ProfileSettingsPage extends StatefulWidget {
 }
 
 class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
-  late UserBloc _userBloc;
-  UserModel? loggedInUser; // Add this variable
-  String baseUrl = "http://192.168.102.10:8000";
-
+  // late UserBloc _userBloc;
+  UserModel? user = UserData.user; // Add this variable
+  
   @override
-  void initState() {
+  void initState(){
     super.initState();
-    _userBloc = BlocProvider.of<UserBloc>(context);
-    loggedInUser = UserBloc.loggedInUser; // Retrieve the logged-in user data
+    // updateUser();
+    UserData.loadUser();
+    user = UserData.user;
   }
+
+//   void updateUser() async {
+//   await UserData.loadUser(); // Memuat data pengguna yang terbaru
+//   setState(() {
+//     user = UserData.user; // Perbarui nilai user dengan data pengguna yang terbaru
+//   });
+// }
 
   @override
   Widget build(BuildContext context) {
-    String? profilePhotoPath = loggedInUser?.profilePhotoPath;
+    print("user home: ${user!.email}");
+    String? profilePhotoPath = user?.profilePhotoPath;
     return Scaffold(
       body: Container(
         color: Color(0xff30444F),
@@ -46,7 +61,7 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                     profilePhotoPath != null
                         ? ClipOval(
                             child: Image.network(
-                              baseUrl + profilePhotoPath,
+                              baseUrlImage + profilePhotoPath,
                               height: 60,
                               width: 60,
                               fit: BoxFit.cover,
@@ -66,7 +81,7 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                           Row(
                             children: [
                               Text(
-                                loggedInUser!.name!,
+                                user!.name!,
                                 style: GoogleFonts.poppins(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
@@ -74,7 +89,7 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                                 ),
                               ),
                               SizedBox(width: 4.0),
-                              loggedInUser?.gender != null ?
+                              user?.gender != null ?
                         SvgPicture.asset(
                           'assets/svg/icon_male.svg',
                           width: 18,
@@ -84,7 +99,7 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                           ),
                           SizedBox(height: 8.0),
                           Text(
-                            loggedInUser!.phoneNumber!,
+                            user!.phoneNumber!,
                             style: GoogleFonts.poppins(
                               fontSize: 16,
                               color: Colors.white,
@@ -120,10 +135,10 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                           children: [
                             GestureDetector(
                               onTap: () { 
-                                 Navigator.push(
+                                 Navigator.pushNamed(
                                   context,
-                                  MaterialPageRoute(
-                                      builder: (context) => EditProfilePage(loggedInUser!))
+                                  '/edit-profile',
+                                  arguments: user!
                                 );
                               },
                               child: Row(

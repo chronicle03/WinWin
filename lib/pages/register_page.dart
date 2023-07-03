@@ -2,6 +2,13 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:winwin/bloc/user_bloc.dart";
 import "package:winwin/pages/constant.dart";
+import "package:winwin/pages/widgets/input/confirm_passwod.dart";
+import "package:winwin/pages/widgets/input/email.dart";
+import "package:winwin/pages/widgets/input/fullname.dart";
+import "package:winwin/pages/widgets/input/password.dart";
+import "package:winwin/pages/widgets/input/phone_number.dart";
+import "package:winwin/pages/widgets/input/skill_select.dart";
+import "package:winwin/pages/widgets/input/username.dart";
 import "package:winwin/pages/widgets/loading_button.dart";
 import "package:winwin/pages/widgets/snackbar.dart";
 
@@ -17,7 +24,7 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController emailController = TextEditingController(text: '');
   TextEditingController usernameController = TextEditingController(text: '');
   TextEditingController confirmPasswordController =
-  TextEditingController(text: '');
+      TextEditingController(text: '');
   TextEditingController passwordController = TextEditingController(text: '');
   TextEditingController birthdateController = TextEditingController(text: '');
   TextEditingController phoneNumberController = TextEditingController(text: '');
@@ -48,7 +55,7 @@ class _RegisterPageState extends State<RegisterPage> {
           emailController.text == "" ||
           usernameController.text == "" ||
           phoneNumberController.text == "" ||
-          selectedDate! == "" ||
+          selectedDate == "" ||
           passwordController.text == "" ||
           confirmPasswordController.text == "") {
         ScaffoldMessenger.of(context).showSnackBar(CustomSnackbar(
@@ -62,9 +69,8 @@ class _RegisterPageState extends State<RegisterPage> {
           icon: Icons.warning,
           message: message,
         ));
-        
       }
-      
+
       BlocProvider.of<UserBloc>(context).add(UserPostRegister(
           nameController.text,
           emailController.text,
@@ -74,11 +80,10 @@ class _RegisterPageState extends State<RegisterPage> {
           passwordController.text,
           confirmPasswordController.text,
           isChecked.toString()));
-          setState(() {
-          message = "null";
-        });
+      setState(() {
+        message = "null";
+      });
       print(message);
-      
     }
 
     Widget header() {
@@ -103,105 +108,29 @@ class _RegisterPageState extends State<RegisterPage> {
                   style: textColor1TextStyle.copyWith(
                       fontSize: 20, fontWeight: FontWeight.w600),
                 ),
+                
               ],
             ),
           ),
           const SizedBox(height: 25),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              "Improve your skills",
-              style: textColor1TextStyle.copyWith(
-                  fontSize: 13, fontWeight: FontWeight.w600),
-            ),
-          ),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              "by trading skills for free!",
-              style: textColor1TextStyle.copyWith(
-                  fontSize: 13, fontWeight: FontWeight.w600),
-            ),
-          ),
-          const SizedBox(height: 30),
-        ],
-      );
-    }
-
-    Widget fullNameInput() {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(
-            height: 10,
-          ),
-          Container(
-            height: 50,
-            padding: const EdgeInsets.symmetric(horizontal: 15.0),
-            decoration: BoxDecoration(
-                color: appBarColor, borderRadius: BorderRadius.circular(10.0)),
-            child: Center(
-              child: Row(
-                children: [
-                  Image.asset(
-                    "assets/icon_profile_default.png",
-                    width: 26,
-                  ),
-                  const SizedBox(
-                    width: 14,
-                  ),
-                  Expanded(
-                      child: TextFormField(
-                        controller: nameController,
-                        style: textColor2TextStyle,
-                        decoration: InputDecoration.collapsed(
-                            hintText: "Full Name",
-                            hintStyle: textColor2TextStyle.copyWith(
-                                fontSize: 13, fontWeight: FontWeight.w500)),
-                      )),
-                ],
-              ),
-            ),
-          )
-        ],
-      );
-    }
-
-    Widget userNameInput() {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(
-            height: 10,
-          ),
-          Container(
-            height: 50,
-            padding: const EdgeInsets.symmetric(horizontal: 15.0),
-            decoration: BoxDecoration(
-                color: appBarColor, borderRadius: BorderRadius.circular(10.0)),
-            child: Center(
-              child: Row(
-                children: [
-                  Image.asset(
-                    'assets/icon_profile_add.png',
-                    width: 26,
-                  ),
-                  const SizedBox(
-                    width: 14,
-                  ),
-                  Expanded(
-                      child: TextFormField(
-                        controller: usernameController,
-                        style: textColor2TextStyle,
-                        decoration: InputDecoration.collapsed(
-                            hintText: "Username",
-                            hintStyle: textColor2TextStyle.copyWith(
-                                fontSize: 13, fontWeight: FontWeight.w500)),
-                      )),
-                ],
-              ),
-            ),
-          )
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  "Improve your skills",
+                                  style: textColor1TextStyle.copyWith(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  "by trading skills for free!",
+                                  style: textColor1TextStyle.copyWith(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
         ],
       );
     }
@@ -238,180 +167,6 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
           ),
         ),
-      );
-    }
-
-    Widget phoneNumberInput() {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(
-            height: 10,
-          ),
-          Container(
-            height: 50,
-            padding: const EdgeInsets.symmetric(horizontal: 15.0),
-            decoration: BoxDecoration(
-                color: appBarColor, borderRadius: BorderRadius.circular(10.0)),
-            child: Center(
-              child: Row(
-                children: [
-                  Image.asset(
-                    'assets/icon_call.png',
-                    width: 26,
-                  ),
-                  const SizedBox(
-                    width: 14,
-                  ),
-                  Expanded(
-                      child: TextFormField(
-                        controller: phoneNumberController,
-                        style: textColor2TextStyle,
-                        decoration: InputDecoration.collapsed(
-                            hintText: "Phone Number",
-                            hintStyle: textColor2TextStyle.copyWith(
-                                fontSize: 13, fontWeight: FontWeight.w500)),
-                      )),
-                ],
-              ),
-            ),
-          )
-        ],
-      );
-    }
-
-    Widget emailAddressInput() {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(
-            height: 10,
-          ),
-          Container(
-            height: 50,
-            padding: const EdgeInsets.symmetric(horizontal: 14.0),
-            decoration: BoxDecoration(
-                color: appBarColor, borderRadius: BorderRadius.circular(10.0)),
-            child: Center(
-              child: Row(
-                children: [
-                  Image.asset(
-                    'assets/icon_email.png',
-                    width: 26,
-                  ),
-                  const SizedBox(
-                    width: 15,
-                  ),
-                  Expanded(
-                      child: TextFormField(
-                        controller: emailController,
-                        style: textColor2TextStyle,
-                        decoration: InputDecoration.collapsed(
-                            hintText: "Email Address",
-                            hintStyle: textColor2TextStyle.copyWith(
-                                fontSize: 13, fontWeight: FontWeight.w500)),
-                      )),
-                ],
-              ),
-            ),
-          )
-        ],
-      );
-    }
-
-    Widget passwordInput() {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(
-            height: 10,
-          ),
-          Container(
-            height: 50,
-            padding: const EdgeInsets.symmetric(horizontal: 9.0),
-            decoration: BoxDecoration(
-                color: appBarColor, borderRadius: BorderRadius.circular(10.0)),
-            child: Center(
-              child: Row(
-                children: [
-                  Image.asset(
-                    'assets/icon_password.png',
-                    width: 35,
-                  ),
-                  const SizedBox(
-                    width: 14,
-                  ),
-                  Expanded(
-                      child: TextFormField(
-                        controller: passwordController,
-                        obscureText: true,
-                        style: textColor2TextStyle,
-                        decoration: InputDecoration.collapsed(
-                            hintText: "Password",
-                            hintStyle: textColor2TextStyle.copyWith(
-                                fontSize: 13, fontWeight: FontWeight.w500)),
-                      )),
-                  Image.asset(
-                    "assets/icon_eye_close.png",
-                    width: 26,
-                    height: 23,
-                  ),
-                  const SizedBox(
-                    width: 9,
-                  ),
-                ],
-              ),
-            ),
-          )
-        ],
-      );
-    }
-
-    Widget confirmPasswordInput() {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(
-            height: 10,
-          ),
-          Container(
-            height: 50,
-            padding: const EdgeInsets.symmetric(horizontal: 15.0),
-            decoration: BoxDecoration(
-                color: appBarColor, borderRadius: BorderRadius.circular(10.0)),
-            child: Center(
-              child: Row(
-                children: [
-                  Image.asset(
-                    "assets/icon_password_confirm.png",
-                    width: 26,
-                  ),
-                  const SizedBox(
-                    width: 14,
-                  ),
-                  Expanded(
-                      child: TextFormField(
-                        obscureText: true,
-                        controller: confirmPasswordController,
-                        style: textColor2TextStyle,
-                        decoration: InputDecoration.collapsed(
-                            hintText: "Confirm Password",
-                            hintStyle: textColor2TextStyle.copyWith(
-                                fontSize: 13, fontWeight: FontWeight.w500)),
-                      )),
-                  Image.asset(
-                    "assets/icon_eye_close.png",
-                    width: 26,
-                    height: 23,
-                  ),
-                  const SizedBox(
-                    width: 2,
-                  ),
-                ],
-              ),
-            ),
-          )
-        ],
       );
     }
 
@@ -481,13 +236,11 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
           ),
           onPressed: () {
-              if (state is UserPostLoading){
-                message="null";
-              }
-              handleRegister(message);
-              print(message);
-            
-            
+            if (state is UserPostLoading) {
+              message = "null";
+            }
+            handleRegister(message);
+            print(message);
           },
           child: Text(
             "Sign Up",
@@ -505,27 +258,24 @@ class _RegisterPageState extends State<RegisterPage> {
           Expanded(
             child: Align(
               alignment: Alignment.center,
-              child: Padding(
-                padding: EdgeInsets.only(bottom: 64),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Already have an account?",
-                      style: textColor1TextStyle.copyWith(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w500,
-                      ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Already have an account?",
+                    style: textColor1TextStyle.copyWith(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w500,
                     ),
-                    Text(
-                      " Login Now",
-                      style: textColor3TextStyle.copyWith(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w600,
-                      ),
+                  ),
+                  Text(
+                    " Login Now",
+                    style: textColor3TextStyle.copyWith(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -535,47 +285,56 @@ class _RegisterPageState extends State<RegisterPage> {
 
     return Scaffold(
       backgroundColor: backgroundColor,
-      body: BlocConsumer<UserBloc, UserState>(
-        listener: (context, state) {},
-        builder: (context, state) {
-          if (state is UserPostError) {
-            message = state.code;
-          } else if (state is UserPostSuccess) {
-            Future.delayed(Duration.zero, () {
-              Navigator.pushNamed(context, '/resend-verify-email');
-            });
-          }
-
-          return ListView(
+      body: SafeArea(
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 25),
+          child: Column(
             children: [
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 25),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    header(),
-                    fullNameInput(),
-                    userNameInput(),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    dateOfBirthInput(),
-                    phoneNumberInput(),
-                    emailAddressInput(),
-                    passwordInput(),
-                    confirmPasswordInput(),
-                    const SizedBox(height: 12),
-                    termsOfService(),
-                    state is UserPostLoading
-                        ? LoadingButton()
-                        : buttonSignUp(message, state),
-                    footer(),
-                  ],
-                ),
+              header(),
+              const SizedBox(height: 10),
+              BlocConsumer<UserBloc, UserState>(
+                listener: (context, state) {},
+                builder: (context, state) {
+                  if (state is UserPostError) {
+                    message = state.code;
+                  } else if (state is UserPostSuccess) {
+                    Future.delayed(Duration.zero, () {
+                      Navigator.pushNamed(
+                          context, '/resend-verify-email');
+                    });
+                  }
+
+                  return Expanded(
+                    child: ListView(
+                  
+                        children: [
+                          
+                          const SizedBox(height: 20),
+                          FullNameInput(controller: nameController,),
+                          Username(usernameController),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          dateOfBirthInput(),
+                          PhoneNumberInput(controller: phoneNumberController),
+                          EmailInput(controller: emailController),
+                          PasswordInput(controller:passwordController),
+                          ConfirmPasswordInput(confirmPasswordController),
+                          // SkillSelect(),
+                          const SizedBox(height: 12),
+                          termsOfService(),
+                          state is UserPostLoading
+                              ? LoadingButton()
+                              : buttonSignUp(message, state),
+                          footer(),
+                        ],
+                      ),
+                  );
+                },
               ),
             ],
-          );
-        },
+          ),
+        ),
       ),
     );
   }
