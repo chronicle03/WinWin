@@ -25,12 +25,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late UserBloc _userBloc;
-  UserModel? user;
+  UserModel? user = UserData.user;
   @override
   void initState() {
     super.initState();
     UserData.loadUser();
-    user = UserData.user;
   }
 
   List<UserModel> users = [];
@@ -47,7 +46,7 @@ class _HomePageState extends State<HomePage> {
     users = UserBloc.userList;
 
     try{
-      print("user home: ${user?.email}");
+      // print("user home: ${user?.email}");
     }catch (e){
       print("error: ${e}");
     }
@@ -116,7 +115,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
-            const SizedBox(width: 34),
+            const Spacer(),
             InkResponse(
               highlightShape: BoxShape.circle,
               onTap: () {
