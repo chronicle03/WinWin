@@ -9,6 +9,7 @@ import "package:winwin/pages/main_page.dart";
 import "package:winwin/pages/profile/edit_profile.dart";
 import "package:winwin/pages/profile/profile_settings_page.dart";
 import "package:winwin/pages/register_page.dart";
+import 'package:winwin/pages/forgot_password_page.dart';
 import "package:winwin/pages/verify_email_page.dart";
 
 import "bloc/skill_bloc.dart";
@@ -57,6 +58,10 @@ class MyApp extends StatelessWidget {
           BlocProvider<SkillBloc>(
               create: (context) => SkillBloc(skillRepository)),
         ], child: RegisterPage()),
+        '/forgot-password': (context) => BlocProvider<UserBloc>(
+              create: (context) => UserBloc(userRepository),
+              child: ForgotPasswordPage(),
+            ),
         '/about': (context) => About(),
       },
     );
