@@ -1,7 +1,9 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:image_picker/image_picker.dart";
 import "package:winwin/bloc/user_bloc.dart";
 import "package:winwin/data/models/user_model.dart";
+import "package:winwin/data/repository/skill_repository.dart";
 import "package:winwin/data/repository/user_repository.dart";
 import "package:winwin/data/singleton/user_data.dart";
 import "package:winwin/pages/constant.dart";
@@ -15,7 +17,10 @@ import "package:winwin/pages/widgets/input/password.dart";
 import "package:winwin/pages/widgets/input/phone_number.dart";
 import "package:winwin/pages/widgets/input/skill_select.dart";
 import "package:winwin/pages/widgets/snackbar.dart";
+import 'dart:io';
 
+import "../../bloc/skill_bloc.dart";
+import "../../data/models/skill_model.dart";
 import "../main_page.dart";
 import "../widgets/loading_button.dart";
 
@@ -27,6 +32,7 @@ class EditProfilePage extends StatefulWidget {
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
+  late SkillBloc _skillBloc;
   String message = "null";
   bool isChecked = false;
   String? selectedDate;
@@ -35,6 +41,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
   List<String> userSkill = [];
   String? genderSelect;
   int _selectedGenderIndex = 0;
+  late SkillRepositoryImpl skillRepositoryImpl = SkillRepositoryImpl();
+
+  void _fetchSkills() {// Cek apakah data sudah diambil sebelumnya
+    _skillBloc = BlocProvider.of<SkillBloc>(context);
+    _skillBloc.add(GetSkillEvent());// Set variabel flag ke true setelah mengambil data
+  }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -50,26 +62,24 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
   }
 
-  void initState(){
+  void initState() {
     super.initState();
     UserData.loadUser();
-    if (loggedInUser!.gender == 'female'){
+    if (loggedInUser!.gender == 'female') {
       _selectedGenderIndex = 1;
-    }else{
+    } else {
       _selectedGenderIndex = 0;
     }
   }
 
   void _handleGenderSelection(int? index) {
-    print("index: $index" );
+    print("index: $index");
     setState(() {
-      if(index == 0){
+      if (index == 0) {
         genderSelect = 'male';
-      }
-      else if(index == 1){
+      } else if (index == 1) {
         genderSelect = 'female';
       }
-
       _selectedGenderIndex = index ?? 0;
     });
   }
@@ -80,41 +90,55 @@ class _EditProfilePageState extends State<EditProfilePage> {
     });
   }
 
+  File? image;
+
+  final _picker = ImagePicker();
+  bool showSpinner = false;
+
+  Future getImage() async {
+    final pickedFile =
+    await _picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
+    if (pickedFile != null) {
+      // image = File(pickedFile.path);
+      setState(() {
+        image = File(pickedFile.path);
+        print("image: $image");
+      });
+    } else {
+      print("no image selected!");
+    }
+  }
+
+  TextEditingController nameController =
+  TextEditingController(text: '');
+  TextEditingController jobStatusController =
+  TextEditingController(text:'');
+  TextEditingController bioController =
+  TextEditingController(text: '');
+  TextEditingController locationController =
+  TextEditingController(text: '');
+  TextEditingController phoneNumberController =
+  TextEditingController(text: '');
+  TextEditingController emailController = TextEditingController(text: '');
+  TextEditingController passwordController = TextEditingController(text: '');
+
   @override
   Widget build(BuildContext context) {
-    // UserModel loggedInUser! =
-    //     ModalRoute.of(context)!.settings.arguments as UserModel;
-    TextEditingController nameController =
-        TextEditingController(text: loggedInUser!.name);
-    TextEditingController jobStatusController =
-        TextEditingController(text: loggedInUser!.jobStatus);
-    TextEditingController bioController =
-        TextEditingController(text: loggedInUser!.bio);
-    TextEditingController locationController =
-        TextEditingController(text: loggedInUser!.location);
-    TextEditingController phoneNumberController =
-        TextEditingController(text: '');
-    TextEditingController emailController = TextEditingController(text: '');
-    TextEditingController passwordController = TextEditingController(text: '');
-   
-    // Access the properties of the logged-in user
     String? username = loggedInUser!.username;
     String? email = loggedInUser!.email;
     String? profilePhotoPath = loggedInUser!.profilePhotoPath;
 
     handleUpdate(String message, UserState state) {
-      print("userSkill edit: $userSkill");
-      print("message: $message");
-
       BlocProvider.of<UserBloc>(context).add(UserPostUpdate(
           nameController.text,
           emailController.text,
           phoneNumberController.text,
           selectedDate ?? loggedInUser!.birthdate!,
           locationController.text,
-          genderSelect != null ? genderSelect! : loggedInUser!.gender! ,
+          genderSelect ?? loggedInUser!.gender ?? '',
           jobStatusController.text,
           bioController.text,
+          image != null ? image! : null,
           userSkill.toList()));
 
       if (message != "null") {
@@ -126,15 +150,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
           ));
         });
       } else {
-        if (state is UserPostSuccess){
+        if (state is UserPostSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(CustomSnackbar(
             color: Colors.green,
             icon: Icons.check,
             message: "Success update!!",
           ));
         }
-        
       }
+      _fetchSkills();
     }
 
     Widget header() {
@@ -146,7 +170,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
             child: Row(
               children: [
                 GestureDetector(
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage(2))),
+                  onTap: () =>
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => MainPage(2))),
                   child: Image.asset(
                     "assets/icon_row_left.png",
                     width: 24,
@@ -168,27 +194,35 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
 
     Widget photoProfile() {
+      print("image2: $image");
       return Container(
         child: InkWell(
           onTap: () {
-            // Open the gallery here
-            // You can use a package like image_picker to handle the gallery selection
-            // Example: https://pub.dev/packages/image_picker
+            getImage();
           },
-          child: profilePhotoPath != null
+          child: profilePhotoPath != null && image == null
               ? ClipOval(
-                  child: Image.network(
-                    baseUrlImage + profilePhotoPath,
-                    height: 100,
-                    width: 100,
-                    fit: BoxFit.cover,
-                  ),
-                )
+            child: Image.network(
+              baseUrlImage + profilePhotoPath!,
+              height: 100,
+              width: 100,
+              fit: BoxFit.cover,
+            ),
+          )
+              : image != null
+              ? ClipOval(
+            child: Image.file(
+              File(image!.path).absolute,
+              height: 100,
+              width: 100,
+              fit: BoxFit.cover,
+            ),
+          )
               : Image.asset(
-                  'assets/photoProfile.png',
-                  height: 100,
-                  width: 100,
-                ),
+            'assets/photoProfile.png',
+            height: 100,
+            width: 100,
+          ),
         ),
       );
     }
@@ -411,7 +445,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 message = state.code;
                               });
                             }
-
                           });
                         },
                         builder: (context, state) {
@@ -471,17 +504,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 ),
                               ),
                               PasswordInput(
-                                  controller: passwordController,
-                                  hintText: '******',
-                                  enable: false,),
-                              JobStatusInput(jobStatusController, loggedInUser!),
+                                controller: passwordController,
+                                hintText: '******',
+                                enable: false,
+                              ),
+                              JobStatusInput(
+                                  jobStatusController, loggedInUser!),
                               SkillSelect(
-                                  loggedInUser!,
-                                  userSkill,
-                                  updateUserSkills),
+                                  userSkill, updateUserSkills),
                               BioInput(bioController, loggedInUser!),
                               const SizedBox(height: 10),
-                              state is UserPostLoading? LoadingButton() : buttonSaveChanges(message, state),
+                              state is UserPostLoading
+                                  ? LoadingButton()
+                                  : buttonSaveChanges(message, state),
                               const SizedBox(height: 20),
                             ],
                           );

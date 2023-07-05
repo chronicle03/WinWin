@@ -12,6 +12,10 @@ import "package:winwin/pages/widgets/input/username.dart";
 import "package:winwin/pages/widgets/loading_button.dart";
 import "package:winwin/pages/widgets/snackbar.dart";
 
+import "../bloc/skill_bloc.dart";
+import "../data/models/user_model.dart";
+import "../data/singleton/user_data.dart";
+
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
 
@@ -32,6 +36,20 @@ class _RegisterPageState extends State<RegisterPage> {
   String message = "null";
   bool isChecked = false;
   String? selectedDate;
+  List<String> userSkill = [];
+  UserModel? userModel = UserData.user;
+  late SkillBloc _skillBloc;
+
+  void _fetchSkills() {// Cek apakah data sudah diambil sebelumnya
+    _skillBloc = BlocProvider.of<SkillBloc>(context);
+    _skillBloc.add(GetSkillEvent());// Set variabel flag ke true setelah mengambil data
+  }
+
+  void updateUserSkills(List<String> skills) {
+    setState(() {
+      userSkill = skills;
+    });
+  }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -50,6 +68,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     handleRegister(String message) {
+      print("userSkill: $userSkill");
       if (isChecked.toString() == "false" ||
           nameController.text == "" ||
           emailController.text == "" ||
@@ -79,10 +98,12 @@ class _RegisterPageState extends State<RegisterPage> {
           selectedDate!,
           passwordController.text,
           confirmPasswordController.text,
-          isChecked.toString()));
+          isChecked.toString(),
+          userSkill.toList()));
       setState(() {
         message = "null";
       });
+      _fetchSkills();
       print(message);
     }
 
@@ -108,29 +129,26 @@ class _RegisterPageState extends State<RegisterPage> {
                   style: textColor1TextStyle.copyWith(
                       fontSize: 20, fontWeight: FontWeight.w600),
                 ),
-                
               ],
             ),
           ),
           const SizedBox(height: 25),
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  "Improve your skills",
-                                  style: textColor1TextStyle.copyWith(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ),
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  "by trading skills for free!",
-                                  style: textColor1TextStyle.copyWith(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              "Improve your skills",
+              style: textColor1TextStyle.copyWith(
+                  fontSize: 13, fontWeight: FontWeight.w600),
+            ),
+          ),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              "by trading skills for free!",
+              style: textColor1TextStyle.copyWith(
+                  fontSize: 13, fontWeight: FontWeight.w600),
+            ),
+          ),
         ],
       );
     }
@@ -299,36 +317,37 @@ class _RegisterPageState extends State<RegisterPage> {
                     message = state.code;
                   } else if (state is UserPostSuccess) {
                     Future.delayed(Duration.zero, () {
-                      Navigator.pushNamed(
-                          context, '/resend-verify-email');
+                      Navigator.pushNamed(context, '/resend-verify-email');
                     });
                   }
 
                   return Expanded(
                     child: ListView(
-                  
-                        children: [
-                          
-                          const SizedBox(height: 20),
-                          FullNameInput(controller: nameController,),
-                          Username(usernameController),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          dateOfBirthInput(),
-                          PhoneNumberInput(controller: phoneNumberController),
-                          EmailInput(controller: emailController),
-                          PasswordInput(controller:passwordController),
-                          ConfirmPasswordInput(confirmPasswordController),
-                          // SkillSelect(),
-                          const SizedBox(height: 12),
-                          termsOfService(),
-                          state is UserPostLoading
-                              ? LoadingButton()
-                              : buttonSignUp(message, state),
-                          footer(),
-                        ],
-                      ),
+                      children: [
+                        const SizedBox(height: 20),
+                        FullNameInput(
+                          controller: nameController,
+                        ),
+                        Username(usernameController),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        dateOfBirthInput(),
+                        PhoneNumberInput(controller: phoneNumberController),
+                        SkillSelect(
+                            userSkill, updateUserSkills),
+                        EmailInput(controller: emailController),
+                        PasswordInput(controller: passwordController),
+                        ConfirmPasswordInput(confirmPasswordController),
+                        // SkillSelect(),
+                        const SizedBox(height: 12),
+                        termsOfService(),
+                        state is UserPostLoading
+                            ? LoadingButton()
+                            : buttonSignUp(message, state),
+                        footer(),
+                      ],
+                    ),
                   );
                 },
               ),

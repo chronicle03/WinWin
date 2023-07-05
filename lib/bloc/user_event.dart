@@ -1,5 +1,6 @@
 part of 'user_bloc.dart';
 
+
 abstract class UserEvent {}
 
 class UserPostRegister extends UserEvent {
@@ -11,9 +12,10 @@ class UserPostRegister extends UserEvent {
   final String password;
   final String confirmPassword;
   final String isChecked;
+  List<String> skills;
 
   UserPostRegister(this.name, this.email, this.username, this.phoneNumber,
-      this.birthdate, this.password, this.confirmPassword, this.isChecked);
+      this.birthdate, this.password, this.confirmPassword, this.isChecked, this.skills);
 }
 
 class UserPostUpdate extends UserEvent {
@@ -25,6 +27,7 @@ class UserPostUpdate extends UserEvent {
    String gender;
    String jobStatus;
    List<String> skills;
+   File? photoProfilePath;
    String bio;
 
   UserPostUpdate(
@@ -36,6 +39,7 @@ class UserPostUpdate extends UserEvent {
     this.gender, 
     this.jobStatus,
     this.bio,
+    this.photoProfilePath,
     this.skills,
     
     );

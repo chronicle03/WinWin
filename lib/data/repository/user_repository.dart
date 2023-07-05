@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:winwin/data/models/user_model.dart';
@@ -15,12 +16,9 @@ abstract class UserRepository {
       String birthdate,
       String password,
       String confirmPassword,
-      String isChecked);
+      String isChecked,
+      List<String>? skills,);
 }
-
-// class UserData {
-//   static UserModel? user;
-// }
 
 class UserRepositoryImpl extends UserRepository {
   setToken(String? token) async {
@@ -34,34 +32,6 @@ class UserRepositoryImpl extends UserRepository {
     return token ?? '';
   }
 
-  // saveUser(UserModel user) async {
-  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-
-  //   // Konversi UserModel menjadi bentuk JSON menggunakan toJson()
-  //   String userJson = jsonEncode(user.toJson());
-
-  //   // Simpan userJson di SharedPreferences
-  //   prefs.setString('user', userJson);
-  // }
-
-  // Future<UserModel?> getUser() async {
-  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-
-  //   // Ambil data user dari SharedPreferences berdasarkan key 'user'
-  //   String? userJson = prefs.getString('user');
-  //   print("userJson: $userJson");
-
-  //   if (userJson != null) {
-  //     // Jika data userJson ada, konversi kembali ke UserModel menggunakan fromJson()
-  //     Map<String, dynamic> userData = jsonDecode(userJson);
-  //     UserModel user = UserModel.fromJson(userData);
-  //     return user;
-  //   } else {
-  //     // Jika data userJson tidak ada, kembalikan nilai null
-  //     return null;
-  //   }
-  // }
-
   List<UserModel> users = [];
 
   @override
@@ -73,7 +43,8 @@ class UserRepositoryImpl extends UserRepository {
       String birthdate,
       String password,
       String confirmPassword,
-      String isChecked) async {
+      String isChecked,
+      List<String>? skills,) async {
     final response = await http.post(Uri.parse('$baseUrl/register'), body: {
       "name": name,
       "email": email,
@@ -82,9 +53,9 @@ class UserRepositoryImpl extends UserRepository {
       "birthdate": birthdate,
       "password": password,
       "confirm_password": confirmPassword,
-      "is_checked": isChecked
+      "is_checked": isChecked,
+      if (skills != null) "skills": skills.join(","),
     });
-    print("response: ${response.body}");
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body)['data'];
       UserModel user = UserModel.fromJson(data['user']);
@@ -105,11 +76,9 @@ class UserRepositoryImpl extends UserRepository {
     final response = await http.post(Uri.parse('$baseUrl/email/resend'), body: {
       "email": email,
     });
-    print("response body: ${response.body} ");
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body)['data'];
 
-      print("data: $data");
       return data;
     } else {
       Map<String, dynamic> responseData = jsonDecode(response.body);
@@ -129,7 +98,8 @@ class UserRepositoryImpl extends UserRepository {
       UserModel user = UserModel.fromJson(data['user']);
       user.token = data['token_type'] + " " + data['access_token'];
       setToken(user.token);
-      await UserData.updateUser(user); // save data user yang sudah login ke shared preference
+      await UserData.updateUser(
+          user); // save data user yang sudah login ke shared preference
 
       return user;
     } else {
@@ -143,7 +113,6 @@ class UserRepositoryImpl extends UserRepository {
         await http.post(Uri.parse('$baseUrl/forgotpassword'), body: {
       "email": email,
     });
-    print("response body: ${response.body} ");
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body)['data'];
       UserModel user = UserModel.fromJson(data['user']);
@@ -156,31 +125,17 @@ class UserRepositoryImpl extends UserRepository {
   }
 
   Future<List<UserModel>> getUsers() async {
-    // print("start getUsers repo");
-    // print("users length: ${users.length}");
 
     final response = await http.get(Uri.parse('$baseUrl/users'),
         headers: {'Accept': 'applcation/json'});
     String token = await getToken();
-    // print("token Get Users : $token");
-    // print("response: ${response.body}");
     if (response.statusCode == 200) {
-      // print("response code: ${response.statusCode}");
       var data = jsonDecode(response.body)['data']['users'];
-      // print("data: ${data[0]['id']}");
-      // users.clear();
-      print("data length before: ${data.length}");
-      print("users length before: ${users.length}");
 
       data.forEach((userData) {
-        // print("add user model: ${userData}");
-
         UserModel user = UserModel.fromJson(userData);
-
         users.add(user);
       });
-      print("data length after: ${data.length}");
-      print("users length after: ${users.length}");
       return users;
     } else {
       Map<String, dynamic> responseData = jsonDecode(response.body);
@@ -197,74 +152,73 @@ class UserRepositoryImpl extends UserRepository {
     String? gender,
     String? jobStatus,
     String? bio,
+    File? photoProfilePath,
     List<String>? skills,
   }) async {
     String token = await getToken();
-    print('start update');
-    print("name: $name");
-    print("token: $token");
-    print("phoneNumber: $phoneNumber");
-    print("birthdate: $birthdate");
-    print("location: $location");
-    print("gender: $gender");
-    print("jobStatus: $jobStatus");
-    print("skills: ${skills}");
-    print("skills: ${skills.runtimeType}");
-    print("bio: $bio");
 
-    // Buat Map untuk menyimpan field-field yang diupdate
-    Map<String, dynamic> requestBody = {};
+    var request = http.MultipartRequest('POST', Uri.parse('$baseUrl/users/update'));
+    request.headers['Authorization'] = token;
+    request.headers['content-type'] = 'multipart/form-data';
+    Map<String, String> requestBody = {};
 
-    if (name != "") {
+    if (photoProfilePath != null) {
+      var stream = http.ByteStream(Stream.castFrom(photoProfilePath.openRead()));
+      stream.cast();
+      var length = await photoProfilePath.length();
+      var multipartFile = http.MultipartFile(
+        'profile_photo_path',
+        stream,
+        length,
+        filename: photoProfilePath.path.split('/').last,
+      );
+
+      request.files.add(multipartFile);
+    }
+
+    if (name != null && name.isNotEmpty) {
       requestBody["name"] = name;
     }
-    if (email != "") {
+    if (email != null && email.isNotEmpty) {
       requestBody["email"] = email;
     }
-    if (phoneNumber != "") {
+    if (phoneNumber != null && phoneNumber.isNotEmpty) {
       requestBody["phone_number"] = phoneNumber;
     }
-    if (birthdate != "") {
+    if (birthdate != null && birthdate.isNotEmpty) {
       requestBody["birthdate"] = birthdate;
     }
-    if (location != "") {
+    if (location != null && location.isNotEmpty) {
       requestBody["location"] = location;
     }
-    if (gender != "") {
+    if (gender != '' && gender!.isNotEmpty) {
       requestBody["gender"] = gender;
     }
-    if (jobStatus != "") {
+    if (jobStatus != null && jobStatus.isNotEmpty) {
       requestBody["job_status"] = jobStatus;
     }
-    if (bio != "") {
+    if (bio != null && bio.isNotEmpty) {
       requestBody["bio"] = bio;
     }
-    if (skills!.isNotEmpty) {
+    if (skills != null && skills.isNotEmpty) {
       String skillsString = skills.join(",");
-      print("skillsString: $skillsString");
       requestBody["skills"] = skillsString;
     }
 
-    final response = await http.post(
-      Uri.parse('$baseUrl/users/update'),
-      body: requestBody,
-      headers: {"Authorization": token},
-    );
+    request.fields.addAll(requestBody);
 
-    print("response: ${response.body}");
+    var response = await http.Response.fromStream(await request.send());
+
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body)['data'];
       UserModel user = UserModel.fromJson(data['user']);
       await UserData.updateUser(user);
-      print("user data ability: ${user.ability!.length}");
       return user;
     } else {
       Map<String, dynamic> responseData = jsonDecode(response.body);
       List<dynamic> errors = responseData['data']['errors'].values.toList();
 
       String firstError = errors[0][0];
-      // print("error:"firstError); // Output: The username has already been taken.
-
       throw Exception(firstError);
     }
   }

@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:winwin/data/models/user_model.dart';
 import 'package:winwin/data/repository/user_repository.dart';
@@ -28,6 +30,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
               event.password,
               event.confirmPassword,
               event.isChecked,
+              event.skills
             );
 
             emit(UserPostSuccess());
@@ -39,7 +42,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         }
       }
 
-       if (event is UserPostUpdate) {
+      if (event is UserPostUpdate) {
         emit(UserPostLoading());
         try {
           await Future.delayed(const Duration(seconds: 0), () async {
@@ -53,6 +56,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
               jobStatus: event.jobStatus,
               bio: event.bio,
               skills: event.skills,
+              photoProfilePath: event.photoProfilePath,
             );
 
             emit(UserPostSuccess());
@@ -123,11 +127,11 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
       if (event is GetUsers) {
         
-        print("start bloc");
-        print("token bloc: $token");
+        // print("start bloc");
+        // print("token bloc: $token");
         emit(UserPostLoading());
         try {
-          await Future.delayed(const Duration(seconds: 0), () async {
+          await Future.delayed(const Duration(seconds: 2), () async {
             // print("start0");
             userList = await userRepository.getUsers();
           });
