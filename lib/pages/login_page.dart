@@ -285,7 +285,7 @@ class _LoginPageState extends State<LoginPage> {
                                   context, '/forgot-password'),
                               child: Text(
                                 " Forgot Password?",
-                                style: textColor3TextStyle.copyWith(
+                                style: textSecondaryTextStyle.copyWith(
                                   fontSize: 10,
                                   fontWeight: FontWeight.w600,
                                 ),

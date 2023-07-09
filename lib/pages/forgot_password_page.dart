@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:winwin/bloc/user_bloc.dart";
 import "package:winwin/pages/widgets/loading_button.dart";
-import "constant.dart";
+import 'constant.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
@@ -13,7 +13,7 @@ class ForgotPasswordPage extends StatefulWidget {
 
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   TextEditingController emailController = TextEditingController(text: '');
-  bool isForgot = true;
+  //bool isForgot = true;
   String message = "null";
 
   @override
@@ -43,24 +43,34 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         );
       }
 
-      BlocProvider.of<UserBloc>(context).add(UserPostResendEmailVerify(
+      BlocProvider.of<UserBloc>(context).add(UserPostForgotPassword(
         emailController.text,
       ));
     }
 
     Widget header() {
       return Container(
-        margin: EdgeInsets.only(top: 13),
+        margin: EdgeInsets.only(top: 25),
         child: Align(
-          alignment: Alignment.centerLeft,
-          child: GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: Image.asset(
-              "assets/icon_row_left.png",
-              width: 24,
-              height: 24,
+            alignment: Alignment.centerLeft,
+            child: Row(
+              children: [
+                GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: Image.asset(
+                    "assets/icon_row_left.png",
+                    width: 24,
+                    height: 24,
+                  ),
+                ),
+                Padding(padding: const EdgeInsets.symmetric(horizontal: 5.0)),
+                Text(
+                  "Back to Login",
+                  style: textColor1TextStyle.copyWith(
+                      fontSize: 20, fontWeight: FontWeight.w600),
+                ),
+              ],
             ),
-          ),
         ),
       );
     }
@@ -110,54 +120,89 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             ),
           ),
           onPressed: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('Reset Password', 
+                                style: textColor1TextStyle.copyWith(
+                                fontSize: 17,
+                                fontWeight: semibold,
+                                decoration: TextDecoration.none)),
+                  content: Text('We have sent a link to your email, please check your email to reset your password.'),
+                  backgroundColor: Colors.green,
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('OK'),
+                    ),
+                  ],
+                );
+              },
+            );
             handleForgotPassword();
           },
           child: Text(
             "Forgot Password",
             style: textButtonTextStyle.copyWith(
-                fontSize: 18, fontWeight: FontWeight.w600),
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      );
+}
+
+
+      Widget contentMerge(UserState state) {
+      return SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 13),
+                child: Column(
+                  children: [
+                    header(),
+                    Center(
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 120),
+                          Image.asset(
+                            "assets/icon_forgot_password.png",
+                            width: 160,
+                            height: 160,
+                          ),
+                          Text(
+                            "Please input your email to reset password",
+                            style: textColor1TextStyle.copyWith(
+                              fontSize: 17,
+                              fontWeight: semibold,
+                              decoration: TextDecoration.none,
+                            ),
+                          ),
+                          const SizedBox(height: 23),
+                          emailInput(),
+                          const SizedBox(height: 13),
+                          state is UserPostLoading
+                              ? LoadingButton(
+                            width: 200,
+                          )
+                              : buttonForgot(),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       );
     }
 
-    Widget contentMerge(UserState state) {
-      return SafeArea(
-        child: Column(
-          children: [
-            Container(
-                padding: EdgeInsets.symmetric(horizontal: 13),
-                child: Column(
-                  children: [
-                    header(),
-                    isForgot
-                        ? Center(
-                            child: Column(
-                              children: [
-                                const SizedBox(height: 120),
-                                Image.asset(
-                                  "assets/icon_email_verify.png",
-                                  width: 160,
-                                  height: 160,
-                                ),
-                                const SizedBox(height: 23),
-                                emailInput(),
-                                const SizedBox(height: 13),
-                                state is UserPostLoading
-                                    ? LoadingButton(
-                                        width: 200,
-                                      )
-                                    : buttonForgot()
-                              ],
-                            ),
-                          )
-                        : content(),
-                  ],
-                )),
-          ],
-        ),
-      );
-    }
 
     return Scaffold(
         backgroundColor: backgroundColor,
@@ -167,7 +212,12 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             if (state is UserPostError) {
               message = state.code;
               print("message: $message");
-            } 
+            } else if (state is UserPostSuccess) {
+              //isForgot = false;
+              print("We have sent link to your email, please check your email to reset password");
+              return contentMerge(state);
+            }
+
             return contentMerge(state);
           },
         ));

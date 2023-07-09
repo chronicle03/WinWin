@@ -1,4 +1,47 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'dart:async';
+import 'package:bloc/bloc.dart';
+import '../data/models/favorite_model.dart';
+import '../data/service/favorite_service.dart';
+import 'favorite_event.dart';
+import 'favorite_state.dart';
+
+class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
+  final FavoriteService favoriteService;
+
+  FavoriteBloc(this.favoriteService) : super(FavoriteInitial());
+
+  @override
+  Stream<FavoriteState> mapEventToState(
+    FavoriteEvent event,
+  ) async* {
+    if (event is GetFavorites) {
+      yield FavoriteLoading();
+      try {
+        final List<FavoriteModel> favorites =
+            await favoriteService.getFavorites(event.userId);
+        yield FavoriteLoaded(favorites);
+      } catch (e) {
+        yield FavoriteError('Failed to get favorites: $e');
+      }
+    } else if (event is AddFavorite) {
+      yield FavoriteLoading();
+      try {
+        await favoriteService.addFavorite(event.userId, event.userFavoriteId);
+        final List<FavoriteModel> favorites =
+            await favoriteService.getFavorites(event.userId);
+        yield FavoriteLoaded(favorites);
+      } catch (e) {
+        yield FavoriteError('Failed to add favorite: $e');
+      }
+    }
+  }
+}
+
+
+
+
+
+/*import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:winwin/data/models/favorite_model.dart';
 import 'package:winwin/data/repository/favorite_repository.dart';
 
@@ -46,4 +89,4 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
       }*/
     });
   }
-}
+}*/
