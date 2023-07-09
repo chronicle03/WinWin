@@ -3,8 +3,6 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:winwin/bloc/user_bloc.dart";
 import "package:winwin/pages/widgets/loading_button.dart";
 import "constant.dart";
-import 'package:flutter_svg/flutter_svg.dart';
-
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
@@ -96,57 +94,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             ],
           ),
         ),
-      );
-    }
-
-    Widget buttonBackToLogin() {
-      return Container(
-        margin: const EdgeInsets.symmetric(vertical: 14),
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: buttonColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            fixedSize: Size(double.infinity, 55), // Menyesuaikan lebar
-          ),
-          onPressed: () {
-            Navigator.pushNamed(context, '/login');
-          },
-          child: Text(
-            "Continue to Login",
-            style: textButtonTextStyle.copyWith(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-      );
-    }
-
-    Widget content() {
-      return Column(
-        children: [
-          const SizedBox(height: 139),
-          Center(
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                Image.asset(
-                  "assets/svg/icon_forgot_password",
-                  width: 160,
-                  height: 160,
-                ),
-                const SizedBox(height: 23),
-                Text("Please Check Your Email",
-                    style: textColor1TextStyle.copyWith(
-                        fontSize: 17,
-                        fontWeight: semibold,
-                        decoration: TextDecoration.none)),
-                const SizedBox(height: 4),
-                buttonBackToLogin(),
-              ])),
-        ],
       );
     }
 
