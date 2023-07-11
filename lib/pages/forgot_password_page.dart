@@ -145,7 +145,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             handleForgotPassword();
           },
           child: Text(
-            "Forgot Password",
+            "Request Reset Password",
             style: textButtonTextStyle.copyWith(
               fontSize: 18,
               fontWeight: FontWeight.w600,

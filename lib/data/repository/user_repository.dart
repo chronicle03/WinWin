@@ -222,4 +222,25 @@ class UserRepositoryImpl extends UserRepository {
       throw Exception(firstError);
     }
   }
+
+  Future<void> logout({String? authorization}) async {
+  String token = await getToken();
+
+  var url = Uri.parse('$baseUrl/logout');
+  var headers = {'Authorization': authorization ?? token};
+
+  var response = await http.post(url, headers: headers);
+
+  if (response.statusCode == 200) {
+    var responseData = jsonDecode(response.body);
+    if (responseData['meta']['code'] == 200) {
+      print(responseData['meta']['message']);
+    } else {
+      throw Exception(responseData['meta']['message']);
+    }
+  } else {
+    throw Exception('Failed to logout. Status code: ${response.statusCode}');
+  }
+}
+
 }
