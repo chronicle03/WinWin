@@ -1,9 +1,11 @@
-import 'package:winwin/data/models/ability_model.dart';
+import 'ability_model.dart';
+import 'favorite_model.dart';
 
 class UserModel {
   int? id;
   String? name;
   String? username;
+  String? gender;
   String? email;
   String? emailVerifiedAt;
   String? birthdate;
@@ -11,41 +13,41 @@ class UserModel {
   String? bio;
   String? location;
   String? jobStatus;
+  String? token;
   String? profilePhotoPath;
-  String? gender;
   String? createdAt;
   String? updatedAt;
-  String? token;
   List<AbilityModel>? ability;
+  List<FavoriteModel>? favorite;
 
   UserModel(
       {this.id,
-      this.name,
-      this.username,
-      this.email,
-      this.emailVerifiedAt,
-      this.birthdate,
-      this.phoneNumber,
-      this.bio,
-      this.location,
-      this.jobStatus,
-      this.profilePhotoPath,
-      this.token,
-      this.gender,
-      this.createdAt,
-      this.updatedAt,
-      this.ability});
+        this.name,
+        this.username,
+        this.gender,
+        this.email,
+        this.emailVerifiedAt,
+        this.birthdate,
+        this.phoneNumber,
+        this.bio,
+        this.location,
+        this.jobStatus,
+        this.profilePhotoPath,
+        this.createdAt,
+        this.updatedAt,
+        this.ability,
+        this.favorite});
 
   UserModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     username = json['username'];
+    gender = json['gender'];
     email = json['email'];
     emailVerifiedAt = json['email_verified_at'];
     birthdate = json['birthdate'];
     phoneNumber = json['phone_number'];
     bio = json['bio'];
-    gender = json['gender'];
     location = json['location'];
     jobStatus = json['job_status'];
     profilePhotoPath = json['profile_photo_path'];
@@ -57,26 +59,35 @@ class UserModel {
         ability!.add(new AbilityModel.fromJson(v));
       });
     }
+    if (json['favorite'] != null) {
+      favorite = <FavoriteModel>[];
+      json['favorite'].forEach((v) {
+        favorite!.add(new FavoriteModel.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['username'] = this.username;
-    data['gender'] = this.gender;
-    data['email'] = this.email;
-    data['email_verified_at'] = this.emailVerifiedAt;
-    data['birthdate'] = this.birthdate;
-    data['phone_number'] = this.phoneNumber;
-    data['bio'] = this.bio;
-    data['location'] = this.location;
-    data['job_status'] = this.jobStatus;
-    data['profile_photo_path'] = this.profilePhotoPath;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
-    if (this.ability != null) {
-      data['ability'] = this.ability!.map((v) => v.toJson()).toList();
+    data['id'] = id;
+    data['name'] = name;
+    data['username'] = username;
+    data['gender'] = gender;
+    data['email'] = email;
+    data['email_verified_at'] = emailVerifiedAt;
+    data['birthdate'] = birthdate;
+    data['phone_number'] = phoneNumber;
+    data['bio'] = bio;
+    data['location'] = location;
+    data['job_status'] = jobStatus;
+    data['profile_photo_path'] = profilePhotoPath;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    if (ability != null) {
+      data['ability'] = ability!.map((v) => v.toJson()).toList();
+    }
+    if (favorite != null) {
+      data['favorite'] = favorite!.map((v) => v.toJson()).toList();
     }
     return data;
   }

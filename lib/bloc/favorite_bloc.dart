@@ -9,41 +9,26 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
 
   late FavoriteModel data;
   final FavoriteRepositoryImpl FavoriteRepository;
-  
 
   FavoriteBloc(this.FavoriteRepository) : super(FavoriteInitial()) {
     on<FavoriteEvent>((event, emit) async{
       if (event is FavoritePostCreate) {
         emit(CreateFavoriteLoading());
         try {
-          await Future.delayed(const Duration(seconds: 2), () async {
+          await Future.delayed(const Duration(seconds: 0), () async {
           data = await FavoriteRepository.createFavorite(
-            event.user_id,
-            event.user_favorite_id,
+            event.userId,
+            event.userFavoriteId,
           );
+          print(data.id);
           
           emit(CreateFavoriteSuccess());
         });
         } catch (e) {
-          // print(e);
+          print(e);
           emit(CreateFavoriteError(e.toString().replaceAll('Exception: ', '')));
         }
       }
-
-      /*if (event is FavoriteGetFavorites) {
-        emit(FavoriteGetFavoritesLoading());
-        try {
-          await Future.delayed(const Duration(seconds: 2), () async {
-          data = await FavoriteRepository.FavoriteGetFavorites(
-            event.user_id,
-          );
-          emit(FavoriteGetFavoritesSuccess());
-        });
-        } catch (e) {
-          // print(e);
-          emit(FavoriteGetFavoriteError(e.toString().replaceAll('Exception: ', '')));
-        }
-      }*/
     });
   }
 }

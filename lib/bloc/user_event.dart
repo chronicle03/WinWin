@@ -64,6 +64,8 @@ class UserPostLogin extends UserEvent {
   );
 }
 
+class UserPostLogout extends UserEvent{}
+
 class UserPostForgotPassword extends UserEvent {
   final String email;
 

@@ -25,9 +25,9 @@ class ProfileSettingsPage extends StatefulWidget {
 class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
   // late UserBloc _userBloc;
   UserModel? user = UserData.user; // Add this variable
-  
+
   @override
-  void initState(){
+  void initState() {
     super.initState();
     // updateUser();
     UserData.loadUser();
@@ -43,6 +43,10 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    void handleLogout() {
+      BlocProvider.of<UserBloc>(context).add(UserPostLogout());
+    }
+
     print("user home: ${user!.email}");
     String? profilePhotoPath = user?.profilePhotoPath;
     return Scaffold(
@@ -60,18 +64,18 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                   children: [
                     profilePhotoPath != null
                         ? ClipOval(
-                            child: Image.network(
-                              baseUrlImage + profilePhotoPath,
-                              height: 60,
-                              width: 60,
-                              fit: BoxFit.cover,
-                            ),
-                          )
+                      child: Image.network(
+                        baseUrlImage + profilePhotoPath,
+                        height: 60,
+                        width: 60,
+                        fit: BoxFit.cover,
+                      ),
+                    )
                         : Image.asset(
-                            'assets/photoProfile.png',
-                            height: 60,
-                            width: 60,
-                          ),
+                      'assets/photoProfile.png',
+                      height: 60,
+                      width: 60,
+                    ),
                     SizedBox(width: 8.0),
                     Padding(
                       padding: EdgeInsets.only(top: 8.0),
@@ -90,11 +94,11 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                               ),
                               SizedBox(width: 4.0),
                               user?.gender != null ?
-                        SvgPicture.asset(
-                          'assets/svg/icon_male.svg',
-                          width: 18,
-                          height: 18,
-                        ) : SizedBox(),
+                              SvgPicture.asset(
+                                'assets/svg/icon_male.svg',
+                                width: 18,
+                                height: 18,
+                              ) : SizedBox(),
                             ],
                           ),
                           SizedBox(height: 8.0),
@@ -124,21 +128,21 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Profile and Security',
-                          style: textButtonTextStyle.copyWith(
-                            fontSize: 17, fontWeight: FontWeight.w700,
-                          )
+                            'Profile and Security',
+                            style: textButtonTextStyle.copyWith(
+                              fontSize: 17, fontWeight: FontWeight.w700,
+                            )
                         ),
                         SizedBox(height: 16.0),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             GestureDetector(
-                              onTap: () { 
-                                 Navigator.pushNamed(
-                                  context,
-                                  '/edit-profile',
-                                  arguments: user!
+                              onTap: () {
+                                Navigator.pushNamed(
+                                    context,
+                                    '/edit-profile',
+                                    arguments: user!
                                 );
                               },
                               child: Row(
@@ -168,10 +172,10 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                         ),
                         SizedBox(height: 20.0),
                         Text(
-                          'General',
-                          style: textButtonTextStyle.copyWith(
-                            fontSize: 17, fontWeight: FontWeight.w700,
-                          )
+                            'General',
+                            style: textButtonTextStyle.copyWith(
+                              fontSize: 17, fontWeight: FontWeight.w700,
+                            )
                         ),
                         SizedBox(height: 20.0),
                         Row(
@@ -276,14 +280,34 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                               height: 32,
                             ),
                             SizedBox(width: 4.0),
-                            Expanded(
-                              child: Text(
-                                'Logout',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 16,
-                                  color: Color(0xff30444F),
-                                ),
-                              ),
+                            BlocConsumer<UserBloc, UserState>(
+                              listener: (context, state) {
+                                if (state is UserPostSuccess){
+                                  Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+                                }
+                              },
+                              builder: (context, state) {
+                                if (state is UserPostLoading){
+                                  print("loading");
+                                }
+                                else if (state is UserPostError){
+                                  print("${state.code}");
+                                }
+                                return Expanded(
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      handleLogout();
+                                    },
+                                    child: Text(
+                                      'Logout',
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 16,
+                                        color: Color(0xff30444F),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
                           ],
                         ),

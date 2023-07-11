@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-String baseUrl = "http://192.168.100.242:8000/api";
-String baseUrlImage = "http://192.168.100.242:8000";
+String baseUrl = "http://192.168.100.243:8000/api";
+String baseUrlImage = "http://192.168.100.243:8000";
 
 Color backgroundColor = Color(0xff30444F);
 Color buttonBackColor = Color(0xffEBECEE);

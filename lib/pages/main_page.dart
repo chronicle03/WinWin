@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:winwin/bloc/favorite_bloc.dart';
 import 'package:winwin/pages/favorite_page.dart';
 import 'package:winwin/pages/home/home_page.dart';
 import 'package:winwin/pages/profile/profile_settings_page.dart';
 
+import '../data/repository/favorite_repository.dart';
 import 'constant.dart';
 
 class MainPage extends StatefulWidget {
   int currentIndex = 0;
-  MainPage(this.currentIndex, {super.key});
+  MainPage({this.currentIndex = 0, super.key});
 
   @override
   State<MainPage> createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage> {
-
 
   Widget navigation() {
     return ClipRRect(
@@ -45,22 +47,17 @@ class _MainPageState extends State<MainPage> {
             BottomNavigationBarItem(
                 icon: SvgPicture.asset(
                   'assets/svg/icon_contact.svg',
-                  color: widget.currentIndex == 1 ? buttonColor : backgroundColor,
+                  color:
+                      widget.currentIndex == 1 ? buttonColor : backgroundColor,
                   width: 34,
                   height: 30,
                 ),
                 label: 'Contact'),
-            // BottomNavigationBarItem(
-            //     icon: SvgPicture.asset(
-            //       'assets/svg/icon_chat_blue.svg', color: currentIndex == 2 ? buttonColor : backgroundColor,
-            //       width: 34,
-            //       height: 30,
-            //     ),
-            //     label: 'Chat'),
             BottomNavigationBarItem(
                 icon: SvgPicture.asset(
                   'assets/svg/icon_person.svg',
-                  color: widget.currentIndex == 2 ? buttonColor : backgroundColor,
+                  color:
+                      widget.currentIndex == 2 ? buttonColor : backgroundColor,
                   width: 34,
                   height: 30,
                 ),
@@ -72,7 +69,9 @@ class _MainPageState extends State<MainPage> {
   Widget body() {
     switch (widget.currentIndex) {
       case 0:
-        return HomePage();
+        return BlocProvider<FavoriteBloc>.value(
+            value: BlocProvider.of<FavoriteBloc>(context),
+            child: HomePage());
       case 1:
         return FavoritePage();
       case 2:

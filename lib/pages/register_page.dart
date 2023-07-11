@@ -105,6 +105,7 @@ class _RegisterPageState extends State<RegisterPage> {
       });
       _fetchSkills();
       print(message);
+      userSkill.clear();
     }
 
     Widget header() {

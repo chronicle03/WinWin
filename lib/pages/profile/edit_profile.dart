@@ -19,8 +19,10 @@ import "package:winwin/pages/widgets/input/skill_select.dart";
 import "package:winwin/pages/widgets/snackbar.dart";
 import 'dart:io';
 
+import "../../bloc/favorite_bloc.dart";
 import "../../bloc/skill_bloc.dart";
 import "../../data/models/skill_model.dart";
+import "../../data/repository/favorite_repository.dart";
 import "../main_page.dart";
 import "../widgets/loading_button.dart";
 
@@ -121,6 +123,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   TextEditingController(text: '');
   TextEditingController emailController = TextEditingController(text: '');
   TextEditingController passwordController = TextEditingController(text: '');
+  final FavoriteRepositoryImpl favoriteRepository = FavoriteRepositoryImpl();
 
   @override
   Widget build(BuildContext context) {
@@ -172,7 +175,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 GestureDetector(
                   onTap: () =>
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => MainPage(2))),
+                        MaterialPageRoute(
+                          builder: (context) => MultiBlocProvider(
+                            providers: [
+                              BlocProvider<FavoriteBloc>(
+                                create: (context) => FavoriteBloc(favoriteRepository),
+                              ),
+                            ],
+                            child: MainPage(currentIndex: 2),
+                          ),
+                        ),
+                      ),
                   child: Image.asset(
                     "assets/icon_row_left.png",
                     width: 24,

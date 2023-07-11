@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:swipeable_cards_stack/swipeable_cards_stack.dart';
 import 'package:winwin/data/models/user_model.dart';
 import 'package:winwin/pages/constant.dart';
 import 'package:winwin/pages/profile/profile_details.dart';
 import 'package:winwin/pages/widgets/painter.dart';
 import 'package:intl/intl.dart';
 
-class SummaryProfileWidget extends StatelessWidget {
+class SummaryProfileWidget extends StatefulWidget {
   final UserModel user;
   late DateTime dateOfBirth;
   late DateTime now;
@@ -18,6 +19,12 @@ class SummaryProfileWidget extends StatelessWidget {
     ageDuration = now.difference(dateOfBirth);
     ageYears = ageDuration.inDays ~/ 365;
   }
+
+  @override
+  State<SummaryProfileWidget> createState() => _SummaryProfileWidgetState();
+}
+
+class _SummaryProfileWidgetState extends State<SummaryProfileWidget> {
 
   Widget skills(String value) {
     return ClipRRect(
@@ -41,6 +48,7 @@ class SummaryProfileWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("user filter summary: ${widget.user.name}");
     Widget content() {
       return GestureDetector(
         onTap: () {
@@ -61,9 +69,9 @@ class SummaryProfileWidget extends StatelessWidget {
                     topLeft: Radius.circular(12),
                     topRight: Radius.circular(12),
                   ),
-                  child: user.profilePhotoPath != null
+                  child: widget.user.profilePhotoPath != null
                       ? Image.network(
-                          "$baseUrlImage${user.profilePhotoPath!}",
+                          "$baseUrlImage${widget.user.profilePhotoPath!}",
                           width: double.infinity,
                           height: 390,
                           fit: BoxFit.cover,
@@ -108,27 +116,31 @@ class SummaryProfileWidget extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              ageYears != 0
-                                  ? "${user.name!}, ${ageYears}th"
-                                  : user.name!,
+                              widget.ageYears != 0
+                                  ? "${widget.user.name!}, ${widget.ageYears}th"
+                                  : widget.user.name!,
                               style: textPrimaryStyle.copyWith(
                                 fontSize: 17,
                                 fontWeight: semibold,
                               ),
                             ),
-                            user.gender != null
-                                ? SvgPicture.asset(
-                                    'assets/svg/icon_male.svg',
-                                    width: 18,
-                                    height: 18,
-                                  )
-                                : SizedBox(),
+                            widget.user.gender == 'male' ?
+                            Image.asset(
+                              'assets/icon_male_white.png',
+                              width: 18,
+                              height: 18,
+                            ): widget.user.gender == 'female' ?
+                            Image.asset(
+                              'assets/icon_female_white.png',
+                              width: 18,
+                              height: 18,
+                            ): Container(),
                           ],
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            user.location != null
+                            widget.user.location != null
                                 ? SvgPicture.asset(
                                     'assets/svg/icon_location_blue.svg',
                                     width: 10,
@@ -139,7 +151,7 @@ class SummaryProfileWidget extends StatelessWidget {
                               width: 5,
                             ),
                             Text(
-                              user.location != null ? "${user.location!}" : " ",
+                              widget.user.location != null ? "${widget.user.location!}" : " ",
                               style: iconTextStyle.copyWith(
                                 fontSize: 11,
                                 fontWeight: medium,
@@ -151,7 +163,7 @@ class SummaryProfileWidget extends StatelessWidget {
                           height: 12,
                         ),
                         Text(
-                          user.bio != null ? user.bio! : "No bio",
+                          widget.user.bio != null ? widget.user.bio! : "No bio",
                           style: iconTextStyle.copyWith(
                             fontSize: 12,
                             fontWeight: medium,
@@ -164,11 +176,12 @@ class SummaryProfileWidget extends StatelessWidget {
                           height: 10,
                         ),
                         Row(
-                          children: user.ability!
+                          children: widget.user.ability!
+                          .take(3)
                               .map(
                                   (ability) => skills(ability.skills![0].name!))
                               .toList(),
-                        ),
+                        )
                       ],
                     ),
                   ),
