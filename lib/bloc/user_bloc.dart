@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:winwin/data/models/user_model.dart';
 import 'package:winwin/data/repository/user_repository.dart';
@@ -9,7 +11,7 @@ part 'user_state.dart';
 class UserBloc extends Bloc<UserEvent, UserState> {
   UserModel? user;
   static UserModel? loggedInUser;
-  List<UserModel>? userList;
+  static List<UserModel> userList = [];
   String? token;
   final UserRepositoryImpl userRepository;
 
@@ -18,7 +20,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       if (event is UserPostRegister) {
         emit(UserPostLoading());
         try {
-          await Future.delayed(const Duration(seconds: 2), () async {
+          await Future.delayed(const Duration(seconds: 0), () async {
             user = await userRepository.register(
               event.name,
               event.email,
@@ -28,6 +30,33 @@ class UserBloc extends Bloc<UserEvent, UserState> {
               event.password,
               event.confirmPassword,
               event.isChecked,
+              event.skills
+            );
+
+            emit(UserPostSuccess());
+          });
+        } catch (e) {
+          // print(e);
+          var err = e.toString().replaceAll('Exception: ', '');
+          emit(UserPostError(err));
+        }
+      }
+
+      if (event is UserPostUpdate) {
+        emit(UserPostLoading());
+        try {
+          await Future.delayed(const Duration(seconds: 0), () async {
+            user = await userRepository.update(
+              name: event.name,
+              email: event.email,
+              phoneNumber: event.phoneNumber,
+              birthdate: event.birthdate,
+              location: event.location,
+              gender: event.gender,
+              jobStatus: event.jobStatus,
+              bio: event.bio,
+              skills: event.skills,
+              photoProfilePath: event.photoProfilePath,
             );
 
             emit(UserPostSuccess());
@@ -42,9 +71,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       if (event is UserPostResendEmailVerify) {
         emit(UserPostLoading());
         try {
-           print("event email: ${event.email}");
-          await Future.delayed(const Duration(seconds: 2), () async {
-            print("event email: ${event.email}");
+          //  print("event email: ${event.email}");
+          await Future.delayed(const Duration(seconds: 0), () async {
+            // print("event email: ${event.email}");
             user = await userRepository.resendEmail(event.email);
             emit(UserPostSuccess());
           });
@@ -59,7 +88,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         // print("start");
         emit(UserPostLoading());
         try {
-          await Future.delayed(const Duration(seconds: 2), () async {
+          await Future.delayed(const Duration(seconds: 0), () async {
             user = await userRepository.login(
               event.email,
               //event.username,
@@ -68,8 +97,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             );
             token = user!.token;
             loggedInUser =user;
-            print("loggedInUser bloc login: ${loggedInUser!.email}");
-            print("user bloc login: ${user!.email}");
+            // print("loggedInUser bloc login: ${loggedInUser!.email}");
+            // print("user bloc login: ${user!.email}");
             // print("user bloc: ${user!.name}");
             emit(UserPostLoginSuccess(user!));
           });
@@ -83,7 +112,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       if (event is UserPostForgotPassword) {
         emit(UserPostLoading());
         try {
-          await Future.delayed(const Duration(seconds: 2), () async {
+          await Future.delayed(const Duration(seconds: 0), () async {
             user = await userRepository.ForgotPassword(
               event.email,
             );
@@ -98,17 +127,17 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
       if (event is GetUsers) {
         
-        // print("start");
-        // print("token: $token");
+        // print("start bloc");
+        // print("token bloc: $token");
         emit(UserPostLoading());
         try {
           await Future.delayed(const Duration(seconds: 2), () async {
-            // print("start2");
+            // print("start0");
             userList = await userRepository.getUsers();
           });
           // print("done");
-          // print("user bloc: ${userList}");
-          emit(GetUsersLoaded(userList!));
+          print("user list bloc: ${userList[4].email}");
+          emit(GetUsersLoaded(userList));
         } catch (e) {
           emit(UserPostError(e.toString().replaceAll('Exception: ', '')));
         }

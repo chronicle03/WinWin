@@ -6,8 +6,13 @@ import "package:winwin/pages/about.dart";
 import "package:winwin/pages/landing/landing_page.dart";
 import "package:winwin/pages/login_page.dart";
 import "package:winwin/pages/main_page.dart";
+import "package:winwin/pages/profile/edit_profile.dart";
+import "package:winwin/pages/profile/profile_settings_page.dart";
 import "package:winwin/pages/register_page.dart";
 import "package:winwin/pages/verify_email_page.dart";
+
+import "bloc/skill_bloc.dart";
+import "data/repository/skill_repository.dart";
 
 void main() {
   runApp(MyApp());
@@ -15,13 +20,25 @@ void main() {
 
 class MyApp extends StatelessWidget {
   final UserRepositoryImpl userRepository = UserRepositoryImpl();
+  final SkillRepositoryImpl skillRepository = SkillRepositoryImpl();
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       routes: {
-        '/': (context) => LandingPage(),
+        '/': (context) => MultiBlocProvider(providers: [
+              BlocProvider<UserBloc>(
+                  create: (context) => UserBloc(userRepository)),
+              BlocProvider<SkillBloc>(
+                  create: (context) => SkillBloc(skillRepository)),
+            ], child: LandingPage()),
+        '/edit-profile': (context) => MultiBlocProvider(providers: [
+              BlocProvider<UserBloc>(
+                create: (context) => UserBloc(userRepository)),
+              BlocProvider<SkillBloc>(
+                  create: (context) => SkillBloc(skillRepository)),
+            ], child: EditProfilePage()),
         '/login': (context) => BlocProvider<UserBloc>(
               create: (context) => UserBloc(userRepository),
               child: LoginPage(),
@@ -32,12 +49,14 @@ class MyApp extends StatelessWidget {
             ),
         '/home': (context) => BlocProvider<UserBloc>(
               create: (context) => UserBloc(userRepository),
-              child: MainPage(),
+              child: MainPage(0),
             ),
-        '/register': (context) => BlocProvider<UserBloc>(
-              create: (context) => UserBloc(userRepository),
-              child: RegisterPage(),
-            ),
+        '/register': (context) => MultiBlocProvider(providers: [
+          BlocProvider<UserBloc>(
+              create: (context) => UserBloc(userRepository)),
+          BlocProvider<SkillBloc>(
+              create: (context) => SkillBloc(skillRepository)),
+        ], child: RegisterPage()),
         '/about': (context) => About(),
       },
     );

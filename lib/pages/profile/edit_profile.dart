@@ -1,33 +1,52 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:image_picker/image_picker.dart";
 import "package:winwin/bloc/user_bloc.dart";
 import "package:winwin/data/models/user_model.dart";
+import "package:winwin/data/repository/skill_repository.dart";
+import "package:winwin/data/repository/user_repository.dart";
+import "package:winwin/data/singleton/user_data.dart";
 import "package:winwin/pages/constant.dart";
+import "package:winwin/pages/profile/profile_settings_page.dart";
+import "package:winwin/pages/widgets/input/bio.dart";
+import "package:winwin/pages/widgets/input/email.dart";
+import "package:winwin/pages/widgets/input/fullname.dart";
+import "package:winwin/pages/widgets/input/job_status.dart";
+import "package:winwin/pages/widgets/input/location.dart";
+import "package:winwin/pages/widgets/input/password.dart";
+import "package:winwin/pages/widgets/input/phone_number.dart";
+import "package:winwin/pages/widgets/input/skill_select.dart";
+import "package:winwin/pages/widgets/snackbar.dart";
+import 'dart:io';
+
+import "../../bloc/skill_bloc.dart";
+import "../../data/models/skill_model.dart";
+import "../main_page.dart";
+import "../widgets/loading_button.dart";
 
 class EditProfilePage extends StatefulWidget {
-   
-  final UserModel loggedInUser;
-  const EditProfilePage(this.loggedInUser);
+  const EditProfilePage();
 
   @override
   _EditProfilePageState createState() => _EditProfilePageState();
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
-  // late UserBloc _userBloc;
-  // UserModel? loggedInUser; // Add this variable
-  
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _userBloc = BlocProvider.of<UserBloc>(context);
-  //   loggedInUser = UserBloc.loggedInUser; // Retrieve the logged-in user data
-  // }
-
+  late SkillBloc _skillBloc;
   String message = "null";
   bool isChecked = false;
   String? selectedDate;
-  String baseUrl = "http://192.168.102.10:8000";
+  List<UserModel>? user;
+  UserModel? loggedInUser = UserData.user;
+  List<String> userSkill = [];
+  String? genderSelect;
+  int _selectedGenderIndex = 0;
+  late SkillRepositoryImpl skillRepositoryImpl = SkillRepositoryImpl();
+
+  void _fetchSkills() {// Cek apakah data sudah diambil sebelumnya
+    _skillBloc = BlocProvider.of<SkillBloc>(context);
+    _skillBloc.add(GetSkillEvent());// Set variabel flag ke true setelah mengambil data
+  }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -43,23 +62,104 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
   }
 
-  int _selectedGenderIndex = 0;
+  void initState() {
+    super.initState();
+    UserData.loadUser();
+    if (loggedInUser!.gender == 'female') {
+      _selectedGenderIndex = 1;
+    } else {
+      _selectedGenderIndex = 0;
+    }
+  }
+
   void _handleGenderSelection(int? index) {
+    print("index: $index");
     setState(() {
+      if (index == 0) {
+        genderSelect = 'male';
+      } else if (index == 1) {
+        genderSelect = 'female';
+      }
       _selectedGenderIndex = index ?? 0;
     });
   }
 
+  void updateUserSkills(List<String> skills) {
+    setState(() {
+      userSkill = skills;
+    });
+  }
+
+  File? image;
+
+  final _picker = ImagePicker();
+  bool showSpinner = false;
+
+  Future getImage() async {
+    final pickedFile =
+    await _picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
+    if (pickedFile != null) {
+      // image = File(pickedFile.path);
+      setState(() {
+        image = File(pickedFile.path);
+        print("image: $image");
+      });
+    } else {
+      print("no image selected!");
+    }
+  }
+
+  TextEditingController nameController =
+  TextEditingController(text: '');
+  TextEditingController jobStatusController =
+  TextEditingController(text:'');
+  TextEditingController bioController =
+  TextEditingController(text: '');
+  TextEditingController locationController =
+  TextEditingController(text: '');
+  TextEditingController phoneNumberController =
+  TextEditingController(text: '');
+  TextEditingController emailController = TextEditingController(text: '');
+  TextEditingController passwordController = TextEditingController(text: '');
+
   @override
   Widget build(BuildContext context) {
-  
-    print("loggedInUser: ${widget.loggedInUser}");
-    // Access the properties of the logged-in user
-    String? username = widget.loggedInUser.username;
-    String? email = widget.loggedInUser.email;
-    String? profilePhotoPath = widget.loggedInUser.profilePhotoPath;
-    print("username: $username");
-    print("email: $email");
+    String? username = loggedInUser!.username;
+    String? email = loggedInUser!.email;
+    String? profilePhotoPath = loggedInUser!.profilePhotoPath;
+
+    handleUpdate(String message, UserState state) {
+      BlocProvider.of<UserBloc>(context).add(UserPostUpdate(
+          nameController.text,
+          emailController.text,
+          phoneNumberController.text,
+          selectedDate ?? loggedInUser!.birthdate!,
+          locationController.text,
+          genderSelect ?? loggedInUser!.gender ?? '',
+          jobStatusController.text,
+          bioController.text,
+          image != null ? image! : null,
+          userSkill.toList()));
+
+      if (message != "null") {
+        Future.delayed(Duration(seconds: 2), () {
+          ScaffoldMessenger.of(context).showSnackBar(CustomSnackbar(
+            color: Colors.red,
+            icon: Icons.warning,
+            message: message,
+          ));
+        });
+      } else {
+        if (state is UserPostSuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(CustomSnackbar(
+            color: Colors.green,
+            icon: Icons.check,
+            message: "Success update!!",
+          ));
+        }
+      }
+      _fetchSkills();
+    }
 
     Widget header() {
       return Column(
@@ -70,7 +170,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
             child: Row(
               children: [
                 GestureDetector(
-                  onTap: () => Navigator.pop(context),
+                  onTap: () =>
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => MainPage(2))),
                   child: Image.asset(
                     "assets/icon_row_left.png",
                     width: 24,
@@ -92,76 +194,36 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
 
     Widget photoProfile() {
+      print("image2: $image");
       return Container(
         child: InkWell(
           onTap: () {
-            // Open the gallery here
-            // You can use a package like image_picker to handle the gallery selection
-            // Example: https://pub.dev/packages/image_picker
+            getImage();
           },
-          child: profilePhotoPath != null ?  ClipOval(
+          child: profilePhotoPath != null && image == null
+              ? ClipOval(
             child: Image.network(
-              baseUrl+profilePhotoPath,
+              baseUrlImage + profilePhotoPath!,
               height: 100,
               width: 100,
               fit: BoxFit.cover,
             ),
-          ): Image.asset(
+          )
+              : image != null
+              ? ClipOval(
+            child: Image.file(
+              File(image!.path).absolute,
+              height: 100,
+              width: 100,
+              fit: BoxFit.cover,
+            ),
+          )
+              : Image.asset(
             'assets/photoProfile.png',
             height: 100,
             width: 100,
           ),
         ),
-      );
-    }
-
-    Widget fullNameInput() {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(
-            height: 10,
-          ),
-          Text(
-            "Full Name",
-            style: textColor3TextStyle.copyWith(
-                fontSize: 13, fontWeight: FontWeight.w700),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Container(
-            height: 50,
-            padding: const EdgeInsets.symmetric(horizontal: 15.0),
-            decoration: BoxDecoration(
-                color: appBarColor, borderRadius: BorderRadius.circular(10.0)),
-            child: Center(
-              child: Row(
-                children: [
-                  Image.asset(
-                    "assets/icon_profile_default.png",
-                    width: 26,
-                  ),
-                  const SizedBox(
-                    width: 14,
-                  ),
-                  Expanded(
-                      child: TextFormField(
-                    style: textButtonTextStyle.copyWith(
-                        fontSize: 13, fontWeight: FontWeight.w500),
-                    decoration: InputDecoration.collapsed(
-                        hintText: widget.loggedInUser.name,
-                        hintStyle: textButtonTextStyle.copyWith(
-                            fontSize: 13, fontWeight: FontWeight.w500)),
-                  )),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-        ],
       );
     }
 
@@ -200,7 +262,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     const SizedBox(width: 14),
                     Expanded(
                       child: Text(
-                        selectedDate ?? widget.loggedInUser.birthdate!,
+                        selectedDate ?? loggedInUser!.birthdate!,
                         style: textButtonTextStyle.copyWith(
                           fontSize: 13,
                           fontWeight: FontWeight.w500,
@@ -210,56 +272,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     ),
                   ],
                 ),
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-        ],
-      );
-    }
-
-    Widget locationInput() {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(
-            height: 10,
-          ),
-          Text(
-            "Location",
-            style: textColor3TextStyle.copyWith(
-                fontSize: 13, fontWeight: FontWeight.w700),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Container(
-            height: 50,
-            padding: const EdgeInsets.symmetric(horizontal: 15.0),
-            decoration: BoxDecoration(
-                color: appBarColor, borderRadius: BorderRadius.circular(10.0)),
-            child: Center(
-              child: Row(
-                children: [
-                  Image.asset(
-                    'assets/icon_location_blue.png',
-                    width: 26,
-                  ),
-                  const SizedBox(
-                    width: 14,
-                  ),
-                  Expanded(
-                      child: TextFormField(
-                    style: textButtonTextStyle.copyWith(
-                        fontSize: 13, fontWeight: FontWeight.w500),
-                    decoration: InputDecoration.collapsed(
-                        hintText: widget.loggedInUser.location ??  "",
-                        hintStyle: textButtonTextStyle.copyWith(
-                            fontSize: 13, fontWeight: FontWeight.w500)),
-                  )),
-                ],
               ),
             ),
           ),
@@ -316,6 +328,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         ),
                         Expanded(
                           child: TextFormField(
+                            enabled: false,
                             style: textButtonTextStyle.copyWith(
                               fontSize: 13,
                               fontWeight: FontWeight.w500,
@@ -362,6 +375,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         ),
                         Expanded(
                           child: TextFormField(
+                            enabled: false,
                             style: textButtonTextStyle.copyWith(
                               fontSize: 13,
                               fontWeight: FontWeight.w500,
@@ -389,334 +403,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       );
     }
 
-    Widget phoneNumberInput() {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(
-            height: 10,
-          ),
-          Text(
-            "Phone Number",
-            style: textColor3TextStyle.copyWith(
-                fontSize: 13, fontWeight: FontWeight.w700),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Container(
-            height: 50,
-            padding: const EdgeInsets.symmetric(horizontal: 15.0),
-            decoration: BoxDecoration(
-                color: appBarColor, borderRadius: BorderRadius.circular(10.0)),
-            child: Center(
-              child: Row(
-                children: [
-                  Image.asset(
-                    'assets/icon_call.png',
-                    width: 26,
-                  ),
-                  const SizedBox(
-                    width: 14,
-                  ),
-                  Expanded(
-                      child: TextFormField(
-                    style: textButtonTextStyle.copyWith(
-                        fontSize: 13, fontWeight: FontWeight.w500),
-                    decoration: InputDecoration.collapsed(
-                        hintText: widget.loggedInUser.phoneNumber ??  "",
-                        hintStyle: textButtonTextStyle.copyWith(
-                            fontSize: 13, fontWeight: FontWeight.w500)),
-                  )),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-        ],
-      );
-    }
-
-    Widget emailAddressInput() {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(
-            height: 10,
-          ),
-          Text(
-            "Email Address",
-            style: textColor3TextStyle.copyWith(
-                fontSize: 13, fontWeight: FontWeight.w700),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Container(
-            height: 50,
-            padding: const EdgeInsets.symmetric(horizontal: 14.0),
-            decoration: BoxDecoration(
-                color: appBarColor, borderRadius: BorderRadius.circular(10.0)),
-            child: Center(
-              child: Row(
-                children: [
-                  Image.asset(
-                    'assets/icon_email.png',
-                    width: 26,
-                  ),
-                  const SizedBox(
-                    width: 15,
-                  ),
-                  Expanded(
-                      child: TextFormField(
-                    style: textButtonTextStyle.copyWith(
-                        fontSize: 13, fontWeight: FontWeight.w500),
-                    decoration: InputDecoration.collapsed(
-                        hintText: widget.loggedInUser.email ??  "",
-                        hintStyle: textButtonTextStyle.copyWith(
-                            fontSize: 13, fontWeight: FontWeight.w500)),
-                  )),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-        ],
-      );
-    }
-
-    Widget passwordInput() {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(
-            height: 10,
-          ),
-          Text(
-            "Password",
-            style: textColor3TextStyle.copyWith(
-                fontSize: 13, fontWeight: FontWeight.w700),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Container(
-            height: 50,
-            padding: const EdgeInsets.symmetric(horizontal: 9.0),
-            decoration: BoxDecoration(
-                color: appBarColor, borderRadius: BorderRadius.circular(10.0)),
-            child: Center(
-              child: Row(
-                children: [
-                  Image.asset(
-                    'assets/icon_password.png',
-                    width: 35,
-                  ),
-                  const SizedBox(
-                    width: 14,
-                  ),
-                  Expanded(
-                      child: TextFormField(
-                    obscureText: true,
-                    style: textButtonTextStyle.copyWith(
-                        fontSize: 13, fontWeight: FontWeight.w500),
-                    decoration: InputDecoration.collapsed(
-                        hintText: "********",
-                        hintStyle: textButtonTextStyle.copyWith(
-                            fontSize: 13, fontWeight: FontWeight.w500)),
-                  )),
-                  Image.asset(
-                    "assets/icon_eye_close.png",
-                    width: 26,
-                    height: 23,
-                  ),
-                  const SizedBox(
-                    width: 9,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-        ],
-      );
-    }
-
-    Widget jobStatusInput() {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(
-            height: 10,
-          ),
-          Text(
-            "Job Status",
-            style: textColor3TextStyle.copyWith(
-                fontSize: 13, fontWeight: FontWeight.w700),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Container(
-            height: 50,
-            padding: const EdgeInsets.symmetric(horizontal: 14.0),
-            decoration: BoxDecoration(
-                color: appBarColor, borderRadius: BorderRadius.circular(10.0)),
-            child: Center(
-              child: Row(
-                children: [
-                  Image.asset(
-                    'assets/icon_bag.png',
-                    width: 26,
-                  ),
-                  const SizedBox(
-                    width: 15,
-                  ),
-                  Expanded(
-                      child: TextFormField(
-                    style: textButtonTextStyle.copyWith(
-                        fontSize: 13, fontWeight: FontWeight.w500),
-                    decoration: InputDecoration.collapsed(
-                        hintText: widget.loggedInUser.jobStatus ??  "",
-                        hintStyle: textButtonTextStyle.copyWith(
-                            fontSize: 13, fontWeight: FontWeight.w500)),
-                  )),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-        ],
-      );
-    }
-
-    Widget skillsInput() {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(
-            height: 10,
-          ),
-          Text(
-            "Skills",
-            style: textColor3TextStyle.copyWith(
-                fontSize: 13, fontWeight: FontWeight.w700),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Container(
-            height: 50,
-            padding: const EdgeInsets.symmetric(horizontal: 9.0),
-            decoration: BoxDecoration(
-                color: appBarColor, borderRadius: BorderRadius.circular(10.0)),
-            child: Center(
-              child: Row(
-                children: [
-                  Image.asset(
-                    'assets/icon_lamp.png',
-                    width: 39,
-                    height: 36,
-                  ),
-                  const SizedBox(
-                    width: 7,
-                  ),
-                  Expanded(
-                      child: TextFormField(
-                    style: textButtonTextStyle.copyWith(
-                        fontSize: 13, fontWeight: FontWeight.w500),
-                    decoration: InputDecoration.collapsed(
-                        hintText: "Design, Fashion",
-                        hintStyle: textButtonTextStyle.copyWith(
-                            fontSize: 13, fontWeight: FontWeight.w500)),
-                  )),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-        ],
-      );
-    }
-
-    Widget bioInput() {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(
-            height: 10,
-          ),
-          Text(
-            "Bio",
-            style: textColor3TextStyle.copyWith(
-              fontSize: 13,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Container(
-            height: 151,
-            padding:
-                const EdgeInsets.symmetric(horizontal: 14.0, vertical: 7.0),
-            decoration: BoxDecoration(
-              color: appBarColor,
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            child: Center(
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Image.asset(
-                        'assets/icon_profile_free.png',
-                        width: 26,
-                      ),
-                      const SizedBox(
-                        width: 15,
-                      ),
-                      Expanded(
-                        child: TextFormField(
-                          textAlign: TextAlign.justify,
-                          style: textButtonTextStyle.copyWith(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          decoration: InputDecoration.collapsed(
-                            hintText:
-                                widget.loggedInUser.bio ??  "",
-                            hintStyle: textButtonTextStyle.copyWith(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ), 
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-        ],
-      );
-    }
-
-    Widget buttonSaveChanges(String message) {
+    Widget buttonSaveChanges(String message, UserState state) {
       return Container(
         width: double.infinity,
         height: 55,
@@ -728,7 +415,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               borderRadius: BorderRadius.circular(10.0),
             ),
           ),
-          onPressed: () {},
+          onPressed: () => handleUpdate(message, state),
           child: Text(
             "Save Changes",
             style: textButtonTextStyle.copyWith(
@@ -740,35 +427,108 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
     return Scaffold(
       backgroundColor: backgroundColor,
-      body: ListView(
-        children: [
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 25),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                header(),
-                photoProfile(),
-                fullNameInput(),
-                const SizedBox(
-                  height: 10,
+      body: SafeArea(
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 25),
+          child: Column(
+            children: [
+              header(),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      BlocConsumer<UserBloc, UserState>(
+                        listener: (context, state) {
+                          WidgetsBinding.instance!.addPostFrameCallback((_) {
+                            if (state is UserPostError) {
+                              setState(() {
+                                message = state.code;
+                              });
+                            }
+                          });
+                        },
+                        builder: (context, state) {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Center(child: photoProfile()),
+                              Text(
+                                "Full Name",
+                                style: textColor3TextStyle.copyWith(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              FullNameInput(
+                                controller: nameController,
+                                hintText: loggedInUser!.name,
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              dateOfBirthInput(),
+                              LocationInput(locationController, loggedInUser!),
+                              chooseGender(),
+                              Text(
+                                "Phone Number",
+                                style: textColor3TextStyle.copyWith(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              PhoneNumberInput(
+                                  controller: phoneNumberController,
+                                  hintText: loggedInUser!.phoneNumber),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                "Email",
+                                style: textColor3TextStyle.copyWith(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              EmailInput(
+                                  controller: emailController,
+                                  hintText: loggedInUser!.email,
+                                  enable: false),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                "Password",
+                                style: textColor3TextStyle.copyWith(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              PasswordInput(
+                                controller: passwordController,
+                                hintText: '******',
+                                enable: false,
+                              ),
+                              JobStatusInput(
+                                  jobStatusController, loggedInUser!),
+                              SkillSelect(
+                                  userSkill, updateUserSkills),
+                              BioInput(bioController, loggedInUser!),
+                              const SizedBox(height: 10),
+                              state is UserPostLoading
+                                  ? LoadingButton()
+                                  : buttonSaveChanges(message, state),
+                              const SizedBox(height: 20),
+                            ],
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-                dateOfBirthInput(),
-                locationInput(),
-                chooseGender(),
-                phoneNumberInput(),
-                emailAddressInput(),
-                passwordInput(),
-                jobStatusInput(),
-                skillsInput(),
-                bioInput(),
-                const SizedBox(height: 10),
-                buttonSaveChanges(message),
-                const SizedBox(height: 20),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
