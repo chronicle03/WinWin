@@ -223,7 +223,29 @@ class UserRepositoryImpl extends UserRepository {
     }
   }
 
-  Future<void> logout({String? authorization}) async {
+   Future<UserModel> logout({
+    String? email,
+  }) async {
+    String token = await getToken();
+    final response =
+          await http.post(Uri.parse('$baseUrl/logout'), headers: {"Authorization" : token});
+   
+    print(response.body);
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body)['data'];
+      UserModel user = UserModel.fromJson(data['user']);
+      await UserData.updateUser(user);
+      return user;
+    } else {
+      Map<String, dynamic> responseData = jsonDecode(response.body);
+      List<dynamic> errors = responseData['data']['errors'].values.toList();
+
+      String firstError = errors[0][0];
+      throw Exception(firstError);
+    }
+  }
+
+  /*Future<void> logout({String? authorization}) async {
   String token = await getToken();
 
   var url = Uri.parse('$baseUrl/logout');
@@ -241,6 +263,6 @@ class UserRepositoryImpl extends UserRepository {
   } else {
     throw Exception('Failed to logout. Status code: ${response.statusCode}');
   }
-}
+}*/
 
 }

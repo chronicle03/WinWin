@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:winwin/bloc/favorite_bloc.dart';
+import 'package:winwin/bloc/user_bloc.dart';
 import 'package:winwin/pages/favorite_page.dart';
 import 'package:winwin/pages/home/home_page.dart';
 import 'package:winwin/pages/profile/profile_settings_page.dart';
@@ -76,7 +79,9 @@ class _MainPageState extends State<MainPage> {
       case 1:
         return FavoritePage();
       case 2:
-        return ProfileSettingsPage();
+        return BlocProvider<UserBloc>.value(
+            value: BlocProvider.of<UserBloc>(context),
+            child: ProfileSettingsPage());
       default:
         return HomePage();
     }

@@ -13,7 +13,9 @@ import 'package:winwin/pages/about.dart';
 import 'package:winwin/pages/constant.dart';
 import 'package:winwin/pages/home/home_page.dart';
 import 'package:winwin/pages/landing/landing_page.dart';
+import 'package:winwin/pages/login_page.dart';
 import 'package:winwin/pages/profile/edit_profile.dart';
+import 'package:winwin/pages/widgets/snackbar.dart';
 
 class ProfileSettingsPage extends StatefulWidget {
   const ProfileSettingsPage({Key? key});
@@ -25,14 +27,17 @@ class ProfileSettingsPage extends StatefulWidget {
 class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
   // late UserBloc _userBloc;
   UserModel? user = UserData.user; // Add this variable
-  
+
+  String message = "null";
   @override
-  void initState(){
+  void initState() {
     super.initState();
     // updateUser();
     UserData.loadUser();
     user = UserData.user;
   }
+
+  TextEditingController tokenController = TextEditingController(text: '');
 
 //   void updateUser() async {
 //   await UserData.loadUser(); // Memuat data pengguna yang terbaru
@@ -43,6 +48,11 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    handleLogout() {
+      BlocProvider.of<UserBloc>(context).add(UserPostLogout());
+
+    }
+
     print("user home: ${user!.email}");
     String? profilePhotoPath = user?.profilePhotoPath;
     return Scaffold(
@@ -51,232 +61,234 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
         child: SafeArea(
           child: Padding(
             padding: EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 20),
-                Row(
+            child: BlocConsumer<UserBloc, UserState>(
+              listener: (context, state) {
+                
+                // TODO: implement listener
+              },
+              builder: (context, state) {
+                if (state is UserPostError) {
+                              print(state.code);
+                            } else if(state is UserPostSuccess){
+                              Future.delayed(Duration.zero, () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage(),));});
+                              
+                            }
+                            
+                return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    profilePhotoPath != null
-                        ? ClipOval(
-                            child: Image.network(
-                              baseUrlImage + profilePhotoPath,
-                              height: 60,
-                              width: 60,
-                              fit: BoxFit.cover,
-                            ),
-                          )
-                        : Image.asset(
-                            'assets/photoProfile.png',
-                            height: 60,
-                            width: 60,
-                          ),
-                    SizedBox(width: 8.0),
-                    Padding(
-                      padding: EdgeInsets.only(top: 8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
+                    SizedBox(height: 20),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        profilePhotoPath != null
+                            ? ClipOval(
+                                child: Image.network(
+                                  baseUrlImage + profilePhotoPath,
+                                  height: 60,
+                                  width: 60,
+                                  fit: BoxFit.cover,
+                                ),
+                              )
+                            : Image.asset(
+                                'assets/photoProfile.png',
+                                height: 60,
+                                width: 60,
+                              ),
+                        SizedBox(width: 8.0),
+                        Padding(
+                          padding: EdgeInsets.only(top: 8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    user!.name!,
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  SizedBox(width: 4.0),
+                                  user?.gender != null
+                                      ? SvgPicture.asset(
+                                          'assets/svg/icon_male.svg',
+                                          width: 18,
+                                          height: 18,
+                                        )
+                                      : SizedBox(),
+                                ],
+                              ),
+                              SizedBox(height: 8.0),
                               Text(
-                                user!.name!,
+                                user!.phoneNumber!,
                                 style: GoogleFonts.poppins(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
                                   color: Colors.white,
                                 ),
                               ),
-                              SizedBox(width: 4.0),
-                              user?.gender != null ?
-                        SvgPicture.asset(
-                          'assets/svg/icon_male.svg',
-                          width: 18,
-                          height: 18,
-                        ) : SizedBox(),
                             ],
                           ),
-                          SizedBox(height: 8.0),
-                          Text(
-                            user!.phoneNumber!,
-                            style: GoogleFonts.poppins(
-                              fontSize: 16,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                SizedBox(height: 30.0),
-                Center(
-                  child: Container(
-                    width: 450,
-                    height: 350,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                    padding: EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Profile and Security',
-                          style: textButtonTextStyle.copyWith(
-                            fontSize: 17, fontWeight: FontWeight.w700,
-                          )
+                    SizedBox(height: 30.0),
+                    Center(
+                      child: Container(
+                        width: 450,
+                        height: 350,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12.0),
                         ),
-                        SizedBox(height: 16.0),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        padding: EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            GestureDetector(
-                              onTap: () { 
-                                 Navigator.pushNamed(
-                                  context,
-                                  '/edit-profile',
-                                  arguments: user!
-                                );
-                              },
-                              child: Row(
-                                children: [
-                                  Image.asset(
-                                    'assets/icon_person.png',
-                                    width: 22,
-                                    height: 22,
-                                  ),
-                                  SizedBox(width: 8.0),
-                                  Text(
-                                    'Profile Settings',
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 16,
-                                      color: Color(0xff30444F),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Image.asset(
-                              'assets/icon_arrow_right.png',
-                              width: 26,
-                              height: 26,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 20.0),
-                        Text(
-                          'General',
-                          style: textButtonTextStyle.copyWith(
-                            fontSize: 17, fontWeight: FontWeight.w700,
-                          )
-                        ),
-                        SizedBox(height: 20.0),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => About()),
-                                );
-                              },
-                              child: Row(
-                                children: [
-                                  Image.asset(
-                                    'assets/icon_help.png',
-                                    width: 32,
-                                    height: 32,
-                                  ),
-                                  SizedBox(width: 8.0),
-                                  Text(
-                                    'About WinWin',
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 16,
-                                      color: Color(0xff30444F),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Image.asset(
-                              'assets/icon_arrow_right.png',
-                              width: 26,
-                              height: 26,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 15.0),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
+                            Text('Profile and Security',
+                                style: textButtonTextStyle.copyWith(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w700,
+                                )),
+                            SizedBox(height: 16.0),
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Image.asset(
-                                  'assets/icon_sticky_note.png',
-                                  width: 32,
-                                  height: 32,
-                                ),
-                                SizedBox(width: 8.0),
-                                Text(
-                                  'Terms & Conditions',
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 16,
-                                    color: Color(0xff30444F),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                        context, '/edit-profile',
+                                        arguments: user!);
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Image.asset(
+                                        'assets/icon_person.png',
+                                        width: 22,
+                                        height: 22,
+                                      ),
+                                      SizedBox(width: 8.0),
+                                      Text(
+                                        'Profile Settings',
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 16,
+                                          color: Color(0xff30444F),
+                                        ),
+                                      ),
+                                    ],
                                   ),
+                                ),
+                                Image.asset(
+                                  'assets/icon_arrow_right.png',
+                                  width: 26,
+                                  height: 26,
                                 ),
                               ],
                             ),
-                            Image.asset(
-                              'assets/icon_arrow_right.png',
-                              width: 26,
-                              height: 26,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 15.0),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
+                            SizedBox(height: 20.0),
+                            Text('General',
+                                style: textButtonTextStyle.copyWith(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w700,
+                                )),
+                            SizedBox(height: 20.0),
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Image.asset(
-                                  'assets/icon_privacy.png',
-                                  width: 32,
-                                  height: 32,
-                                ),
-                                SizedBox(width: 8.0),
-                                Text(
-                                  'Privacy Policy',
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 16,
-                                    color: Color(0xff30444F),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => About()),
+                                    );
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Image.asset(
+                                        'assets/icon_help.png',
+                                        width: 32,
+                                        height: 32,
+                                      ),
+                                      SizedBox(width: 8.0),
+                                      Text(
+                                        'About WinWin',
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 16,
+                                          color: Color(0xff30444F),
+                                        ),
+                                      ),
+                                    ],
                                   ),
+                                ),
+                                Image.asset(
+                                  'assets/icon_arrow_right.png',
+                                  width: 26,
+                                  height: 26,
                                 ),
                               ],
                             ),
-                            Image.asset(
-                              'assets/icon_arrow_right.png',
-                              width: 26,
-                              height: 26,
+                            SizedBox(height: 15.0),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Image.asset(
+                                      'assets/icon_sticky_note.png',
+                                      width: 32,
+                                      height: 32,
+                                    ),
+                                    SizedBox(width: 8.0),
+                                    Text(
+                                      'Terms & Conditions',
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 16,
+                                        color: Color(0xff30444F),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Image.asset(
+                                  'assets/icon_arrow_right.png',
+                                  width: 26,
+                                  height: 26,
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        SizedBox(height: 15.0),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/icon_logout.png',
-                              width: 32,
-                              height: 32,
+                            SizedBox(height: 15.0),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Image.asset(
+                                      'assets/icon_privacy.png',
+                                      width: 32,
+                                      height: 32,
+                                    ),
+                                    SizedBox(width: 8.0),
+                                    Text(
+                                      'Privacy Policy',
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 16,
+                                        color: Color(0xff30444F),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Image.asset(
+                                  'assets/icon_arrow_right.png',
+                                  width: 26,
+                                  height: 26,
+                                ),
+                              ],
                             ),
-                            SizedBox(width: 4.0),
-                            Expanded(
+                            SizedBox(height: 15.0),
+                            GestureDetector(
+                              onTap: handleLogout(),
                               child: Text(
                                 'Logout',
                                 style: GoogleFonts.poppins(
@@ -284,42 +296,42 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                                   color: Color(0xff30444F),
                                 ),
                               ),
-                            ),
+                            )
                           ],
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(height: 16.0),
-                Center(
-                  child: Container(
-                    width: 450,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // Aksi yang dilakukan saat tombol "Delete Account" ditekan
-                      },
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.yellow,
-                        onPrimary: Colors.black,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 16.0),
-                        child: Text(
-                          'Delete Account',
-                          style: GoogleFonts.poppins(
-                            fontSize: 18,
-                            color: Colors.black,
-                          ),
-                        ),
                       ),
                     ),
-                  ),
-                ),
-              ],
+                    /*SizedBox(height: 16.0),
+                            Center(
+                              child: Container(
+                                width: 450,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    // Aksi yang dilakukan saat tombol "Delete Account" ditekan
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Colors.yellow,
+                                    onPrimary: Colors.black,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12.0),
+                                    ),
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 16.0),
+                                    child: Text(
+                                      'Delete Account',
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 18,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),*/
+                  ],
+                );
+              },
             ),
           ),
         ),

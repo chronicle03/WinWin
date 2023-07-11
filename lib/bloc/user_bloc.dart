@@ -68,6 +68,24 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         }
       }
 
+      if (event is UserPostLogout) {
+        print("start");
+        emit(UserPostLoading());
+        try {
+          await Future.delayed(const Duration(seconds: 0), () async {
+            user = await userRepository.logout(
+              
+            );
+
+            emit(UserPostSuccess());
+          });
+        } catch (e) {
+          // print(e);
+          var err = e.toString().replaceAll('Exception: ', '');
+          emit(UserPostError(err));
+        }
+      }
+
       if (event is UserPostResendEmailVerify) {
         emit(UserPostLoading());
         try {

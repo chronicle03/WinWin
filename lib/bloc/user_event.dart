@@ -46,13 +46,19 @@ class UserPostUpdate extends UserEvent {
 }
 
 class UserPostLogout extends UserEvent {
+
+}
+
+/*class UserPostLogout extends UserEvent {
   final String authorization;
 
   UserPostLogout(this.authorization);
 
   @override
   List<Object?> get props => [authorization];
-}
+
+  get token => null;
+}*/
 
 
 class UserPostResendEmailVerify extends UserEvent {
