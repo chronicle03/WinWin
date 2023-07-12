@@ -25,7 +25,7 @@ class _LandingPageState extends State<LandingPage> {
   @override
   void initState() {
     super.initState();
-    clearPreference();
+    // clearPreference();
 
     _userBloc = BlocProvider.of<UserBloc>(context);
     _userBloc.add(GetUsers()); // Memanggil event GetUsers untuk memuat daftar pengguna

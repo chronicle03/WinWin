@@ -26,6 +26,11 @@ class UserRepositoryImpl extends UserRepository {
     prefs.setString('token', token!);
   }
 
+  clearPreference() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.clear();
+  }
+
   Future<String> getToken() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
@@ -93,6 +98,8 @@ class UserRepositoryImpl extends UserRepository {
       "password": password,
     });
 
+    print("response login: ${response.body}");
+
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body)['data'];
       UserModel user = UserModel.fromJson(data['user']);
@@ -100,7 +107,7 @@ class UserRepositoryImpl extends UserRepository {
       setToken(user.token);
       await UserData.updateUser(
           user); // save data user yang sudah login ke shared preference
-
+      // print("UserData: ${UserData.user!.favorite![0].userId}");
       return user;
     } else {
       Map<String, dynamic> responseData = jsonDecode(response.body);
@@ -108,9 +115,9 @@ class UserRepositoryImpl extends UserRepository {
     }
   }
 
-  Future ForgotPassword(String email) async {
+  Future forgotPassword(String email) async {
     final response =
-        await http.post(Uri.parse('$baseUrl/forgotpassword'), body: {
+        await http.post(Uri.parse('$baseUrl/forget-password'), body: {
       "email": email,
     });
     if (response.statusCode == 200) {
@@ -129,11 +136,14 @@ class UserRepositoryImpl extends UserRepository {
     final response = await http.get(Uri.parse('$baseUrl/users'),
         headers: {'Accept': 'applcation/json'});
     String token = await getToken();
+    // print("response body users: ${response.body} ");
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body)['data']['users'];
 
       data.forEach((userData) {
         UserModel user = UserModel.fromJson(userData);
+        // print("response body users2: ${user.favorite!.length} ");
+
         users.add(user);
       });
       return users;
@@ -220,6 +230,25 @@ class UserRepositoryImpl extends UserRepository {
 
       String firstError = errors[0][0];
       throw Exception(firstError);
+    }
+  }
+
+  Future logout() async {
+    String token = await getToken();
+    final response = await http.get(Uri.parse('$baseUrl/logout'), headers: {
+      "Authorization": token,
+    });
+
+    print("response: ${response.body}");
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body)['data'];
+      // UserModel user = UserModel.fromJson(data['user']);
+      clearPreference();
+      return data;
+    } else {
+      Map<String, dynamic> responseData = jsonDecode(response.body);
+
+      throw Exception(responseData['message']);
     }
   }
 }

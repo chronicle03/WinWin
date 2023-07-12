@@ -25,9 +25,9 @@ class ProfileSettingsPage extends StatefulWidget {
 class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
   // late UserBloc _userBloc;
   UserModel? user = UserData.user; // Add this variable
-  
+
   @override
-  void initState(){
+  void initState() {
     super.initState();
     // updateUser();
     UserData.loadUser();
@@ -43,6 +43,10 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    void handleLogout() {
+      BlocProvider.of<UserBloc>(context).add(UserPostLogout());
+    }
+
     print("user home: ${user!.email}");
     String? profilePhotoPath = user?.profilePhotoPath;
     return Scaffold(
@@ -60,50 +64,43 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                   children: [
                     profilePhotoPath != null
                         ? ClipOval(
-                            child: Image.network(
-                              baseUrlImage + profilePhotoPath,
-                              height: 60,
-                              width: 60,
-                              fit: BoxFit.cover,
-                            ),
-                          )
-                        : Image.asset(
-                            'assets/photoProfile.png',
-                            height: 60,
-                            width: 60,
-                          ),
+                      child: Image.network(
+                        baseUrlImage + profilePhotoPath,
+                        height: 60,
+                        width: 60,
+                        fit: BoxFit.cover,
+                      ),
+                    )
+                        : Icon(Icons.person_sharp, color: Colors.black26, size: 30, ),
                     SizedBox(width: 8.0),
                     Padding(
-                      padding: EdgeInsets.only(top: 8.0),
+                      padding: EdgeInsets.only(top: 2.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
                             children: [
                               Text(
-                                user!.name!,
-                                style: GoogleFonts.poppins(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
+                                user!.username!,
+                                style: textColor1TextStyle.copyWith(
+                                  fontWeight: FontWeight.bold, fontSize: 17
+                                )
                               ),
                               SizedBox(width: 4.0),
                               user?.gender != null ?
-                        SvgPicture.asset(
-                          'assets/svg/icon_male.svg',
-                          width: 18,
-                          height: 18,
-                        ) : SizedBox(),
+                              SvgPicture.asset(
+                                'assets/svg/icon_male.svg',
+                                width: 18,
+                                height: 18,
+                              ) : SizedBox(),
                             ],
                           ),
                           SizedBox(height: 8.0),
                           Text(
                             user!.phoneNumber!,
-                            style: GoogleFonts.poppins(
-                              fontSize: 16,
-                              color: Colors.white,
-                            ),
+                            style: textColor1TextStyle.copyWith(
+                                fontSize: 13
+                            )
                           ),
                         ],
                       ),
@@ -124,21 +121,21 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Profile and Security',
-                          style: textButtonTextStyle.copyWith(
-                            fontSize: 17, fontWeight: FontWeight.w700,
-                          )
+                            'Profile and Security',
+                            style: textButtonTextStyle.copyWith(
+                              fontSize: 17, fontWeight: FontWeight.w700,
+                            )
                         ),
                         SizedBox(height: 16.0),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             GestureDetector(
-                              onTap: () { 
-                                 Navigator.pushNamed(
-                                  context,
-                                  '/edit-profile',
-                                  arguments: user!
+                              onTap: () {
+                                Navigator.pushNamed(
+                                    context,
+                                    '/edit-profile',
+                                    arguments: user!
                                 );
                               },
                               child: Row(
@@ -168,10 +165,10 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                         ),
                         SizedBox(height: 20.0),
                         Text(
-                          'General',
-                          style: textButtonTextStyle.copyWith(
-                            fontSize: 17, fontWeight: FontWeight.w700,
-                          )
+                            'General',
+                            style: textButtonTextStyle.copyWith(
+                              fontSize: 17, fontWeight: FontWeight.w700,
+                            )
                         ),
                         SizedBox(height: 20.0),
                         Row(
@@ -276,14 +273,34 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                               height: 32,
                             ),
                             SizedBox(width: 4.0),
-                            Expanded(
-                              child: Text(
-                                'Logout',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 16,
-                                  color: Color(0xff30444F),
-                                ),
-                              ),
+                            BlocConsumer<UserBloc, UserState>(
+                              listener: (context, state) {
+                                if (state is UserPostSuccess){
+                                  Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+                                }
+                              },
+                              builder: (context, state) {
+                                if (state is UserPostLoading){
+                                  print("loading");
+                                }
+                                else if (state is UserPostError){
+                                  print("${state.code}");
+                                }
+                                return Expanded(
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      handleLogout();
+                                    },
+                                    child: Text(
+                                      'Logout',
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 16,
+                                        color: Color(0xff30444F),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
                           ],
                         ),
@@ -292,33 +309,33 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                   ),
                 ),
                 SizedBox(height: 16.0),
-                Center(
-                  child: Container(
-                    width: 450,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // Aksi yang dilakukan saat tombol "Delete Account" ditekan
-                      },
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.yellow,
-                        onPrimary: Colors.black,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 16.0),
-                        child: Text(
-                          'Delete Account',
-                          style: GoogleFonts.poppins(
-                            fontSize: 18,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                // Center(
+                //   child: Container(
+                //     width: 450,
+                //     child: ElevatedButton(
+                //       onPressed: () {
+                //         // Aksi yang dilakukan saat tombol "Delete Account" ditekan
+                //       },
+                //       style: ElevatedButton.styleFrom(
+                //         primary: Colors.yellow,
+                //         onPrimary: Colors.black,
+                //         shape: RoundedRectangleBorder(
+                //           borderRadius: BorderRadius.circular(12.0),
+                //         ),
+                //       ),
+                //       child: Padding(
+                //         padding: EdgeInsets.symmetric(vertical: 16.0),
+                //         child: Text(
+                //           'Delete Account',
+                //           style: GoogleFonts.poppins(
+                //             fontSize: 18,
+                //             color: Colors.black,
+                //           ),
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),

@@ -3,12 +3,12 @@ part of 'favorite_bloc.dart';
 abstract class FavoriteEvent {}
 
 class FavoritePostCreate extends FavoriteEvent{
-  final String user_id;
-  final String user_favorite_id;
+  final int userId;
+  final int userFavoriteId;
 
   FavoritePostCreate(
-    this.user_id,
-    this.user_favorite_id
+    this.userId,
+    this.userFavoriteId
   );
 }
 

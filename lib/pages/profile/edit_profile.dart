@@ -19,8 +19,10 @@ import "package:winwin/pages/widgets/input/skill_select.dart";
 import "package:winwin/pages/widgets/snackbar.dart";
 import 'dart:io';
 
+import "../../bloc/favorite_bloc.dart";
 import "../../bloc/skill_bloc.dart";
 import "../../data/models/skill_model.dart";
+import "../../data/repository/favorite_repository.dart";
 import "../main_page.dart";
 import "../widgets/loading_button.dart";
 
@@ -109,18 +111,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
   }
 
-  TextEditingController nameController =
-  TextEditingController(text: '');
-  TextEditingController jobStatusController =
-  TextEditingController(text:'');
-  TextEditingController bioController =
-  TextEditingController(text: '');
-  TextEditingController locationController =
-  TextEditingController(text: '');
-  TextEditingController phoneNumberController =
-  TextEditingController(text: '');
+  TextEditingController nameController = TextEditingController(text: '');
+  TextEditingController jobStatusController = TextEditingController(text:'');
+  TextEditingController bioController = TextEditingController(text: '');
+  TextEditingController locationController = TextEditingController(text: '');
+  TextEditingController phoneNumberController = TextEditingController(text: '');
   TextEditingController emailController = TextEditingController(text: '');
   TextEditingController passwordController = TextEditingController(text: '');
+  final FavoriteRepositoryImpl favoriteRepository = FavoriteRepositoryImpl();
+  final UserRepositoryImpl userRepository = UserRepositoryImpl();
 
   @override
   Widget build(BuildContext context) {
@@ -172,7 +171,20 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 GestureDetector(
                   onTap: () =>
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => MainPage(2))),
+                        MaterialPageRoute(
+                          builder: (context) => MultiBlocProvider(
+                            providers: [
+                              BlocProvider<FavoriteBloc>(
+                                create: (context) => FavoriteBloc(favoriteRepository),
+                              ),
+                              BlocProvider<UserBloc>(
+                                create: (context) => UserBloc(userRepository),
+                              ),
+                            ],
+                            child: MainPage(currentIndex: 2),
+                          ),
+                        ),
+                      ),
                   child: Image.asset(
                     "assets/icon_row_left.png",
                     width: 24,
@@ -203,7 +215,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           child: profilePhotoPath != null && image == null
               ? ClipOval(
             child: Image.network(
-              baseUrlImage + profilePhotoPath!,
+              baseUrlImage + profilePhotoPath,
               height: 100,
               width: 100,
               fit: BoxFit.cover,
@@ -218,11 +230,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               fit: BoxFit.cover,
             ),
           )
-              : Image.asset(
-            'assets/photoProfile.png',
-            height: 100,
-            width: 100,
-          ),
+              : Icon(Icons.person_sharp, color: Colors.black26, size: 30, ),
         ),
       );
     }
