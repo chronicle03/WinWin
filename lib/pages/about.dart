@@ -79,7 +79,7 @@ class About extends StatelessWidget {
                         'Alvin Fandi \n Syahrizal',
                         style: GoogleFonts.poppins(
                           color: Colors.white,
-                          fontSize: 12,
+                          fontSize: 16,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -97,7 +97,7 @@ class About extends StatelessWidget {
                         'Martiza Aurelia \n Ahmad',
                         style: GoogleFonts.poppins(
                           color: Colors.white,
-                          fontSize: 12,
+                          fontSize: 16,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -115,7 +115,7 @@ class About extends StatelessWidget {
                         'Muhammad Sayyid \n Rifqi',
                         style: GoogleFonts.poppins(
                           color: Colors.white,
-                          fontSize: 12,
+                          fontSize: 16,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -133,7 +133,7 @@ class About extends StatelessWidget {
                         'Muhammad Yazid \n Baihaqi',
                         style: GoogleFonts.poppins(
                           color: Colors.white,
-                          fontSize: 12,
+                          fontSize: 16,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -151,7 +151,7 @@ class About extends StatelessWidget {
                         'Raisa Akilah \n Araend',
                         style: GoogleFonts.poppins(
                           color: Colors.white,
-                          fontSize: 12,
+                          fontSize: 16,
                         ),
                         textAlign: TextAlign.center,
                       ),
