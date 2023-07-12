@@ -124,6 +124,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   TextEditingController emailController = TextEditingController(text: '');
   TextEditingController passwordController = TextEditingController(text: '');
   final FavoriteRepositoryImpl favoriteRepository = FavoriteRepositoryImpl();
+  final UserRepositoryImpl userRepository = UserRepositoryImpl();
 
   @override
   Widget build(BuildContext context) {
@@ -180,6 +181,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             providers: [
                               BlocProvider<FavoriteBloc>(
                                 create: (context) => FavoriteBloc(favoriteRepository),
+                              ),
+                              BlocProvider<UserBloc>(
+                                create: (context) => UserBloc(userRepository),
                               ),
                             ],
                             child: MainPage(currentIndex: 2),

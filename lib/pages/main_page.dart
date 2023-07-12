@@ -6,6 +6,7 @@ import 'package:winwin/pages/favorite_page.dart';
 import 'package:winwin/pages/home/home_page.dart';
 import 'package:winwin/pages/profile/profile_settings_page.dart';
 
+import '../bloc/user_bloc.dart';
 import '../data/repository/favorite_repository.dart';
 import 'constant.dart';
 
@@ -75,7 +76,9 @@ class _MainPageState extends State<MainPage> {
       case 1:
         return FavoritePage();
       case 2:
-        return ProfileSettingsPage();
+        return BlocProvider<UserBloc>.value(
+            value: BlocProvider.of<UserBloc>(context),
+            child: ProfileSettingsPage());
       default:
         return HomePage();
     }
