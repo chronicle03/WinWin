@@ -14,6 +14,7 @@ class UserPostError extends UserState {
 
   UserPostError(this.code);
 
+  Map<String, dynamic>? get message => null;
 }
 
 class UserPostLoginSuccess extends UserState {

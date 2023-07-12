@@ -15,6 +15,7 @@ class UserModel {
   String? jobStatus;
   String? token;
   String? profilePhotoPath;
+  String? profilePhotoUrl;
   String? createdAt;
   String? updatedAt;
   List<AbilityModel>? ability;
@@ -33,6 +34,7 @@ class UserModel {
         this.location,
         this.jobStatus,
         this.profilePhotoPath,
+        this.profilePhotoUrl,
         this.createdAt,
         this.updatedAt,
         this.ability,
@@ -51,6 +53,7 @@ class UserModel {
     location = json['location'];
     jobStatus = json['job_status'];
     profilePhotoPath = json['profile_photo_path'];
+    profilePhotoUrl = json['profile_photo_url'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     if (json['ability'] != null) {
@@ -81,6 +84,7 @@ class UserModel {
     data['location'] = location;
     data['job_status'] = jobStatus;
     data['profile_photo_path'] = profilePhotoPath;
+    data['profile_photo_url'] = profilePhotoUrl;
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
     if (ability != null) {

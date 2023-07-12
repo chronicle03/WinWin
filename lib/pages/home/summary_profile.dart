@@ -71,17 +71,12 @@ class _SummaryProfileWidgetState extends State<SummaryProfileWidget> {
                   ),
                   child: widget.user.profilePhotoPath != null
                       ? Image.network(
-                          "$baseUrlImage${widget.user.profilePhotoPath!}",
-                          width: double.infinity,
-                          height: 390,
-                          fit: BoxFit.cover,
-                        )
-                      : Image.asset(
-                          "assets/rose.jpg",
-                          width: double.infinity,
-                          height: 390,
-                          fit: BoxFit.cover,
-                        )),
+                    "$baseUrlImage${widget.user.profilePhotoPath!}",
+                    width: double.infinity,
+                    height: 390,
+                    fit: BoxFit.cover,
+                  )
+                      : Center(child: Icon(Icons.person_sharp, size: 300, color: Colors.black26, ))),
               Positioned(
                 top: 1,
                 child: Container(
@@ -95,7 +90,7 @@ class _SummaryProfileWidgetState extends State<SummaryProfileWidget> {
                         margin: EdgeInsets.only(top: 150),
                         width: 356,
                         height:
-                            0, // Adjust the height to match the desired layout
+                        0, // Adjust the height to match the desired layout
                       ),
                     ),
                   ),
@@ -142,10 +137,10 @@ class _SummaryProfileWidgetState extends State<SummaryProfileWidget> {
                           children: [
                             widget.user.location != null
                                 ? SvgPicture.asset(
-                                    'assets/svg/icon_location_blue.svg',
-                                    width: 10,
-                                    height: 10,
-                                  )
+                              'assets/svg/icon_location_blue.svg',
+                              width: 10,
+                              height: 10,
+                            )
                                 : Container(),
                             const SizedBox(
                               width: 5,
@@ -175,12 +170,17 @@ class _SummaryProfileWidgetState extends State<SummaryProfileWidget> {
                         const SizedBox(
                           height: 10,
                         ),
-                        Row(
-                          children: widget.user.ability!
-                          .take(3)
-                              .map(
-                                  (ability) => skills(ability.skills![0].name!))
-                              .toList(),
+                        Container(
+                          height: 30,
+                          child: Expanded(
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: widget.user.ability!
+                                  .map(
+                                      (ability) => skills(ability.skills![0].name!))
+                                  .toList(),
+                            ),
+                          ),
                         )
                       ],
                     ),
@@ -192,7 +192,6 @@ class _SummaryProfileWidgetState extends State<SummaryProfileWidget> {
         ),
       );
     }
-
     return content();
   }
 }

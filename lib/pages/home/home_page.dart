@@ -52,7 +52,7 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       skillSelect = skills;
       filterUsers();
-      print("filter user1 : ${filteredUsers.length}");
+      // print("filter user1 : ${filteredUsers.length}");
       buildCardStack();
     });
   }
@@ -121,6 +121,13 @@ class _HomePageState extends State<HomePage> {
             });
           });
         }
+
+        if (index < filteredUsers.length - 1) {
+          _cardController.addItem(
+            SummaryProfileWidget(user: filteredUsers[index + 1]),
+          );
+        }
+
       },
       enableSwipeUp: false,
       enableSwipeDown: false,
@@ -142,12 +149,7 @@ class _HomePageState extends State<HomePage> {
                     width: 60,
                     height: 60,
                   )
-                : Image.asset(
-                    'assets/photoProfile.png',
-                    fit: BoxFit.cover,
-                    width: 60,
-                    height: 60,
-                  ),
+                : Icon(Icons.person_sharp, color: Colors.black26, size: 30, ),
           ),
           const SizedBox(width: 9),
           Column(
@@ -199,44 +201,44 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
           const Spacer(),
-          SkillSelectHome(updateSelectSkills),
+          // SkillSelectHome(updateSelectSkills),
           // Image.asset("assets/svg/icon_filter.svg", width: 50, height: 50),
           const SizedBox(width: 6),
-          InkResponse(
-            highlightShape: BoxShape.circle,
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => NotificationPage()));
-            },
-            splashColor: Colors.black.withOpacity(0.1), // Warna efek splash
-            radius: 32,
-            child: Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.15),
-                    offset: Offset(0, 2),
-                    blurRadius: 4,
-                    spreadRadius: -3,
-                  ),
-                ],
-              ),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => NotificationPage()));
-                },
-                child: SvgPicture.asset(
-                  'assets/svg/icon_notif.svg',
-                  width: 50,
-                  height: 50,
-                ),
-              ),
-            ),
-          ),
+          // InkResponse(
+          //   highlightShape: BoxShape.circle,
+          //   onTap: () {
+          //     Navigator.push(context,
+          //         MaterialPageRoute(builder: (context) => NotificationPage()));
+          //   },
+          //   splashColor: Colors.black.withOpacity(0.1), // Warna efek splash
+          //   radius: 32,
+          //   child: Container(
+          //     decoration: BoxDecoration(
+          //       shape: BoxShape.circle,
+          //       boxShadow: [
+          //         BoxShadow(
+          //           color: Colors.black.withOpacity(0.15),
+          //           offset: Offset(0, 2),
+          //           blurRadius: 4,
+          //           spreadRadius: -3,
+          //         ),
+          //       ],
+          //     ),
+          //     child: GestureDetector(
+          //       onTap: () {
+          //         Navigator.push(
+          //             context,
+          //             MaterialPageRoute(
+          //                 builder: (context) => NotificationPage()));
+          //       },
+          //       child: SvgPicture.asset(
+          //         'assets/svg/icon_notif.svg',
+          //         width: 50,
+          //         height: 50,
+          //       ),
+          //     ),
+          //   ),
+          // ),
           // Image.asset("assets/svg/icon_notif.svg", width: 50, height: 50),
         ],
       ),

@@ -111,16 +111,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
   }
 
-  TextEditingController nameController =
-  TextEditingController(text: '');
-  TextEditingController jobStatusController =
-  TextEditingController(text:'');
-  TextEditingController bioController =
-  TextEditingController(text: '');
-  TextEditingController locationController =
-  TextEditingController(text: '');
-  TextEditingController phoneNumberController =
-  TextEditingController(text: '');
+  TextEditingController nameController = TextEditingController(text: '');
+  TextEditingController jobStatusController = TextEditingController(text:'');
+  TextEditingController bioController = TextEditingController(text: '');
+  TextEditingController locationController = TextEditingController(text: '');
+  TextEditingController phoneNumberController = TextEditingController(text: '');
   TextEditingController emailController = TextEditingController(text: '');
   TextEditingController passwordController = TextEditingController(text: '');
   final FavoriteRepositoryImpl favoriteRepository = FavoriteRepositoryImpl();
@@ -220,7 +215,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           child: profilePhotoPath != null && image == null
               ? ClipOval(
             child: Image.network(
-              baseUrlImage + profilePhotoPath!,
+              baseUrlImage + profilePhotoPath,
               height: 100,
               width: 100,
               fit: BoxFit.cover,
@@ -235,11 +230,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               fit: BoxFit.cover,
             ),
           )
-              : Image.asset(
-            'assets/photoProfile.png',
-            height: 100,
-            width: 100,
-          ),
+              : Icon(Icons.person_sharp, color: Colors.black26, size: 30, ),
         ),
       );
     }

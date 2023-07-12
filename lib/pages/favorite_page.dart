@@ -103,12 +103,7 @@ class _FavoritePageState extends State<FavoritePage> {
                   width: 38,
                   height: 38,
                 )
-                    : Image.asset(
-                  'assets/photoProfile.png',
-                  fit: BoxFit.cover,
-                  width: 38,
-                  height: 38,
-                ),
+                    : Icon(Icons.person_sharp, color: Colors.black26, size: 30, ),
               ),
               const SizedBox(width: 15),
               Text(

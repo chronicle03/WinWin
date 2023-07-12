@@ -71,26 +71,20 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                         fit: BoxFit.cover,
                       ),
                     )
-                        : Image.asset(
-                      'assets/photoProfile.png',
-                      height: 60,
-                      width: 60,
-                    ),
+                        : Icon(Icons.person_sharp, color: Colors.black26, size: 30, ),
                     SizedBox(width: 8.0),
                     Padding(
-                      padding: EdgeInsets.only(top: 8.0),
+                      padding: EdgeInsets.only(top: 2.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
                             children: [
                               Text(
-                                user!.name!,
-                                style: GoogleFonts.poppins(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
+                                user!.username!,
+                                style: textColor1TextStyle.copyWith(
+                                  fontWeight: FontWeight.bold, fontSize: 17
+                                )
                               ),
                               SizedBox(width: 4.0),
                               user?.gender != null ?
@@ -104,10 +98,9 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                           SizedBox(height: 8.0),
                           Text(
                             user!.phoneNumber!,
-                            style: GoogleFonts.poppins(
-                              fontSize: 16,
-                              color: Colors.white,
-                            ),
+                            style: textColor1TextStyle.copyWith(
+                                fontSize: 13
+                            )
                           ),
                         ],
                       ),
@@ -316,33 +309,33 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                   ),
                 ),
                 SizedBox(height: 16.0),
-                Center(
-                  child: Container(
-                    width: 450,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // Aksi yang dilakukan saat tombol "Delete Account" ditekan
-                      },
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.yellow,
-                        onPrimary: Colors.black,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 16.0),
-                        child: Text(
-                          'Delete Account',
-                          style: GoogleFonts.poppins(
-                            fontSize: 18,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                // Center(
+                //   child: Container(
+                //     width: 450,
+                //     child: ElevatedButton(
+                //       onPressed: () {
+                //         // Aksi yang dilakukan saat tombol "Delete Account" ditekan
+                //       },
+                //       style: ElevatedButton.styleFrom(
+                //         primary: Colors.yellow,
+                //         onPrimary: Colors.black,
+                //         shape: RoundedRectangleBorder(
+                //           borderRadius: BorderRadius.circular(12.0),
+                //         ),
+                //       ),
+                //       child: Padding(
+                //         padding: EdgeInsets.symmetric(vertical: 16.0),
+                //         child: Text(
+                //           'Delete Account',
+                //           style: GoogleFonts.poppins(
+                //             fontSize: 18,
+                //             color: Colors.black,
+                //           ),
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),

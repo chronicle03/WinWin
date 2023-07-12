@@ -280,14 +280,17 @@ class _LoginPageState extends State<LoginPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Text(
-                      "Forgot Password?",
-                      style: textColor1TextStyle.copyWith(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w500,
-                      ),
+                    GestureDetector(
+                       onTap: () => Navigator.pushNamed(
+                                  context, '/forgot-password'),
+                              child: Text(
+                                " Forgot Password?",
+                                style: textSecondaryTextStyle.copyWith(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
                     ),
-                    const SizedBox(width: 10),
                   ],
                 ),
                 Container(

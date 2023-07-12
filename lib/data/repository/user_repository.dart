@@ -115,9 +115,9 @@ class UserRepositoryImpl extends UserRepository {
     }
   }
 
-  Future ForgotPassword(String email) async {
+  Future forgotPassword(String email) async {
     final response =
-        await http.post(Uri.parse('$baseUrl/forgotpassword'), body: {
+        await http.post(Uri.parse('$baseUrl/forget-password'), body: {
       "email": email,
     });
     if (response.statusCode == 200) {
