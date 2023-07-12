@@ -21,12 +21,18 @@ abstract class UserRepository {
 }
 
 class UserRepositoryImpl extends UserRepository {
-  String baserUrl = "http://localhost:8000/api";
-  // String baserUrl = "http://192.168.100.241:8000/api";
-  // String baserUrl = "http://localhost:8000/api";
-   //String baserUrl = "http://192.168.100.241:8000/api";
-  
-  //String baserUrl = "http://192.168.231.46:8000/api";
+  setToken(String? token) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('token', token!);
+  }
+
+  Future<String> getToken() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+    return token ?? '';
+  }
+
+  List<UserModel> users = [];
 
   @override
   Future<UserModel> register(
