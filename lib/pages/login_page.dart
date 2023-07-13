@@ -20,27 +20,12 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController passwordController = TextEditingController(text: '');
   TextEditingController phoneNumberController = TextEditingController(text: '');
 
+  bool isTapEye = true;
   String message = "null";
   @override
   Widget build(BuildContext context) {
     //handle
     handleLogin(String message){
-       if (emailController.text == "" || //buat logic login
-          passwordController.text == "" ) {
-        ScaffoldMessenger.of(context).showSnackBar(CustomSnackbar(
-          color: Colors.orangeAccent,
-          icon: Icons.warning,
-          message: "Please fill in all the necessary information!",
-        ));
-      
-      } else if (message != "null" && message.isNotEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(CustomSnackbar(
-          color: Colors.red,
-          icon: Icons.warning,
-          message: message,
-        ));
-      }
-
       BlocProvider.of<UserBloc>(context).add(UserPostLogin(
           emailController.text,
           //usernameController.text,
@@ -154,6 +139,7 @@ class _LoginPageState extends State<LoginPage> {
                           Padding(
                             padding: const EdgeInsets.only(top: 2),
                             child: TextFormField(
+                              obscureText: isTapEye ?? false,
                               controller: passwordController,
                               style: textButtonTextStyle.copyWith(
                                   fontSize: 11, fontWeight: FontWeight.w600),
@@ -169,10 +155,21 @@ class _LoginPageState extends State<LoginPage> {
                         ],
                       ),
                     ),
-                    Image.asset(
-                      'assets/icon_eye_close.png',
-                      width: 26,
-                      height: 23,
+                    IconButton(
+                      onPressed: () {
+                        setState(() {
+                          if (isTapEye == false){
+                            isTapEye = true;
+                          }else{
+                            isTapEye = false;
+                          }
+                        });
+                      },
+                      icon: Image.asset(
+                        'assets/icon_eye_close.png',
+                        width: 26,
+                        height: 23,
+                      ),
                     ),
                     const SizedBox(
                       width: 9,
@@ -199,7 +196,17 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 onPressed: () {
-                  handleLogin(message);
+                  if (emailController.text == "" || //buat logic login
+                      passwordController.text == "" ) {
+                    ScaffoldMessenger.of(context).showSnackBar(CustomSnackbar(
+                      color: Colors.orangeAccent,
+                      icon: Icons.warning,
+                      message: "Please fill in all the necessary information!",
+                    ));
+                  } else{
+                    handleLogin(message);
+                  }
+
                 },
                 child: Text(
                   "Login",
@@ -213,10 +220,14 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       backgroundColor: backgroundColor,
       body: BlocConsumer<UserBloc, UserState>(
-        listener: (context, state) {},
-        builder: (context, state) {
+        listener: (context, state) {
           if (state is UserPostError) {
             message = state.code;
+            ScaffoldMessenger.of(context).showSnackBar(CustomSnackbar(
+              color: Colors.red,
+              icon: Icons.warning,
+              message: message,
+            ));
           } else if (state is UserPostLoginSuccess) {
             UserModel user = state.user;
             // print("user login: ${user.name}");
@@ -224,7 +235,8 @@ class _LoginPageState extends State<LoginPage> {
               Navigator.pushNamed(context, '/home', arguments: user);
             });
           }
-
+        },
+        builder: (context, state) {
           return Container(
             margin: EdgeInsets.only(top: 25),
             padding: EdgeInsets.symmetric(horizontal: 25),

@@ -43,6 +43,8 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    // _userBloc = BlocProvider.of<UserBloc>(context);
+    // _userBloc.add(GetUsers());
     UserData.loadUser();
     users = UserBloc.userList;
     filterUsers();

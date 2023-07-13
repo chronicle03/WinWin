@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:winwin/pages/constant.dart';
 
-class PasswordInput extends StatelessWidget {
+class PasswordInput extends StatefulWidget {
   late TextEditingController controller = TextEditingController(text: '');
   late String hintText;
   late bool enable;
@@ -10,6 +10,13 @@ class PasswordInput extends StatelessWidget {
     this.hintText = hintText ?? 'Password';
     this.enable = enable ?? true;
   }
+
+  @override
+  State<PasswordInput> createState() => _PasswordInputState();
+}
+
+class _PasswordInputState extends State<PasswordInput> {
+  bool isTapEye = true;
 
   Widget passwordInput() {
       return Column(
@@ -22,7 +29,7 @@ class PasswordInput extends StatelessWidget {
             height: 50,
             padding: const EdgeInsets.symmetric(horizontal: 9.0),
             decoration: BoxDecoration(
-                color: enable ? appBarColor : Colors.white60, borderRadius: BorderRadius.circular(10.0)),
+                color: widget.enable ? appBarColor : Colors.white60, borderRadius: BorderRadius.circular(10.0)),
             child: Center(
               child: Row(
                 children: [
@@ -35,19 +42,30 @@ class PasswordInput extends StatelessWidget {
                   ),
                   Expanded(
                       child: TextFormField(
-                        enabled: enable? true : false,
-                        controller: controller,
-                        obscureText: true,
+                        enabled: widget.enable? true : false,
+                        controller: widget.controller,
+                        obscureText: isTapEye ?? false,
                         style: textColor2TextStyle,
                         decoration: InputDecoration.collapsed(
-                            hintText: hintText,
+                            hintText: widget.hintText,
                             hintStyle: textColor2TextStyle.copyWith(
                                 fontSize: 13, fontWeight: FontWeight.w500)),
                       )),
-                  Image.asset(
-                    "assets/icon_eye_close.png",
-                    width: 26,
-                    height: 23,
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        if (isTapEye == false){
+                          isTapEye = true;
+                        }else{
+                          isTapEye = false;
+                        }
+                      });
+                    },
+                    icon: Image.asset(
+                      'assets/icon_eye_close.png',
+                      width: 26,
+                      height: 23,
+                    ),
                   ),
                   const SizedBox(
                     width: 9,
@@ -59,7 +77,6 @@ class PasswordInput extends StatelessWidget {
         ],
       );
     }
-
 
   @override
   Widget build(BuildContext context) {

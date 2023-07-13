@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:winwin/bloc/user_bloc.dart";
 import "package:winwin/pages/widgets/loading_button.dart";
+import "package:winwin/pages/widgets/snackbar.dart";
 import "constant.dart";
 
 class VerifyEmailPage extends StatefulWidget {
@@ -19,30 +20,6 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
   @override
   Widget build(BuildContext context) {
     handleResendVerifyEmail() {
-      if (emailController.text == "") {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: Colors.yellow,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            content: Text("Field Must Be filled"),
-          ),
-        );
-      } else if (message != "null") {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: Colors.red,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            content: Text(message),
-          ),
-        );
-      }
-
       BlocProvider.of<UserBloc>(context).add(UserPostResendEmailVerify(
         emailController.text,
       ));
@@ -189,7 +166,15 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
             ),
           ),
           onPressed: () {
-            handleResendVerifyEmail();
+            if (emailController.text == "") {
+              ScaffoldMessenger.of(context).showSnackBar(CustomSnackbar(
+                color: Colors.orangeAccent,
+                icon: Icons.warning,
+                message: "Email must be filled!",
+              ));
+            }else{
+              handleResendVerifyEmail();
+            }
           },
           child: Text(
             "Resend",
@@ -241,16 +226,25 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
     return Scaffold(
         backgroundColor: backgroundColor,
         body: BlocConsumer<UserBloc, UserState>(
-          listener: (context, state) {},
-          builder: (context, state) {
+          listener: (context, state) {
             if (state is UserPostError) {
               message = state.code;
-              print("message: $message");
+              ScaffoldMessenger.of(context).showSnackBar(CustomSnackbar(
+                color: Colors.red,
+                icon: Icons.warning,
+                message: message,
+              ));
             } else if (state is UserPostSuccess) {
+              ScaffoldMessenger.of(context).showSnackBar(CustomSnackbar(
+                color: Colors.green,
+                icon: Icons.check,
+                message: "Resend Success, please check your email!",
+              ));
               isResend = false;
-              return contentMerge(state);
+              // return contentMerge(state);
             }
-
+          },
+          builder: (context, state) {
             return contentMerge(state);
           },
         ));

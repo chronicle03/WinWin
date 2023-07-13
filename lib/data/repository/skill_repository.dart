@@ -31,6 +31,8 @@ class SkillRepositoryImpl extends SkillRepository {
     final response = await http.get(Uri.parse('$baseUrl/skills'),
         headers: {'Accept': 'applcation/json'});
 
+    print("response: ${response.body}");
+
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body)['data']['skills'];
 

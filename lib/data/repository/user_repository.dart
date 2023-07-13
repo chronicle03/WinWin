@@ -87,8 +87,7 @@ class UserRepositoryImpl extends UserRepository {
       return data;
     } else {
       Map<String, dynamic> responseData = jsonDecode(response.body);
-
-      throw Exception(responseData['data']['errors']);
+      throw Exception(responseData['data']['error']);
     }
   }
 
@@ -122,12 +121,12 @@ class UserRepositoryImpl extends UserRepository {
     });
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body)['data'];
-      UserModel user = UserModel.fromJson(data['user']);
-      return user;
+      // UserModel user = UserModel.fromJson(data['user']);
+      return data;
     } else {
       Map<String, dynamic> responseData = jsonDecode(response.body);
 
-      throw Exception(responseData['data']['errors']);
+      throw Exception(responseData['data']['message']);
     }
   }
 

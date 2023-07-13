@@ -69,27 +69,6 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     handleRegister(String message) {
       print("userSkill: $userSkill");
-      if (isChecked.toString() == "false" ||
-          nameController.text == "" ||
-          emailController.text == "" ||
-          usernameController.text == "" ||
-          phoneNumberController.text == "" ||
-          selectedDate == "" ||
-          passwordController.text == "" ||
-          confirmPasswordController.text == "") {
-        ScaffoldMessenger.of(context).showSnackBar(CustomSnackbar(
-          color: Colors.orangeAccent,
-          icon: Icons.warning,
-          message: "Please fill in all the necessary information!",
-        ));
-      } else if (message != "null") {
-        ScaffoldMessenger.of(context).showSnackBar(CustomSnackbar(
-          color: Colors.red,
-          icon: Icons.warning,
-          message: message,
-        ));
-      }
-
       BlocProvider.of<UserBloc>(context).add(UserPostRegister(
           nameController.text,
           emailController.text,
@@ -255,10 +234,23 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
           ),
           onPressed: () {
-            if (state is UserPostLoading) {
-              message = "null";
+            if (isChecked.toString() == "false" ||
+                nameController.text == "" ||
+                emailController.text == "" ||
+                usernameController.text == "" ||
+                phoneNumberController.text == "" ||
+                selectedDate == "" ||
+                passwordController.text == "" ||
+                confirmPasswordController.text == "") {
+              ScaffoldMessenger.of(context).showSnackBar(CustomSnackbar(
+                color: Colors.orangeAccent,
+                icon: Icons.warning,
+                message: "Please fill in all the necessary information!",
+              ));
+            }else{
+              handleRegister(message);
             }
-            handleRegister(message);
+
             print(message);
           },
           child: Text(
@@ -312,16 +304,21 @@ class _RegisterPageState extends State<RegisterPage> {
               header(),
               const SizedBox(height: 10),
               BlocConsumer<UserBloc, UserState>(
-                listener: (context, state) {},
-                builder: (context, state) {
+                listener: (context, state) {
                   if (state is UserPostError) {
                     message = state.code;
+                    ScaffoldMessenger.of(context).showSnackBar(CustomSnackbar(
+                      color: Colors.red,
+                      icon: Icons.warning,
+                      message: message,
+                    ));
                   } else if (state is UserPostSuccess) {
                     Future.delayed(Duration.zero, () {
                       Navigator.pushNamed(context, '/resend-verify-email');
                     });
                   }
-
+                },
+                builder: (context, state) {
                   return Expanded(
                     child: ListView(
                       children: [

@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:winwin/pages/constant.dart';
 
-class ConfirmPasswordInput extends StatelessWidget {
+class ConfirmPasswordInput extends StatefulWidget {
   late TextEditingController controller = TextEditingController(text: '');
   ConfirmPasswordInput(this.controller, {super.key});
+
+  @override
+  State<ConfirmPasswordInput> createState() => _ConfirmPasswordInputState();
+}
+
+class _ConfirmPasswordInputState extends State<ConfirmPasswordInput> {
+  bool isTapEye = true;
 
   Widget confirmPasswordInput() {
       return Column(
@@ -29,18 +36,29 @@ class ConfirmPasswordInput extends StatelessWidget {
                   ),
                   Expanded(
                       child: TextFormField(
-                        obscureText: true,
-                        controller: controller,
+                        obscureText: isTapEye ?? true,
+                        controller: widget.controller,
                         style: textColor2TextStyle,
                         decoration: InputDecoration.collapsed(
                             hintText: "Confirm Password",
                             hintStyle: textColor2TextStyle.copyWith(
                                 fontSize: 13, fontWeight: FontWeight.w500)),
                       )),
-                  Image.asset(
-                    "assets/icon_eye_close.png",
-                    width: 26,
-                    height: 23,
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        if (isTapEye == false){
+                          isTapEye = true;
+                        }else{
+                          isTapEye = false;
+                        }
+                      });
+                    },
+                    icon: Image.asset(
+                      'assets/icon_eye_close.png',
+                      width: 26,
+                      height: 23,
+                    ),
                   ),
                   const SizedBox(
                     width: 2,
@@ -52,6 +70,7 @@ class ConfirmPasswordInput extends StatelessWidget {
         ],
       );
     }
+
   @override
   Widget build(BuildContext context) {
     return confirmPasswordInput();

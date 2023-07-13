@@ -28,6 +28,7 @@ class _FavoritePageState extends State<FavoritePage> {
 
   void iniState() {
     super.initState();
+
     UserData.loadUser();
     users = UserBloc.userList;
   }

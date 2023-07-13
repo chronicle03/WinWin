@@ -45,9 +45,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
   int _selectedGenderIndex = 0;
   late SkillRepositoryImpl skillRepositoryImpl = SkillRepositoryImpl();
 
-  void _fetchSkills() {// Cek apakah data sudah diambil sebelumnya
+  void _fetchSkills() {
+    // Cek apakah data sudah diambil sebelumnya
     _skillBloc = BlocProvider.of<SkillBloc>(context);
-    _skillBloc.add(GetSkillEvent());// Set variabel flag ke true setelah mengambil data
+    _skillBloc.add(
+        GetSkillEvent()); // Set variabel flag ke true setelah mengambil data
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -99,7 +101,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   Future getImage() async {
     final pickedFile =
-    await _picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
+        await _picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
     if (pickedFile != null) {
       // image = File(pickedFile.path);
       setState(() {
@@ -112,7 +114,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   TextEditingController nameController = TextEditingController(text: '');
-  TextEditingController jobStatusController = TextEditingController(text:'');
+  TextEditingController jobStatusController = TextEditingController(text: '');
   TextEditingController bioController = TextEditingController(text: '');
   TextEditingController locationController = TextEditingController(text: '');
   TextEditingController phoneNumberController = TextEditingController(text: '');
@@ -139,24 +141,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
           bioController.text,
           image != null ? image! : null,
           userSkill.toList()));
-
-      if (message != "null") {
-        Future.delayed(Duration(seconds: 2), () {
-          ScaffoldMessenger.of(context).showSnackBar(CustomSnackbar(
-            color: Colors.red,
-            icon: Icons.warning,
-            message: message,
-          ));
-        });
-      } else {
-        if (state is UserPostSuccess) {
-          ScaffoldMessenger.of(context).showSnackBar(CustomSnackbar(
-            color: Colors.green,
-            icon: Icons.check,
-            message: "Success update!!",
-          ));
-        }
-      }
       _fetchSkills();
     }
 
@@ -169,22 +153,23 @@ class _EditProfilePageState extends State<EditProfilePage> {
             child: Row(
               children: [
                 GestureDetector(
-                  onTap: () =>
-                      Navigator.push(context,
-                        MaterialPageRoute(
-                          builder: (context) => MultiBlocProvider(
-                            providers: [
-                              BlocProvider<FavoriteBloc>(
-                                create: (context) => FavoriteBloc(favoriteRepository),
-                              ),
-                              BlocProvider<UserBloc>(
-                                create: (context) => UserBloc(userRepository),
-                              ),
-                            ],
-                            child: MainPage(currentIndex: 2),
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MultiBlocProvider(
+                        providers: [
+                          BlocProvider<FavoriteBloc>(
+                            create: (context) =>
+                                FavoriteBloc(favoriteRepository),
                           ),
-                        ),
+                          BlocProvider<UserBloc>(
+                            create: (context) => UserBloc(userRepository),
+                          ),
+                        ],
+                        child: MainPage(currentIndex: 2),
                       ),
+                    ),
+                  ),
                   child: Image.asset(
                     "assets/icon_row_left.png",
                     width: 24,
@@ -214,23 +199,27 @@ class _EditProfilePageState extends State<EditProfilePage> {
           },
           child: profilePhotoPath != null && image == null
               ? ClipOval(
-            child: Image.network(
-              baseUrlImage + profilePhotoPath,
-              height: 100,
-              width: 100,
-              fit: BoxFit.cover,
-            ),
-          )
+                  child: Image.network(
+                    baseUrlImage + profilePhotoPath,
+                    height: 100,
+                    width: 100,
+                    fit: BoxFit.cover,
+                  ),
+                )
               : image != null
-              ? ClipOval(
-            child: Image.file(
-              File(image!.path).absolute,
-              height: 100,
-              width: 100,
-              fit: BoxFit.cover,
-            ),
-          )
-              : Icon(Icons.person_sharp, color: Colors.black26, size: 30, ),
+                  ? ClipOval(
+                      child: Image.file(
+                        File(image!.path).absolute,
+                        height: 100,
+                        width: 100,
+                        fit: BoxFit.cover,
+                      ),
+                    )
+                  : Icon(
+                      Icons.person_sharp,
+                      color: Colors.black26,
+                      size: 30,
+                    ),
         ),
       );
     }
@@ -447,13 +436,22 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     children: [
                       BlocConsumer<UserBloc, UserState>(
                         listener: (context, state) {
-                          WidgetsBinding.instance!.addPostFrameCallback((_) {
-                            if (state is UserPostError) {
-                              setState(() {
-                                message = state.code;
-                              });
-                            }
-                          });
+                          if (state is UserPostError) {
+                            message = state.code;
+                            ScaffoldMessenger.of(context).showSnackBar(CustomSnackbar(
+                              color: Colors.red,
+                              icon: Icons.warning,
+                              message: message,
+                            ));
+
+                          } else if (state is UserPostSuccess) {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(CustomSnackbar(
+                              color: Colors.green,
+                              icon: Icons.check,
+                              message: "Success update!!",
+                            ));
+                          }
                         },
                         builder: (context, state) {
                           return Column(
@@ -518,8 +516,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               ),
                               JobStatusInput(
                                   jobStatusController, loggedInUser!),
-                              SkillSelect(
-                                  userSkill, updateUserSkills),
+                              SkillSelect(userSkill, updateUserSkills),
                               BioInput(bioController, loggedInUser!),
                               const SizedBox(height: 10),
                               state is UserPostLoading
