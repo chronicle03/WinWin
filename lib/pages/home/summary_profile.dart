@@ -53,7 +53,7 @@ class _SummaryProfileWidgetState extends State<SummaryProfileWidget> {
       return GestureDetector(
         onTap: () {
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => ProfileDetailsPage()));
+              MaterialPageRoute(builder: (context) => ProfileDetailsPage(user: null,)));
         },
         child: Container(
           margin: EdgeInsets.only(top: 40, right: 20, left: 20),
