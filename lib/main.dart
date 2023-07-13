@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:flutter_easyloading/flutter_easyloading.dart";
 import "package:winwin/bloc/user_bloc.dart";
 import "package:winwin/data/repository/user_repository.dart";
 import "package:winwin/pages/about.dart";
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      builder: EasyLoading.init(),
       debugShowCheckedModeBanner: false,
       routes: {
         '/': (context) => MultiBlocProvider(providers: [
