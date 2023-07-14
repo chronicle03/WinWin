@@ -14,7 +14,6 @@ class ForgotPasswordPage extends StatefulWidget {
 
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   TextEditingController emailController = TextEditingController(text: '');
-  //bool isForgot = false;
   String message = "null";
 
   @override
@@ -182,10 +181,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               ScaffoldMessenger.of(context).showSnackBar(CustomSnackbar(
                 color: Colors.green,
                 icon: Icons.check,
-                message: "Resend Success, please check your email!",
+                message: "We have sent a link to your email, please check your email to reset your password",
               ));
-              //isForgot = false;
-              // return contentMerge(state);
             }
           },
           builder: (context, state) {
