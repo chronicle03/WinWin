@@ -114,14 +114,13 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         emit(UserPostLoading());
         try {
           await Future.delayed(const Duration(seconds: 0), () async {
-            user = await userRepository.forgotPassword(
-              event.email,
-            );
+            await userRepository.forgotPassword(event.email);
             emit(UserPostSuccess());
           });
         } catch (e) {
           // print(e);
-          emit(UserPostError(e.toString().replaceAll('Exception: ', '')));
+          var err = e.toString().replaceAll('Exception: ', '');
+          emit(UserPostError(err));
         }
       }
 

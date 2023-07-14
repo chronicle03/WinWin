@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:winwin/bloc/user_bloc.dart";
 import "package:winwin/pages/widgets/loading_button.dart";
+import "package:winwin/pages/widgets/snackbar.dart";
 import 'constant.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
@@ -13,7 +14,7 @@ class ForgotPasswordPage extends StatefulWidget {
 
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   TextEditingController emailController = TextEditingController(text: '');
-  //bool isForgot = true;
+  //bool isForgot = false;
   String message = "null";
 
   @override
@@ -96,29 +97,15 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             ),
           ),
           onPressed: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: Text('Reset Password', 
-                                style: textColor1TextStyle.copyWith(
-                                fontSize: 17,
-                                fontWeight: semibold,
-                                decoration: TextDecoration.none)),
-                  content: Text('We have sent a link to your email, please check your email to reset your password.'),
-                  backgroundColor: Colors.green,
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Text('OK'),
-                    ),
-                  ],
-                );
-              },
-            );
-            handleForgotPassword();
+            if (emailController.text == "") {
+              ScaffoldMessenger.of(context).showSnackBar(CustomSnackbar(
+                color: Colors.orangeAccent,
+                icon: Icons.warning,
+                message: "Email must be filled!",
+              ));
+            }else{
+              handleForgotPassword();
+            }
           },
           child: Text(
             "Reset Password",
@@ -183,17 +170,25 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     return Scaffold(
         backgroundColor: backgroundColor,
         body: BlocConsumer<UserBloc, UserState>(
-          listener: (context, state) {},
-          builder: (context, state) {
+          listener: (context, state) {
             if (state is UserPostError) {
               message = state.code;
-              print("message: $message");
+              ScaffoldMessenger.of(context).showSnackBar(CustomSnackbar(
+                color: Colors.red,
+                icon: Icons.warning,
+                message: message,
+              ));
             } else if (state is UserPostSuccess) {
+              ScaffoldMessenger.of(context).showSnackBar(CustomSnackbar(
+                color: Colors.green,
+                icon: Icons.check,
+                message: "Resend Success, please check your email!",
+              ));
               //isForgot = false;
-              print("We have sent link to your email, please check your email to reset password");
-              return contentMerge(state);
+              // return contentMerge(state);
             }
-
+          },
+          builder: (context, state) {
             return contentMerge(state);
           },
         ));

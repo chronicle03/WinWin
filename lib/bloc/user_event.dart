@@ -69,9 +69,7 @@ class UserPostLogout extends UserEvent{}
 class UserPostForgotPassword extends UserEvent {
   final String email;
 
-  UserPostForgotPassword(
-    this.email,
-  );
+  UserPostForgotPassword(this.email);
 }
 
 class GetUsers extends UserEvent {}
