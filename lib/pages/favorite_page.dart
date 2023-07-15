@@ -145,7 +145,7 @@ class _FavoritePageState extends State<FavoritePage> {
         margin: EdgeInsets.symmetric(horizontal: 25),
         child: Column(
           children: [
-            search(),
+            // search(),
             Expanded(
               child: ListView(
                   children: userFavorite.map((user) => yourname(user)).toList()

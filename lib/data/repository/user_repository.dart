@@ -104,8 +104,7 @@ class UserRepositoryImpl extends UserRepository {
       UserModel user = UserModel.fromJson(data['user']);
       user.token = data['token_type'] + " " + data['access_token'];
       setToken(user.token);
-      await UserData.updateUser(
-          user); // save data user yang sudah login ke shared preference
+      await UserData.updateUser(user); // save data user yang sudah login ke shared preference
       // print("UserData: ${UserData.user!.favorite![0].userId}");
       return user;
     } else {
@@ -119,13 +118,13 @@ class UserRepositoryImpl extends UserRepository {
         await http.post(Uri.parse('$baseUrl/forget-password'), body: {
       "email": email,
     });
+
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body)['data'];
       // UserModel user = UserModel.fromJson(data['user']);
       return data;
     } else {
       Map<String, dynamic> responseData = jsonDecode(response.body);
-
       throw Exception(responseData['data']['message']);
     }
   }

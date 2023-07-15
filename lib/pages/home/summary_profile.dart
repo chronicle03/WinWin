@@ -1,30 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:swipeable_cards_stack/swipeable_cards_stack.dart';
-import 'package:winwin/data/models/user_model.dart';
-import 'package:winwin/pages/constant.dart';
-import 'package:winwin/pages/profile/profile_details.dart';
-import 'package:winwin/pages/widgets/painter.dart';
 import 'package:intl/intl.dart';
 
+import '../../data/models/user_model.dart';
+import '../constant.dart';
+
 class SummaryProfileWidget extends StatefulWidget {
-  final UserModel user;
-  late DateTime dateOfBirth;
-  late DateTime now;
-  late Duration ageDuration;
-  late int ageYears;
-  SummaryProfileWidget({super.key, required this.user}) {
-    dateOfBirth = DateFormat('yyyy-MM-dd').parse(user.birthdate!);
-    now = DateTime.now();
-    ageDuration = now.difference(dateOfBirth);
-    ageYears = ageDuration.inDays ~/ 365;
-  }
+  final UserModel userModel;
+
+  const SummaryProfileWidget({required this.userModel});
 
   @override
   State<SummaryProfileWidget> createState() => _SummaryProfileWidgetState();
 }
 
 class _SummaryProfileWidgetState extends State<SummaryProfileWidget> {
+  ageCount(String birthdate) {
+    DateTime dateOfBirth = DateFormat('yyyy-MM-dd').parse(birthdate);
+    DateTime now = DateTime.now();
+    Duration ageDuration = now.difference(dateOfBirth);
+    int ageYears = ageDuration.inDays ~/ 365;
+
+    return ageYears;
+  }
 
   Widget skills(String value) {
     return ClipRRect(
@@ -48,150 +45,163 @@ class _SummaryProfileWidgetState extends State<SummaryProfileWidget> {
 
   @override
   Widget build(BuildContext context) {
-    print("user filter summary: ${widget.user.name}");
-    Widget content() {
-      return GestureDetector(
-        onTap: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => ProfileDetailsPage()));
-        },
-        child: Container(
-          margin: EdgeInsets.only(top: 40, right: 20, left: 20),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: appBarColor,
+    return Container(
+      margin: EdgeInsets.only(top: 0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Colors.white,
+      ),
+      width: double.infinity,
+      height: double.infinity,
+      child: Stack(
+        children: [
+          widget.userModel.profilePhotoPath != null
+              ? ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Image.network(
+              baseUrlImage + widget.userModel.profilePhotoPath!,
+              width: double.infinity,
+              fit: BoxFit.cover,
+              height: 400,
+            ),
+          )
+              : Align(
+            alignment: Alignment.topCenter,
+            child: Icon(
+              Icons.person,
+              size: 350,
+              color: Colors.black26,
+            ),
           ),
-          child: Stack(
-            children: [
-              ClipRRect(
-                  clipBehavior: Clip.antiAlias,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(12),
-                    topRight: Radius.circular(12),
-                  ),
-                  child: widget.user.profilePhotoPath != null
-                      ? Image.network(
-                    "$baseUrlImage${widget.user.profilePhotoPath!}",
-                    width: double.infinity,
-                    height: 390,
-                    fit: BoxFit.cover,
-                  )
-                      : Center(child: Icon(Icons.person_sharp, size: 300, color: Colors.black26, ))),
-              Positioned(
-                top: 1,
-                child: Container(
-                  margin: EdgeInsets.only(top: 350),
-                  child: CustomPaint(
-                    painter: MyPainter(),
-                    child: ClipRRect(
-                      // borderRadius: BorderRadius.circular(12),
-                      child: Container(
-                        color: appBarColor,
-                        margin: EdgeInsets.only(top: 150),
-                        width: 356,
-                        height:
-                        0, // Adjust the height to match the desired layout
+          Container(
+            margin: EdgeInsets.only(top: 360),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.asset(
+                'assets/background.png',
+                fit: BoxFit.fill,
+                height: 410,
+                width: double.infinity,
+              ),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 400),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ageCount(widget.userModel.birthdate!) != 0
+                        ? Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        '${widget.userModel.name!}, ${ageCount(widget.userModel.birthdate!)}th',
+                        style: textButtonTextStyle.copyWith(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    )
+                        : Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        '${widget.userModel.name!}',
+                        style: textButtonTextStyle.copyWith(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
-                  ),
+                    widget.userModel.gender == 'male'
+                        ? Image.asset(
+                      'assets/icon_male.png',
+                      height: 18,
+                    )
+                        : widget.userModel.gender == 'female'
+                        ? Image.asset(
+                      'assets/icon_female.png',
+                      height: 18,
+                    )
+                        : const SizedBox(),
+                  ],
                 ),
-              ),
-              Positioned(
-                top: 0,
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Container(
-                    width: 276,
-                    height: 205,
-                    margin: EdgeInsets.only(top: 380, left: 35, right: 25),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              widget.ageYears != 0
-                                  ? "${widget.user.name!}, ${widget.ageYears}th"
-                                  : widget.user.name!,
-                              style: textPrimaryStyle.copyWith(
-                                fontSize: 17,
-                                fontWeight: semibold,
-                              ),
-                            ),
-                            widget.user.gender == 'male' ?
-                            Image.asset(
-                              'assets/icon_male_white.png',
-                              width: 18,
-                              height: 18,
-                            ): widget.user.gender == 'female' ?
-                            Image.asset(
-                              'assets/icon_female_white.png',
-                              width: 18,
-                              height: 18,
-                            ): Container(),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            widget.user.location != null
-                                ? SvgPicture.asset(
-                              'assets/svg/icon_location_blue.svg',
-                              width: 10,
-                              height: 10,
-                            )
-                                : Container(),
-                            const SizedBox(
-                              width: 5,
-                            ),
-                            Text(
-                              widget.user.location != null ? "${widget.user.location!}" : " ",
-                              style: iconTextStyle.copyWith(
-                                fontSize: 11,
-                                fontWeight: medium,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 12,
-                        ),
-                        Text(
-                          widget.user.bio != null ? widget.user.bio! : "No bio",
-                          style: iconTextStyle.copyWith(
-                            fontSize: 12,
-                            fontWeight: medium,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Align(
+                      alignment: Alignment.center,
+                      child: Row(
+                        children: [
+                          Image.asset(
+                            'assets/icon_location_blue.png',
+                            height: 8,
+                            width: 6,
                           ),
-                          maxLines: 2,
-                          textAlign: TextAlign.justify,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Container(
-                          height: 30,
-                          child: Expanded(
-                            child: ListView(
-                              scrollDirection: Axis.horizontal,
-                              children: widget.user.ability!
-                                  .map(
-                                      (ability) => skills(ability.skills![0].name!))
-                                  .toList(),
+                          const SizedBox(width: 4),
+                          widget.userModel.location != null
+                              ? Text(
+                            '${widget.userModel.location!}',
+                            style: iconTextStyle.copyWith(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          )
+                              : Text(
+                            "Indonesia",
+                            style: iconTextStyle.copyWith(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
-                        )
-                      ],
+                        ],
+                      ),
                     ),
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 25),
+                  child: widget.userModel.bio != null
+                      ? Text(
+                    widget.userModel.bio!,
+                    style: textColor2TextStyle.copyWith(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    textAlign: TextAlign.justify,
+                    maxLines: 2,
+                  )
+                      : Text(
+                    "no bio",
+                    style: textColor2TextStyle.copyWith(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    textAlign: TextAlign.justify,
+                    maxLines: 2,
                   ),
                 ),
-              ),
-            ],
+                SizedBox(
+                  height: 10,
+                ),
+                widget.userModel.ability!.length != 0
+                    ? SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: widget.userModel.ability!
+                        .map((ability) =>
+                        skills(ability.skills![0].name!)).toList(),
+                  ),
+                )
+                    : Container(),
+              ],
+            ),
           ),
-        ),
-      );
-    }
-    return content();
+        ],
+      ),
+    );
   }
 }

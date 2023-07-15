@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:winwin/bloc/user_bloc.dart";
 import "package:winwin/pages/widgets/loading_button.dart";
+import "package:winwin/pages/widgets/snackbar.dart";
 import 'constant.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
@@ -13,36 +14,11 @@ class ForgotPasswordPage extends StatefulWidget {
 
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   TextEditingController emailController = TextEditingController(text: '');
-  //bool isForgot = true;
   String message = "null";
 
   @override
   Widget build(BuildContext context) {
     handleForgotPassword() {
-      if (emailController.text == "") {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: Colors.yellow,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            content: Text("Field Must Be filled"),
-          ),
-        );
-      } else if (message != "null") {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: Colors.red,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            content: Text(message),
-          ),
-        );
-      }
-
       BlocProvider.of<UserBloc>(context).add(UserPostForgotPassword(
         emailController.text,
       ));
@@ -52,25 +28,25 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       return Container(
         margin: EdgeInsets.only(top: 25),
         child: Align(
-            alignment: Alignment.centerLeft,
-            child: Row(
-              children: [
-                GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: Image.asset(
-                    "assets/icon_row_left.png",
-                    width: 24,
-                    height: 24,
-                  ),
+          alignment: Alignment.centerLeft,
+          child: Row(
+            children: [
+              GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: Image.asset(
+                  "assets/icon_row_left.png",
+                  width: 24,
+                  height: 24,
                 ),
-                Padding(padding: const EdgeInsets.symmetric(horizontal: 5.0)),
-                Text(
-                  "Back to Login",
-                  style: textColor1TextStyle.copyWith(
-                      fontSize: 20, fontWeight: FontWeight.w600),
-                ),
-              ],
-            ),
+              ),
+              Padding(padding: const EdgeInsets.symmetric(horizontal: 5.0)),
+              Text(
+                "Back to Login",
+                style: textColor1TextStyle.copyWith(
+                    fontSize: 20, fontWeight: FontWeight.w600),
+              ),
+            ],
+          ),
         ),
       );
     }
@@ -94,13 +70,13 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               ),
               Expanded(
                   child: TextFormField(
-                controller: emailController,
-                style: textColor2TextStyle,
-                decoration: InputDecoration.collapsed(
-                    hintText: "Email Address",
-                    hintStyle: textColor2TextStyle.copyWith(
-                        fontSize: 13, fontWeight: FontWeight.w500)),
-              )),
+                    controller: emailController,
+                    style: textColor2TextStyle,
+                    decoration: InputDecoration.collapsed(
+                        hintText: "Email Address",
+                        hintStyle: textColor2TextStyle.copyWith(
+                            fontSize: 13, fontWeight: FontWeight.w500)),
+                  )),
             ],
           ),
         ),
@@ -120,29 +96,15 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             ),
           ),
           onPressed: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: Text('Reset Password', 
-                                style: textColor1TextStyle.copyWith(
-                                fontSize: 17,
-                                fontWeight: semibold,
-                                decoration: TextDecoration.none)),
-                  content: Text('We have sent a link to your email, please check your email to reset your password.'),
-                  backgroundColor: Colors.green,
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Text('OK'),
-                    ),
-                  ],
-                );
-              },
-            );
-            handleForgotPassword();
+            if (emailController.text == "") {
+              ScaffoldMessenger.of(context).showSnackBar(CustomSnackbar(
+                color: Colors.orangeAccent,
+                icon: Icons.warning,
+                message: "Email must be filled!",
+              ));
+            }else{
+              handleForgotPassword();
+            }
           },
           child: Text(
             "Reset Password",
@@ -153,10 +115,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           ),
         ),
       );
-}
+    }
 
 
-      Widget contentMerge(UserState state) {
+    Widget contentMerge(UserState state) {
       return SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -207,17 +169,23 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     return Scaffold(
         backgroundColor: backgroundColor,
         body: BlocConsumer<UserBloc, UserState>(
-          listener: (context, state) {},
-          builder: (context, state) {
+          listener: (context, state) {
             if (state is UserPostError) {
               message = state.code;
-              print("message: $message");
+              ScaffoldMessenger.of(context).showSnackBar(CustomSnackbar(
+                color: Colors.red,
+                icon: Icons.warning,
+                message: message,
+              ));
             } else if (state is UserPostSuccess) {
-              //isForgot = false;
-              print("We have sent link to your email, please check your email to reset password");
-              return contentMerge(state);
+              ScaffoldMessenger.of(context).showSnackBar(CustomSnackbar(
+                color: Colors.green,
+                icon: Icons.check,
+                message: "We have sent a link to your email, please check your email to reset your password",
+              ));
             }
-
+          },
+          builder: (context, state) {
             return contentMerge(state);
           },
         ));

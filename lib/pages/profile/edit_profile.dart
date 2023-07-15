@@ -152,31 +152,32 @@ class _EditProfilePageState extends State<EditProfilePage> {
             alignment: Alignment.centerLeft,
             child: Row(
               children: [
-                GestureDetector(
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MultiBlocProvider(
-                        providers: [
-                          BlocProvider<FavoriteBloc>(
-                            create: (context) =>
-                                FavoriteBloc(favoriteRepository),
-                          ),
-                          BlocProvider<UserBloc>(
-                            create: (context) => UserBloc(userRepository),
-                          ),
-                        ],
-                        child: MainPage(currentIndex: 2),
+                IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MultiBlocProvider(
+                          providers: [
+                            BlocProvider<FavoriteBloc>(
+                              create: (context) =>
+                                  FavoriteBloc(favoriteRepository),
+                            ),
+                            BlocProvider<UserBloc>(
+                              create: (context) => UserBloc(userRepository),
+                            ),
+                          ],
+                          child: MainPage(currentIndex: 2),
+                        ),
                       ),
-                    ),
-                  ),
-                  child: Image.asset(
+                    );
+                  },
+                  icon: Image.asset(
                     "assets/icon_row_left.png",
                     width: 24,
                     height: 24,
                   ),
                 ),
-                Padding(padding: const EdgeInsets.symmetric(horizontal: 5.0)),
                 Text(
                   "Profile Settings",
                   style: textColor1TextStyle.copyWith(
@@ -216,9 +217,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       ),
                     )
                   : Icon(
-                      Icons.person_sharp,
-                      color: Colors.black26,
-                      size: 30,
+                      Icons.person_add_alt_rounded,
+                      color: appBarColor,
+                      size: 60,
                     ),
         ),
       );
@@ -438,12 +439,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         listener: (context, state) {
                           if (state is UserPostError) {
                             message = state.code;
-                            ScaffoldMessenger.of(context).showSnackBar(CustomSnackbar(
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(CustomSnackbar(
                               color: Colors.red,
                               icon: Icons.warning,
                               message: message,
                             ));
-
                           } else if (state is UserPostSuccess) {
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(CustomSnackbar(

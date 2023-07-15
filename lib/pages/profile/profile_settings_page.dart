@@ -86,8 +86,11 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                             fit: BoxFit.cover,
                           ),
                         )
-                            : Icon(Icons.person_sharp, color: Colors.black26,
-                          size: 30,),
+                            : Icon(
+                          Icons.person,
+                          color: appBarColor,
+                          size: 60,
+                        ),
                         SizedBox(width: 8.0),
                         Padding(
                           padding: EdgeInsets.only(top: 2.0),
@@ -144,18 +147,18 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                                 )
                             ),
                             SizedBox(height: 16.0),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.pushNamed(
-                                        context,
-                                        '/edit-profile',
-                                        arguments: user!
-                                    );
-                                  },
-                                  child: Row(
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(
+                                    context,
+                                    '/edit-profile',
+                                    arguments: user!
+                                );
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
                                     children: [
                                       Image.asset(
                                         'assets/icon_person.png',
@@ -172,13 +175,13 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                                       ),
                                     ],
                                   ),
-                                ),
-                                Image.asset(
-                                  'assets/icon_arrow_right.png',
-                                  width: 26,
-                                  height: 26,
-                                ),
-                              ],
+                                  Image.asset(
+                                    'assets/icon_arrow_right.png',
+                                    width: 26,
+                                    height: 26,
+                                  ),
+                                ],
+                              ),
                             ),
                             SizedBox(height: 20.0),
                             Text(

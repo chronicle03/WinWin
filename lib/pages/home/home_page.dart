@@ -1,9 +1,13 @@
 import "dart:async";
 import "dart:convert";
+import "dart:developer";
 
+import "package:appinio_swiper/appinio_swiper.dart";
+import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_svg/flutter_svg.dart";
+import "package:intl/intl.dart";
 import "package:shared_preferences/shared_preferences.dart";
 import "package:swipeable_cards_stack/swipeable_cards_stack.dart";
 import "package:winwin/bloc/user_bloc.dart";
@@ -35,16 +39,15 @@ class _HomePageState extends State<HomePage> {
 
   bool isFavoriteTap = false;
   bool isSkipTap = false;
+  bool isEnd = false;
 
   var i = 0;
 
-  final _cardController = SwipeableCardsStackController();
+  final AppinioSwiperController controller = AppinioSwiperController();
 
   @override
   void initState() {
     super.initState();
-    // _userBloc = BlocProvider.of<UserBloc>(context);
-    // _userBloc.add(GetUsers());
     UserData.loadUser();
     users = UserBloc.userList;
     filterUsers();
@@ -54,20 +57,13 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       skillSelect = skills;
       filterUsers();
-      // print("filter user1 : ${filteredUsers.length}");
-      buildCardStack();
     });
   }
 
-  void filterUsers() {
+  filterUsers(){
     List<UserModel> userFavorite = user!.favorite!
-        .map((favorite) =>
-        users.where((user) => favorite.userFavoriteId == user.id).toList())
-        .expand((element) => element)
+        .map((favorite) => users.firstWhere((user) => favorite.userFavoriteId == user.id, orElse: () => UserModel()))
         .toList();
-
-    print("skill : $skillSelect");
-    print("users : $skillSelect");
 
     setState(() {
       filteredUsers = users
@@ -81,174 +77,220 @@ class _HomePageState extends State<HomePage> {
     });
 
     print("filter user2 : ${filteredUsers.length}");
+    return filteredUsers;
   }
 
-  Widget buildCardStack() {
-    // filterUsers();
-    return SwipeableCardsStack(
-      cardController: _cardController,
-      cardHeightTopMul: 0.75,
-      cardHeightBottomMul: 0.5,
-      context: context,
-      onCardSwiped: (dir, index, widget) {
-        if (dir == AxisDirection.right) {
+  void _swipe(int index, AppinioSwiperDirection direction) {
+    if (direction.name == 'left') {
+      if (isSkipTap == false) {
+        setState(() {
+          isSkipTap = true;
+        });
+        Future.delayed(Duration(milliseconds: 100), () {
+          setState(() {
+            isSkipTap = false;
+          });
+        });
+      } else {
+        setState(() {
+          isSkipTap = false;
+        });
+      }
+    } else if (direction.name == 'right') {
+      // print("index swipe: $index");
+
+      setState(() {
+        if (index == 0) {
           BlocProvider.of<FavoriteBloc>(context).add(
-            FavoritePostCreate(
-              user!.id!,
-              widget.user.id,
-            ),
+            FavoritePostCreate(user!.id!, filteredUsers.last.id!),
           );
-          setState(() {
-            isFavoriteTap = true;
-          });
-
-          Timer(Duration(milliseconds: 400), () {
-            setState(() {
-              isFavoriteTap = false;
-            });
-          });
-        }
-
-        if (dir == AxisDirection.left) {
-          setState(() {
-            isSkipTap = true;
-            filteredUsers
-                .map((e) => print("filter user length: ${e.name}"))
-                .toList();
-          });
-
-          Timer(Duration(milliseconds: 400), () {
-            setState(() {
-              isSkipTap = false;
-            });
-          });
-        }
-
-        if (index < filteredUsers.length - 1) {
-          _cardController.addItem(
-            SummaryProfileWidget(user: filteredUsers[index + 1]),
+        } else {
+          print(
+              "index: ${filteredUsers[index - 1].id!}, ${filteredUsers[index - 1].name!}");
+          BlocProvider.of<FavoriteBloc>(context).add(
+            FavoritePostCreate(user!.id!, filteredUsers[index - 1].id!),
           );
         }
 
-      },
-      enableSwipeUp: false,
-      enableSwipeDown: false,
-      items: filteredUsers.map((e) => SummaryProfileWidget(user: e)).toList(),
-    );
+        filteredUsers = filterUsers();
+        print("len user ${filteredUsers.length}");
+      });
+
+      if (isFavoriteTap == false) {
+        setState(() {
+          isFavoriteTap = true;
+        });
+        Future.delayed(Duration(milliseconds: 100), () {
+          setState(() {
+            isFavoriteTap = false;
+          });
+        });
+      } else {
+        setState(() {
+          isFavoriteTap = false;
+        });
+      }
+    }
   }
 
-  Widget header() {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 24),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          ClipOval(
-            child: user?.profilePhotoPath != null
-                ? Image.network(
-                    '$baseUrlImage${user!.profilePhotoPath}',
-                    fit: BoxFit.cover,
-                    width: 60,
-                    height: 60,
-                  )
-                : Icon(Icons.person_sharp, color: Colors.black26, size: 30, ),
-          ),
-          const SizedBox(width: 9),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Text(
-                    "${user!.username}",
-                    style: textColor1TextStyle.copyWith(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 17,
-                    ),
-                  ),
-                  SizedBox(width: 4),
-                  user!.gender == 'male'
-                      ? Image.asset(
-                          'assets/icon_male_white.png',
-                          width: 18,
-                          height: 18,
-                        )
-                      : user!.gender == 'female'
-                          ? Image.asset(
-                              'assets/icon_female_white.png',
-                              width: 18,
-                              height: 18,
-                            )
-                          : Container(),
-                ],
-              ),
-              SizedBox(height: 2),
-              Row(
-                children: [
-                  Image.asset(
-                    "assets/icon_location.png",
-                    width: 8,
-                    height: 11,
-                  ),
-                  SizedBox(width: 4),
-                  Text(
-                    "${user!.location}",
-                    style: textSecondaryTextStyle.copyWith(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          const Spacer(),
-          // SkillSelectHome(updateSelectSkills),
-          // Image.asset("assets/svg/icon_filter.svg", width: 50, height: 50),
-          const SizedBox(width: 6),
-          // InkResponse(
-          //   highlightShape: BoxShape.circle,
-          //   onTap: () {
-          //     Navigator.push(context,
-          //         MaterialPageRoute(builder: (context) => NotificationPage()));
-          //   },
-          //   splashColor: Colors.black.withOpacity(0.1), // Warna efek splash
-          //   radius: 32,
-          //   child: Container(
-          //     decoration: BoxDecoration(
-          //       shape: BoxShape.circle,
-          //       boxShadow: [
-          //         BoxShadow(
-          //           color: Colors.black.withOpacity(0.15),
-          //           offset: Offset(0, 2),
-          //           blurRadius: 4,
-          //           spreadRadius: -3,
-          //         ),
-          //       ],
-          //     ),
-          //     child: GestureDetector(
-          //       onTap: () {
-          //         Navigator.push(
-          //             context,
-          //             MaterialPageRoute(
-          //                 builder: (context) => NotificationPage()));
-          //       },
-          //       child: SvgPicture.asset(
-          //         'assets/svg/icon_notif.svg',
-          //         width: 50,
-          //         height: 50,
-          //       ),
-          //     ),
-          //   ),
-          // ),
-          // Image.asset("assets/svg/icon_notif.svg", width: 50, height: 50),
-        ],
+  void _unswipe(bool unswiped) {
+    if (unswiped) {
+      log("SUCCESS: card was unswiped");
+    } else {
+      log("FAIL: no card left to unswipe");
+    }
+  }
+
+  _onEnd() {
+    log("end reached!");
+    setState(() {
+      isEnd = true;
+    });
+  }
+
+  Widget appinioSwiperWidget(List<UserModel> filteredUsers) {
+    return AppinioSwiper(
+      // loop: true,
+      swipeOptions: const AppinioSwipeOptions.all(),
+      // unlimitedUnswipe: true,
+      controller: controller,
+      unswipe: _unswipe,
+      onSwiping: (AppinioSwiperDirection direction) {
+        // print("dir: $direction");
+        debugPrint(direction.toString());
+      },
+      onSwipe: _swipe,
+      padding: const EdgeInsets.only(
+        left: 25,
+        right: 25,
+        top: 30,
+        bottom: 20,
       ),
+      onEnd: _onEnd,
+      cardsCount: filteredUsers.length,
+      cardsBuilder: (BuildContext context, int index) {
+        UserModel user = filteredUsers[index];
+        return SummaryProfileWidget(userModel: user);
+      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
+
+    Widget header() {
+      return Container(
+        margin: EdgeInsets.symmetric(horizontal: 24),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            ClipOval(
+              child: user?.profilePhotoPath != null
+                  ? Image.network(
+                '$baseUrlImage${user!.profilePhotoPath}',
+                fit: BoxFit.cover,
+                width: 60,
+                height: 60,
+              )
+                  : Icon(
+                Icons.person,
+                color: appBarColor,
+                size: 60,
+              ),
+            ),
+            const SizedBox(width: 9),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      "${user!.username}",
+                      style: textColor1TextStyle.copyWith(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 17,
+                      ),
+                    ),
+                    SizedBox(width: 4),
+                    user!.gender == 'male'
+                        ? Image.asset(
+                      'assets/icon_male_white.png',
+                      width: 18,
+                      height: 18,
+                    )
+                        : user!.gender == 'female'
+                        ? Image.asset(
+                      'assets/icon_female_white.png',
+                      width: 18,
+                      height: 18,
+                    )
+                        : Container(),
+                  ],
+                ),
+                SizedBox(height: 2),
+                Row(
+                  children: [
+                    Image.asset(
+                      "assets/icon_location.png",
+                      width: 8,
+                      height: 11,
+                    ),
+                    SizedBox(width: 4),
+                    Text(
+                      "${user!.location}",
+                      style: textSecondaryTextStyle.copyWith(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const Spacer(),
+            SkillSelectHome(updateSelectSkills),
+            const SizedBox(width: 6),
+            // InkResponse(
+            //   highlightShape: BoxShape.circle,
+            //   onTap: () {
+            //     Navigator.push(context,
+            //         MaterialPageRoute(builder: (context) => NotificationPage()));
+            //   },
+            //   splashColor: Colors.black.withOpacity(0.1), // Warna efek splash
+            //   radius: 32,
+            //   child: Container(
+            //     decoration: BoxDecoration(
+            //       shape: BoxShape.circle,
+            //       boxShadow: [
+            //         BoxShadow(
+            //           color: Colors.black.withOpacity(0.15),
+            //           offset: Offset(0, 2),
+            //           blurRadius: 4,
+            //           spreadRadius: -3,
+            //         ),
+            //       ],
+            //     ),
+            //     child: GestureDetector(
+            //       onTap: () {
+            //         Navigator.push(
+            //             context,
+            //             MaterialPageRoute(
+            //                 builder: (context) => NotificationPage()));
+            //       },
+            //       child: SvgPicture.asset(
+            //         'assets/svg/icon_notif.svg',
+            //         width: 50,
+            //         height: 50,
+            //       ),
+            //     ),
+            //   ),
+            // ),
+            // Image.asset("assets/svg/icon_notif.svg", width: 50, height: 50),
+          ],
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: backgroundColor,
       body: Container(
@@ -256,92 +298,102 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             header(),
-            buildCardStack(),
-            Container(
-              width: 200,
-              margin: EdgeInsets.only(top: 15),
-              padding: EdgeInsets.symmetric(vertical: 5),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30),
-                gradient: LinearGradient(
-                  colors: [
-                    Colors.white.withOpacity(0.5),
-                    Colors.white.withOpacity(0.6),
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  stops: [0.0, 1.0],
+            isEnd ?
+                Container(
+                  margin: EdgeInsets.only(top: 200),
+                  padding: EdgeInsets.symmetric(horizontal: 30),
+                  child: Text(
+                    "Horray!!! you have reached all users, please reopen winwin in a few moments",
+                    style: textSecondaryTextStyle.copyWith(
+                      fontSize: 25
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ) : filteredUsers.isEmpty ?  Container(
+              margin: EdgeInsets.only(top: 200),
+              padding: EdgeInsets.symmetric(horizontal: 30),
+              child: Text(
+                "Sorry, the user with the skill you selected has not been found",
+                style: textSecondaryTextStyle.copyWith(
+                    fontSize: 25
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.25),
-                    offset: Offset(0, 4),
-                    blurRadius: 5,
-                    spreadRadius: -3,
-                  ),
-                ],
+                textAlign: TextAlign.center,
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            )
+            : Expanded(
+              child: Stack(
                 children: [
-                  FloatingActionButton(
-                    onPressed: () => {
-                      _cardController.triggerSwipeLeft(),
-                      setState(() {
-                        isSkipTap = true;
-                      }),
-                    },
-                    backgroundColor: Colors.transparent,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.25),
-                            offset: Offset(0, 4),
-                            blurRadius: 4,
-                            spreadRadius: -3,
+                  appinioSwiperWidget(filteredUsers),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 25),
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          FloatingActionButton(
+                            onPressed: () => {
+                              controller.swipeLeft(),
+                              setState(() {
+                                isSkipTap = true;
+                              }),
+                            },
+                            backgroundColor: Colors.transparent,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.25),
+                                    offset: Offset(0, 4),
+                                    blurRadius: 4,
+                                    spreadRadius: -3,
+                                  ),
+                                ],
+                              ),
+                              child: SvgPicture.asset(
+                                isSkipTap
+                                    ? 'assets/svg/icon_skip_tap.svg'
+                                    : 'assets/svg/icon_skip.svg',
+                                width: 57,
+                                height: 57,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          FloatingActionButton(
+                            onPressed: () {
+                              controller.swipeRight();
+                              setState(() {
+                                isFavoriteTap = true;
+                              });
+                            },
+                            backgroundColor: Colors.transparent,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.25),
+                                    offset: Offset(0, 4),
+                                    blurRadius: 4,
+                                    spreadRadius: -3,
+                                  ),
+                                ],
+                              ),
+                              child: SvgPicture.asset(
+                                isFavoriteTap
+                                    ? 'assets/svg/icon_favorite_tap.svg'
+                                    : 'assets/svg/icon_favorite.svg',
+                                width: 57,
+                                height: 57,
+                              ),
+                            ),
                           ),
                         ],
                       ),
-                      child: SvgPicture.asset(
-                        isSkipTap
-                            ? 'assets/svg/icon_skip_tap.svg'
-                            : 'assets/svg/icon_skip.svg',
-                        width: 57,
-                        height: 57,
-                      ),
                     ),
-                  ),
-                  FloatingActionButton(
-                    onPressed: () {
-                      _cardController.triggerSwipeRight();
-                      setState(() {
-                        isFavoriteTap = true;
-                      });
-                    },
-                    backgroundColor: Colors.transparent,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.25),
-                            offset: Offset(0, 4),
-                            blurRadius: 4,
-                            spreadRadius: -3,
-                          ),
-                        ],
-                      ),
-                      child: SvgPicture.asset(
-                        isFavoriteTap
-                            ? 'assets/svg/icon_favorite_tap.svg'
-                            : 'assets/svg/icon_favorite.svg',
-                        width: 57,
-                        height: 57,
-                      ),
-                    ),
-                  ),
+                  )
                 ],
               ),
             ),
