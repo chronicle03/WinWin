@@ -25,7 +25,6 @@ class SummaryProfileWidget extends StatefulWidget {
 }
 
 class _SummaryProfileWidgetState extends State<SummaryProfileWidget> {
-
   Widget skills(String value) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
@@ -52,8 +51,10 @@ class _SummaryProfileWidgetState extends State<SummaryProfileWidget> {
     Widget content() {
       return GestureDetector(
         onTap: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => ProfileDetailsPage(user: null,)));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ProfileDetailsPage(user: widget.user,)));
         },
         child: Container(
           margin: EdgeInsets.only(top: 40, right: 20, left: 20),
@@ -167,6 +168,7 @@ class _SummaryProfileWidgetState extends State<SummaryProfileWidget> {
                           textAlign: TextAlign.justify,
                           overflow: TextOverflow.ellipsis,
                         ),
+
                         const SizedBox(
                           height: 10,
                         ),

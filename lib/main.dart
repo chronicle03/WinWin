@@ -12,7 +12,6 @@ import "package:winwin/pages/profile/profile_settings_page.dart";
 import "package:winwin/pages/register_page.dart";
 import 'package:winwin/pages/forgot_password_page.dart';
 import "package:winwin/pages/verify_email_page.dart";
-import "package:winwin/pages/winwin_matching.dart";
 
 import "bloc/favorite_bloc.dart";
 import "bloc/skill_bloc.dart";
@@ -35,25 +34,25 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routes: {
         '/': (context) => MultiBlocProvider(providers: [
-          BlocProvider<UserBloc>(
-              create: (context) => UserBloc(userRepository)),
-          BlocProvider<SkillBloc>(
-              create: (context) => SkillBloc(skillRepository)),
-        ], child: LandingPage()),
+              BlocProvider<UserBloc>(
+                  create: (context) => UserBloc(userRepository)),
+              BlocProvider<SkillBloc>(
+                  create: (context) => SkillBloc(skillRepository)),
+            ], child: LandingPage()),
         '/edit-profile': (context) => MultiBlocProvider(providers: [
-          BlocProvider<UserBloc>(
-              create: (context) => UserBloc(userRepository)),
-          BlocProvider<SkillBloc>(
-              create: (context) => SkillBloc(skillRepository)),
-        ], child: EditProfilePage()),
+              BlocProvider<UserBloc>(
+                create: (context) => UserBloc(userRepository)),
+              BlocProvider<SkillBloc>(
+                  create: (context) => SkillBloc(skillRepository)),
+            ], child: EditProfilePage()),
         '/login': (context) => BlocProvider<UserBloc>(
-          create: (context) => UserBloc(userRepository),
-          child: LoginPage(),
-        ),
+              create: (context) => UserBloc(userRepository),
+              child: LoginPage(),
+            ),
         '/resend-verify-email': (context) => BlocProvider<UserBloc>(
-          create: (context) => UserBloc(userRepository),
-          child: VerifyEmailPage(),
-        ),
+              create: (context) => UserBloc(userRepository),
+              child: VerifyEmailPage(),
+            ),
         '/home': (context) =>  MultiBlocProvider(providers: [
           BlocProvider<UserBloc>(
               create: (context) => UserBloc(userRepository)),
@@ -67,15 +66,11 @@ class MyApp extends StatelessWidget {
               create: (context) => SkillBloc(skillRepository)),
         ], child: RegisterPage()),
         '/forgot-password': (context) => BlocProvider<UserBloc>(
-          create: (context) => UserBloc(userRepository),
-          child: ForgotPasswordPage(),
-        ),
+              create: (context) => UserBloc(userRepository),
+              child: ForgotPasswordPage(),
+            ),
         '/about': (context) => About(),
-        //'MatchingPage': (context) => MatchingPage(),
       },
     );
   }
 }
-
-
-
