@@ -4,7 +4,7 @@ class AbilityModel {
   int? id;
   int? userId;
   int? skillsId;
-  Null? level;
+  String? level;
   String? createdAt;
   String? updatedAt;
   List<SkillModel>? skills;
@@ -19,9 +19,9 @@ class AbilityModel {
       this.skills});
 
   AbilityModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    userId = json['user_id'];
-    skillsId = json['skills_id'];
+    id = json['id'] != null ? int.tryParse(json['id'].toString()) : null;
+    userId = json['user_id'] != null ? int.tryParse(json['user_id'].toString()) : null;
+    skillsId = json['skills_id'] != null ? int.tryParse(json['skills_id'].toString()) : null;
     level = json['level'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];

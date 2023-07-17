@@ -188,14 +188,17 @@ class _SummaryProfileWidgetState extends State<SummaryProfileWidget> {
                   height: 10,
                 ),
                 widget.userModel.ability!.length != 0
-                    ? SingleChildScrollView(
+                    ? Container(
+                      margin: EdgeInsets.symmetric(horizontal: 20),
+                      child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
-                    children: widget.userModel.ability!
-                        .map((ability) =>
-                        skills(ability.skills![0].name!)).toList(),
+                      children: widget.userModel.ability!
+                          .map((ability) =>
+                          skills(ability.skills![0].name!)).toList(),
                   ),
-                )
+                ),
+                    )
                     : Container(),
               ],
             ),

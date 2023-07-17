@@ -41,7 +41,7 @@ class UserModel {
         this.favorite});
 
   UserModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
+    id = json['id'] != null ? int.tryParse(json['id'].toString()) : null;
     name = json['name'];
     username = json['username'];
     gender = json['gender'];

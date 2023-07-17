@@ -40,6 +40,8 @@ class _HomePageState extends State<HomePage> {
   bool isFavoriteTap = false;
   bool isSkipTap = false;
   bool isEnd = false;
+  bool isSkillSelect = false;
+
 
   var i = 0;
 
@@ -48,6 +50,9 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    _userBloc = BlocProvider.of<UserBloc>(context);
+    _userBloc.add(GetUsers()); // Memanggil event GetUsers untuk memuat daftar pengguna
+
     UserData.loadUser();
     users = UserBloc.userList;
     filterUsers();
@@ -76,17 +81,27 @@ class _HomePageState extends State<HomePage> {
           .toList();
     });
 
+    if(filteredUsers.length == 0 && skillSelect.length >= 1){
+      setState(() {
+        isSkillSelect = true;
+      });
+    }else {
+      setState(() {
+        isSkillSelect = false;
+      });
+    }
+
     print("filter user2 : ${filteredUsers.length}");
     return filteredUsers;
   }
 
-  void _swipe(int index, AppinioSwiperDirection direction) {
+  void _swipe(int index, AppinioSwiperDirection direction) async{
     if (direction.name == 'left') {
       if (isSkipTap == false) {
         setState(() {
           isSkipTap = true;
         });
-        Future.delayed(Duration(milliseconds: 100), () {
+        await Future.delayed(Duration(milliseconds: 100), () {
           setState(() {
             isSkipTap = false;
           });
@@ -98,22 +113,37 @@ class _HomePageState extends State<HomePage> {
       }
     } else if (direction.name == 'right') {
       // print("index swipe: $index");
+      _userBloc = BlocProvider.of<UserBloc>(context);
+      _userBloc.add(GetUsers());
+
+      // Introduce a slight delay using Future.delayed
+      // await Future.delayed(Duration(milliseconds: 100));
+
+      if (index == 0) {
+        BlocProvider.of<FavoriteBloc>(context).add(
+          FavoritePostCreate(user!.id!, filteredUsers.last.id!),
+        );
+        print("isMatch?");
+        if (filteredUsers.last.favorite!.any((element) => element.userFavoriteId == user!.id)) {
+          print("match");
+        } else {
+          print("not Match");
+        }
+      } else {
+        print("index: ${filteredUsers[index - 1].id!}, ${filteredUsers[index - 1].name!}");
+        BlocProvider.of<FavoriteBloc>(context).add(
+          FavoritePostCreate(user!.id!, filteredUsers[index - 1].id!),
+        );
+        print("isMatch?");
+        if (filteredUsers[index - 1].favorite!.any((element) => element.userFavoriteId == user!.id)) {
+          print("match");
+        } else {
+          print("not Match");
+        }
+      }
 
       setState(() {
-        if (index == 0) {
-          BlocProvider.of<FavoriteBloc>(context).add(
-            FavoritePostCreate(user!.id!, filteredUsers.last.id!),
-          );
-        } else {
-          print(
-              "index: ${filteredUsers[index - 1].id!}, ${filteredUsers[index - 1].name!}");
-          BlocProvider.of<FavoriteBloc>(context).add(
-            FavoritePostCreate(user!.id!, filteredUsers[index - 1].id!),
-          );
-        }
-
         filteredUsers = filterUsers();
-        print("len user ${filteredUsers.length}");
       });
 
       if (isFavoriteTap == false) {
@@ -237,7 +267,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     SizedBox(width: 4),
                     Text(
-                      "${user!.location}",
+                      user!.location ?? "Indonesia" ,
                       style: textSecondaryTextStyle.copyWith(
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
@@ -298,7 +328,7 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             header(),
-            isEnd ?
+            isEnd?
                 Container(
                   margin: EdgeInsets.only(top: 200),
                   padding: EdgeInsets.symmetric(horizontal: 30),
@@ -309,7 +339,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     textAlign: TextAlign.center,
                   ),
-                ) : filteredUsers.isEmpty ?  Container(
+                ) : isSkillSelect ?  Container(
               margin: EdgeInsets.only(top: 200),
               padding: EdgeInsets.symmetric(horizontal: 30),
               child: Text(
@@ -320,7 +350,7 @@ class _HomePageState extends State<HomePage> {
                 textAlign: TextAlign.center,
               ),
             )
-            : Expanded(
+            : filteredUsers.isNotEmpty ? Expanded(
               child: Stack(
                 children: [
                   appinioSwiperWidget(filteredUsers),
@@ -395,6 +425,16 @@ class _HomePageState extends State<HomePage> {
                     ),
                   )
                 ],
+              ),
+            ) : Container(
+              margin: EdgeInsets.only(top: 200),
+              padding: EdgeInsets.symmetric(horizontal: 30),
+              child: Text(
+                "Horray!!! you have reached all users, please reopen winwin in a few moments",
+                style: textSecondaryTextStyle.copyWith(
+                    fontSize: 25
+                ),
+                textAlign: TextAlign.center,
               ),
             ),
           ],

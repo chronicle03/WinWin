@@ -9,15 +9,16 @@ import 'package:winwin/pages/constant.dart';
 
 abstract class UserRepository {
   Future<UserModel> register(
-      String name,
-      String email,
-      String username,
-      String phoneNumber,
-      String birthdate,
-      String password,
-      String confirmPassword,
-      String isChecked,
-      List<String>? skills,);
+    String name,
+    String email,
+    String username,
+    String phoneNumber,
+    String birthdate,
+    String password,
+    String confirmPassword,
+    String isChecked,
+    List<String>? skills,
+  );
 }
 
 class UserRepositoryImpl extends UserRepository {
@@ -41,15 +42,16 @@ class UserRepositoryImpl extends UserRepository {
 
   @override
   Future<UserModel> register(
-      String name,
-      String email,
-      String username,
-      String phoneNumber,
-      String birthdate,
-      String password,
-      String confirmPassword,
-      String isChecked,
-      List<String>? skills,) async {
+    String name,
+    String email,
+    String username,
+    String phoneNumber,
+    String birthdate,
+    String password,
+    String confirmPassword,
+    String isChecked,
+    List<String>? skills,
+  ) async {
     final response = await http.post(Uri.parse('$baseUrl/register'), body: {
       "name": name,
       "email": email,
@@ -97,14 +99,13 @@ class UserRepositoryImpl extends UserRepository {
       "password": password,
     });
 
-    print("response login: ${response.body}");
-
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body)['data'];
       UserModel user = UserModel.fromJson(data['user']);
       user.token = data['token_type'] + " " + data['access_token'];
       setToken(user.token);
-      await UserData.updateUser(user); // save data user yang sudah login ke shared preference
+      await UserData.updateUser(
+          user); // save data user yang sudah login ke shared preference
       // print("UserData: ${UserData.user!.favorite![0].userId}");
       return user;
     } else {
@@ -130,11 +131,9 @@ class UserRepositoryImpl extends UserRepository {
   }
 
   Future<List<UserModel>> getUsers() async {
-
     final response = await http.get(Uri.parse('$baseUrl/users'),
         headers: {'Accept': 'applcation/json'});
-    String token = await getToken();
-    // print("response body users: ${response.body} ");
+    print("response body users: ${response.body} ");
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body)['data']['users'];
 
@@ -165,13 +164,15 @@ class UserRepositoryImpl extends UserRepository {
   }) async {
     String token = await getToken();
 
-    var request = http.MultipartRequest('POST', Uri.parse('$baseUrl/users/update'));
+    var request =
+        http.MultipartRequest('POST', Uri.parse('$baseUrl/users/update'));
     request.headers['Authorization'] = token;
     request.headers['content-type'] = 'multipart/form-data';
     Map<String, String> requestBody = {};
 
     if (photoProfilePath != null) {
-      var stream = http.ByteStream(Stream.castFrom(photoProfilePath.openRead()));
+      var stream =
+          http.ByteStream(Stream.castFrom(photoProfilePath.openRead()));
       stream.cast();
       var length = await photoProfilePath.length();
       var multipartFile = http.MultipartFile(
@@ -236,8 +237,6 @@ class UserRepositoryImpl extends UserRepository {
     final response = await http.get(Uri.parse('$baseUrl/logout'), headers: {
       "Authorization": token,
     });
-
-    print("response: ${response.body}");
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body)['data'];
       // UserModel user = UserModel.fromJson(data['user']);

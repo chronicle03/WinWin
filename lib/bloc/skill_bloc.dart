@@ -27,7 +27,7 @@ class SkillBloc extends Bloc<SkillEvent, SkillState> {
           print("skillList: ${skillList.first}");
           emit(GetSkillLoaded(skillList));
         }catch (e) {
-          print("error: $e");
+          print("error skill: $e");
           emit(SkillErrorState(e.toString().replaceAll('Exception: ', '')));
         }
       }

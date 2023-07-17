@@ -7,7 +7,7 @@ class SkillModel {
   SkillModel({this.id, this.name, this.createdAt, this.updatedAt});
 
   SkillModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
+    id = json['id'] != null ? int.tryParse(json['id'].toString()) : null;
     name = json['name'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];

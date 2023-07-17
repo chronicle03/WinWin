@@ -108,7 +108,7 @@ class _FavoritePageState extends State<FavoritePage> {
               ),
               const SizedBox(width: 15),
               Text(
-                "${user.name}, ${ageYears}th",
+                "${user.username}, ${ageYears}th",
                 style: textButtonTextStyle.copyWith(
                   fontSize: 13,
                   fontWeight: FontWeight.bold,

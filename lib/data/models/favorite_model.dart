@@ -13,9 +13,9 @@ class FavoriteModel {
       this.updatedAt});
 
   FavoriteModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    userId = json['user_id'];
-    userFavoriteId = json['user_favorite_id'];
+    id = json['id'] != null ? int.tryParse(json['id'].toString()) : null;
+    userId = json['user_id'] != null ? int.tryParse(json['user_id'].toString()) : null;
+    userFavoriteId = json['user_favorite_id'] != null ? int.tryParse(json['user_favorite_id'].toString()) : null;
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
   }

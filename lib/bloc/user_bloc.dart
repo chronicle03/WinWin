@@ -83,8 +83,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           emit(UserPostError(err));
         }
       }
-      
-      
+
       if (event is UserPostLogin) {
         // print("start");
         emit(UserPostLoading());
@@ -92,19 +91,14 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           await Future.delayed(const Duration(seconds: 0), () async {
             user = await userRepository.login(
               event.email,
-              //event.username,
-              //event.phoneNumber,
               event.password,
             );
             token = user!.token;
             loggedInUser =user;
-            // print("loggedInUser bloc login: ${loggedInUser!.email}");
-            // print("user bloc login: ${user!.email}");
-            // print("user bloc: ${user!.name}");
+
             emit(UserPostLoginSuccess(user!));
           });
         } catch (e) {
-          print(e);
           emit(UserPostError(e.toString().replaceAll('Exception: ', '')));
         }
         // print("user bloc: $user");
@@ -120,32 +114,24 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             emit(UserPostSuccess());
           });
         } catch (e) {
-          print(e);
           emit(UserPostError(e.toString().replaceAll('Exception: ', '')));
         }
       }
 
       if (event is GetUsers) {
-        print("start bloc");
-        // print("token bloc: $token");
-        // userList.clear();
         emit(UserPostLoading());
         try {
-          await Future.delayed(const Duration(seconds: 2), () async {
-            // print("start0");
+          await Future.delayed(const Duration(seconds: 0), () async {
+            userList.clear();
             userList = await userRepository.getUsers();
           });
-          print("done");
-          // print("user list bloc: ${userList[0].favorite![0].userFavoriteId}");
           emit(GetUsersLoaded(userList));
         } catch (e) {
-          print(e);
           emit(UserPostError(e.toString().replaceAll('Exception: ', '')));
         }
       }
 
       if (event is UserPostLogout) {
-        print("start bloc");
         // print("token bloc: $token");
         emit(UserPostLoading());
         try {
@@ -153,11 +139,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             // print("start0");
             await userRepository.logout();
           });
-          print("done");
           // print("user list bloc: ${userList[0].favorite![0].userFavoriteId}");
           emit(UserPostSuccess());
         } catch (e) {
-          print(e);
           emit(UserPostError(e.toString().replaceAll('Exception: ', '')));
         }
       }
