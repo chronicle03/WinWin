@@ -20,7 +20,9 @@ import "package:winwin/pages/landing/landing_page.dart";
 
 import "../../bloc/favorite_bloc.dart";
 import "../constant.dart";
+import "../widgets/avatar_custom.dart";
 import "../widgets/input/skill_select_home.dart";
+import "../winwin-matching.dart";
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
@@ -126,6 +128,7 @@ class _HomePageState extends State<HomePage> {
         print("isMatch?");
         if (filteredUsers.last.favorite!.any((element) => element.userFavoriteId == user!.id)) {
           print("match");
+          Navigator.push(context, MaterialPageRoute(builder: (context) => MatchingPage(user!, filteredUsers.last)));
         } else {
           print("not Match");
         }
@@ -136,7 +139,9 @@ class _HomePageState extends State<HomePage> {
         );
         print("isMatch?");
         if (filteredUsers[index - 1].favorite!.any((element) => element.userFavoriteId == user!.id)) {
+          print("start match");
           print("match");
+          Navigator.push(context, MaterialPageRoute(builder: (context) => MatchingPage(user!, filteredUsers[index - 1])));
         } else {
           print("not Match");
         }
@@ -214,18 +219,24 @@ class _HomePageState extends State<HomePage> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            ClipOval(
-              child: user?.profilePhotoPath != null
-                  ? Image.network(
-                '$baseUrlImage${user!.profilePhotoPath}',
-                fit: BoxFit.cover,
-                width: 60,
-                height: 60,
-              )
-                  : Icon(
-                Icons.person,
-                color: appBarColor,
-                size: 60,
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: appBarColor,
+                  width: 5.0,
+                ),
+              ),
+              child: ClipOval(
+                child: user?.profilePhotoPath != null
+                    ? Image.network(
+                  '$baseUrlImage${user!.profilePhotoPath}',
+                  fit: BoxFit.cover,
+                  width: 60,
+                  height: 60,
+                )
+                    : AvatarCustom(
+          user: user!, width: 50, height: 50, color: appBarColor, fontSize: 18,),
               ),
             ),
             const SizedBox(width: 9),

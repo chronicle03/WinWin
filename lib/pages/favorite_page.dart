@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:winwin/data/models/favorite_model.dart';
 import 'package:winwin/pages/constant.dart';
 import 'package:winwin/pages/main_page.dart';
 //import 'package:winwin/pages/main_page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:winwin/pages/widgets/avatar_custom.dart';
 
 import '../bloc/user_bloc.dart';
 import '../data/models/user_model.dart';
@@ -25,12 +27,22 @@ class _FavoritePageState extends State<FavoritePage> {
   late DateTime now;
   late Duration ageDuration;
   late int ageYears;
+  String outputName = '';
 
   void iniState() {
     super.initState();
 
     UserData.loadUser();
     users = UserBloc.userList;
+  }
+
+  Future<void> _launchInBrowser(Uri url) async {
+    if (!await launchUrl(
+      url,
+      mode: LaunchMode.externalApplication,
+    )) {
+      throw Exception('Could not launch $url');
+    }
   }
 
   @override
@@ -40,18 +52,12 @@ class _FavoritePageState extends State<FavoritePage> {
     // print("users fav: ${users.length}");
 
     List<UserModel> userFavorite = user!.favorite!
-        .map((favorite) => users
-        .where((user) => favorite.userFavoriteId == user.id)
-        .toList())
+        .map((favorite) =>
+            users.where((user) => favorite.userFavoriteId == user.id).toList())
         .expand((element) => element)
         .toList();
 
     // print("user favorit: ${userFavorite.length}");
-
-
-    List<FavoriteModel> favoriteUsers = [];
-
-    favoriteUsers.map((e) => print(e.id));
 
     Widget search() {
       return Container(
@@ -78,9 +84,8 @@ class _FavoritePageState extends State<FavoritePage> {
           ]));
     }
 
-    Widget yourname(UserModel user) {
-
-      dateOfBirth = DateFormat('yyyy-MM-dd').parse(user.birthdate!);
+    Widget yourname(UserModel userFavorite) {
+      dateOfBirth = DateFormat('yyyy-MM-dd').parse(userFavorite.birthdate!);
       now = DateTime.now();
       ageDuration = now.difference(dateOfBirth);
       ageYears = ageDuration.inDays ~/ 365;
@@ -94,21 +99,27 @@ class _FavoritePageState extends State<FavoritePage> {
             color: appBarColor, borderRadius: BorderRadius.circular(10.0)),
         child: Center(
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              ClipOval(
-                child: user.profilePhotoPath != null
-                    ? Image.network(
-                  '$baseUrlImage${user.profilePhotoPath}',
-                  fit: BoxFit.cover,
-                  width: 38,
-                  height: 38,
-                )
-                    : Icon(Icons.person_sharp, color: Colors.black26, size: 30, ),
+              Container(
+                child: ClipOval(
+                    child: userFavorite.profilePhotoPath != null
+                        ? Image.network(
+                            '$baseUrlImage${userFavorite.profilePhotoPath}',
+                            fit: BoxFit.cover,
+                            width: 38,
+                            height: 38,
+                          )
+                        : AvatarCustom(
+                            user: userFavorite,
+                            width: 38,
+                            height: 38,
+                            color: Color(0xff85C5FFFF),
+                            fontSize: 14,
+                          )),
               ),
               const SizedBox(width: 15),
               Text(
-                "${user.username}, ${ageYears}th",
+                "${userFavorite.username}, ${ageYears}th",
                 style: textButtonTextStyle.copyWith(
                   fontSize: 13,
                   fontWeight: FontWeight.bold,
@@ -116,23 +127,44 @@ class _FavoritePageState extends State<FavoritePage> {
                 ),
               ),
               const SizedBox(width: 0.1),
-              user.gender == 'male' ?
-              Image.asset(
-                'assets/icon_male_white.png',
-                width: 18,
-                height: 18,
-              ): user.gender == 'female' ?
-              Image.asset(
-                'assets/icon_female_white.png',
-                width: 18,
-                height: 18,
-              ): Container(),
-              const SizedBox(width: 69),
-              // SvgPicture.asset(
-              //   "assets/svg/icon_chat_blue.svg",
-              //   width: 13,
-              //   height: 13,
-              // ),
+              userFavorite.gender == 'male'
+                  ? Image.asset(
+                      'assets/icon_male_white.png',
+                      width: 18,
+                      height: 18,
+                    )
+                  : userFavorite.gender == 'female'
+                      ? Image.asset(
+                          'assets/icon_female_white.png',
+                          width: 18,
+                          height: 18,
+                        )
+                      : Container(),
+              const Spacer(),
+              userFavorite.favorite!
+                      .any((element) => element.userFavoriteId == user!.id)
+                  ? IconButton(
+                      onPressed: () {
+                        // print("tap chat");
+                        _launchInBrowser(
+                            Uri.parse('https://wa.me/62${userFavorite.phoneNumber}'));
+                      },
+                      icon: SvgPicture.asset(
+                        "assets/svg/icon_chat_blue.svg",
+                        width: 13,
+                        height: 13,
+                        color: textColor2,
+                      ),
+                    )
+                  : IconButton(
+                      onPressed: () {},
+                      icon: SvgPicture.asset(
+                        "assets/svg/icon_chat_blue.svg",
+                        width: 13,
+                        height: 13,
+                        color: Color(0xffAFAFAFFF),
+                      ),
+                    )
             ],
           ),
         ),
@@ -141,18 +173,42 @@ class _FavoritePageState extends State<FavoritePage> {
 
     return Scaffold(
       backgroundColor: backgroundColor,
-      body: Container(
-        margin: EdgeInsets.symmetric(horizontal: 25),
-        child: Column(
-          children: [
-            // search(),
-            Expanded(
-              child: ListView(
-                  children: userFavorite.map((user) => yourname(user)).toList()
+      body: SafeArea(
+        child: userFavorite.length >= 1
+            ? Container(
+                margin: EdgeInsets.symmetric(horizontal: 25, vertical: 25),
+                child: Column(
+                  children: [
+                    // search(),
+                    Expanded(
+                        child: ListView(
+                            children: userFavorite
+                                .map((user) => yourname(user))
+                                .toList()))
+                  ],
+                ),
               )
-            ),
-          ],
-        ),
+            : Container(
+          margin: EdgeInsets.symmetric(horizontal: 25),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.person_off_sharp,
+                      size: 150,
+                      color: appBarColor,
+                    ),
+                    Text(
+                      "Hey ${user!.name}!! You've never saved anyone",
+                      style: textSecondaryTextStyle.copyWith(
+                        fontSize: 20,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
       ),
     );
   }

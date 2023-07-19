@@ -24,6 +24,7 @@ import "../../bloc/skill_bloc.dart";
 import "../../data/models/skill_model.dart";
 import "../../data/repository/favorite_repository.dart";
 import "../main_page.dart";
+import "../widgets/avatar_custom.dart";
 import "../widgets/loading_button.dart";
 
 class EditProfilePage extends StatefulWidget {
@@ -194,6 +195,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
     Widget photoProfile() {
       print("image2: $image");
       return Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: appBarColor,
+            width: 5.0,
+          ),
+        ),
         child: InkWell(
           onTap: () {
             getImage();
@@ -216,11 +224,23 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         fit: BoxFit.cover,
                       ),
                     )
-                  : Icon(
-                      Icons.person_add_alt_rounded,
-                      color: appBarColor,
-                      size: 60,
-                    ),
+                  : Stack(
+                    alignment: Alignment.bottomRight,
+                    children: [
+                      AvatarCustom(
+                          user: loggedInUser!,
+                          width: 60,
+                          height: 60,
+                          color: appBarColor,
+                          fontSize: 18,
+                        ),
+                      ClipOval(
+                          child: Container(
+                              color: backgroundColor,
+                              padding: EdgeInsets.all(5),
+                              child: Icon(Icons.camera_alt_rounded, size: 12, color: textColor1,)))
+                    ],
+                  ),
         ),
       );
     }

@@ -16,6 +16,8 @@ import 'package:winwin/pages/home/home_page.dart';
 import 'package:winwin/pages/landing/landing_page.dart';
 import 'package:winwin/pages/profile/edit_profile.dart';
 
+import '../widgets/avatar_custom.dart';
+
 class ProfileSettingsPage extends StatefulWidget {
   const ProfileSettingsPage({Key? key});
 
@@ -48,21 +50,21 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
       BlocProvider.of<UserBloc>(context).add(UserPostLogout());
     }
 
-    print("user home: ${user!.email}");
+    // print("user home: ${user!.email}");
     String? profilePhotoPath = user?.profilePhotoPath;
     return Scaffold(
       body: BlocConsumer<UserBloc, UserState>(
         listener: (context, state) {
-          if (state is UserPostSuccess){
+          if (state is UserPostSuccess) {
             EasyLoading.dismiss();
-            Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+            Navigator.pushNamedAndRemoveUntil(
+                context, '/login', (route) => false);
           }
         },
         builder: (context, state) {
-          if (state is UserPostLoading){
-            EasyLoading.show(status: 'loading...');
-          }
-          else if (state is UserPostError){
+          if (state is UserPostLoading) {
+            EasyLoading.show(status: '');
+          } else if (state is UserPostError) {
             print("${state.code}");
           }
           return Container(
@@ -78,19 +80,30 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         profilePhotoPath != null
-                            ? ClipOval(
-                          child: Image.network(
-                            baseUrlImage + profilePhotoPath,
-                            height: 60,
-                            width: 60,
-                            fit: BoxFit.cover,
+                            ? Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: appBarColor,
+                              width: 5.0,
+                            ),
                           ),
-                        )
-                            : Icon(
-                          Icons.person,
-                          color: appBarColor,
-                          size: 60,
-                        ),
+                              child: ClipOval(
+                                  child: Image.network(
+                                    baseUrlImage + profilePhotoPath,
+                                    height: 60,
+                                    width: 60,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                            )
+                            : AvatarCustom(
+                                user: user!,
+                                width: 60,
+                                height: 60,
+                                color: appBarColor,
+                                fontSize: 18,
+                              ),
                         SizedBox(width: 8.0),
                         Padding(
                           padding: EdgeInsets.only(top: 2.0),
@@ -99,29 +112,24 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                             children: [
                               Row(
                                 children: [
-                                  Text(
-                                      user!.username!,
+                                  Text(user!.username!,
                                       style: textColor1TextStyle.copyWith(
                                           fontWeight: FontWeight.bold,
-                                          fontSize: 17
-                                      )
-                                  ),
+                                          fontSize: 17)),
                                   SizedBox(width: 4.0),
-                                  user?.gender != null ?
-                                  SvgPicture.asset(
-                                    'assets/svg/icon_male.svg',
-                                    width: 18,
-                                    height: 18,
-                                  ) : SizedBox(),
+                                  user?.gender != null
+                                      ? SvgPicture.asset(
+                                          'assets/svg/icon_male.svg',
+                                          width: 18,
+                                          height: 18,
+                                        )
+                                      : SizedBox(),
                                 ],
                               ),
                               SizedBox(height: 8.0),
-                              Text(
-                                  user!.phoneNumber!,
+                              Text(user!.phoneNumber!,
                                   style: textColor1TextStyle.copyWith(
-                                      fontSize: 13
-                                  )
-                              ),
+                                      fontSize: 13)),
                             ],
                           ),
                         ),
@@ -140,23 +148,20 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                                'Profile and Security',
+                            Text('Profile and Security',
                                 style: textButtonTextStyle.copyWith(
-                                  fontSize: 17, fontWeight: FontWeight.w700,
-                                )
-                            ),
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w700,
+                                )),
                             SizedBox(height: 16.0),
                             GestureDetector(
                               onTap: () {
-                                Navigator.pushNamed(
-                                    context,
-                                    '/edit-profile',
-                                    arguments: user!
-                                );
+                                Navigator.pushNamed(context, '/edit-profile',
+                                    arguments: user!);
                               },
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Row(
                                     children: [
@@ -184,12 +189,11 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                               ),
                             ),
                             SizedBox(height: 20.0),
-                            Text(
-                                'General',
+                            Text('General',
                                 style: textButtonTextStyle.copyWith(
-                                  fontSize: 17, fontWeight: FontWeight.w700,
-                                )
-                            ),
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w700,
+                                )),
                             SizedBox(height: 20.0),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,

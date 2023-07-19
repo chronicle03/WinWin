@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 
 import '../../data/models/user_model.dart';
 import '../constant.dart';
+import '../widgets/avatar_custom.dart';
 
 class SummaryProfileWidget extends StatefulWidget {
   final UserModel userModel;
@@ -65,14 +66,13 @@ class _SummaryProfileWidgetState extends State<SummaryProfileWidget> {
               height: 400,
             ),
           )
-              : Align(
-            alignment: Alignment.topCenter,
-            child: Icon(
-              Icons.person,
-              size: 350,
-              color: Colors.black26,
-            ),
-          ),
+              : Container(
+                margin: EdgeInsets.only(bottom: 150),
+                child: Center(
+                  child: AvatarCustom(
+                    user: widget.userModel, width: 200, height: 200, color: appBarColor, fontSize: 60,),
+                ),
+              ),
           Container(
             margin: EdgeInsets.only(top: 360),
             child: ClipRRect(
