@@ -1,13 +1,47 @@
 import "package:flutter/material.dart";
+import "package:flutter_svg/svg.dart";
+import "package:intl/intl.dart";
 import "package:winwin/pages/constant.dart";
 
+import "../../data/models/user_model.dart";
+import "../widgets/avatar_custom.dart";
+
 class ProfileDetailsPage extends StatefulWidget {
-  const ProfileDetailsPage({Key? key}) : super(key: key);
+  final UserModel user;
+  late DateTime dateOfBirth;
+  late DateTime now;
+  late Duration ageDuration;
+  late int ageYears;
+
+  ProfileDetailsPage({Key? key, required this.user}) {
+    dateOfBirth = DateFormat('yyyy-MM-dd').parse(user.birthdate!);
+    now = DateTime.now();
+    ageDuration = now.difference(dateOfBirth);
+    ageYears = ageDuration.inDays ~/ 365;
+  }
 
   @override
   _ProfileDetailsPageState createState() => _ProfileDetailsPageState();
 }
-
+Widget skills(String value) {
+  return ClipRRect(
+    borderRadius: BorderRadius.circular(10),
+    child: Container(
+      padding: EdgeInsets.symmetric(horizontal: 3, vertical: 3),
+      color: Color(0xffE7D31F),
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Text(
+          "#${value}",
+          style: textPrimaryStyle.copyWith(
+            fontSize: 11,
+            fontWeight: medium,
+          ),
+        ),
+      ),
+    ),
+  );
+}
 class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
   @override
   Widget build(BuildContext context) {
@@ -16,38 +50,38 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
         children: [
           Stack(
             children: [
-              Expanded(
-                child: Image.asset(
-                  'assets/user2.png',
-                  fit: BoxFit.cover,
-                  height: 550,
-                ),
-              ),
-              Column(
+              widget.user.profilePhotoPath != null
+                  ? Image.network(
+                '$baseUrlImage${widget.user.profilePhotoPath}',
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: 550,
+              )
+                  : Center(
+                    child: Container(
+                      margin: EdgeInsets.only(top: 200),
+                      child: AvatarCustom(
+                user: widget.user, width: 200, height: 200, color: appBarColor, fontSize: 60,),
+                    ),
+                  ),
+              Row(
                 children: [
-                  Row(
-                    children: [
-                      const SizedBox(height: 120, width: 25),
-                      Positioned(
-                        top: 0,
-                        child: GestureDetector(
-                          onTap: () => Navigator.pop(context),
-                          child: Image.asset(
-                            "assets/icon_row_left.png",
-                            width: 24,
-                            height: 24,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 5),
-                      Text(
-                        "Profile Details",
-                        style: textColor1TextStyle.copyWith(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
+                  const SizedBox(height: 120, width: 25),
+                  GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: Image.asset(
+                      "assets/icon_row_left.png",
+                      width: 24,
+                      height: 24,
+                    ),
+                  ),
+                  const SizedBox(width: 5),
+                  Text(
+                    "Profile Details",
+                    style: textColor1TextStyle.copyWith(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ],
               ),
@@ -63,26 +97,36 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
               Container(
                 margin: EdgeInsets.only(top: 508),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            'Your Name 1, 22th',
-                            style: textButtonTextStyle.copyWith(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w600,
-                            ),
+                        Text(
+                          widget.ageYears != 0
+                              ? "${widget.user.name!}, ${widget.ageYears}th"
+                              : widget.user.name!,
+                          style: textPrimaryStyle.copyWith(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
-                        Image.asset(
-                          'assets/icon_male.png',
-                          height: 18,
-                        ),
+                        if (widget.user.gender == 'male')
+                          Image.asset(
+                            'assets/icon_male_white.png',
+                            width: 18,
+                            height: 18,
+                          ),
+                        if (widget.user.gender == 'female')
+                          Image.asset(
+                            'assets/icon_female_white.png',
+                            width: 18,
+                            height: 18,
+                          ),
                       ],
                     ),
+
                     Column(
                       children: [
                         Row(
@@ -92,21 +136,26 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
                               alignment: Alignment.center,
                               child: Row(
                                 children: [
-                                  Image.asset(
-                                    'assets/icon_location_blue.png',
-                                    height: 8,
-                                    width: 6,
+                                  widget.user.location != null
+                                      ? SvgPicture.asset(
+                                    'assets/svg/icon_location_blue.svg',
+                                    width: 10,
+                                    height: 10,
+                                  )
+                                      : Container(),
+                                  const SizedBox(
+                                    width: 5,
                                   ),
-                                  const SizedBox(width: 4),
                                   Text(
-                                    'West Jakarta, Indonesia',
+                                    widget.user.location != null ? "${widget.user.location!}" : " ",
                                     style: iconTextStyle.copyWith(
                                       fontSize: 11,
-                                      fontWeight: FontWeight.w500,
+                                      fontWeight: medium,
                                     ),
                                   ),
                                 ],
                               ),
+
                             ),
                           ],
                         ),
@@ -124,51 +173,14 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Hi, I am a programmer with more than 8 years',
-                                    style: textColor2TextStyle.copyWith(
+                                    widget.user.bio != null ? widget.user.bio! : "No bio",
+                                    style: iconTextStyle.copyWith(
                                       fontSize: 12,
-                                      fontWeight: FontWeight.w500,
+                                      fontWeight: medium,
                                     ),
-                                  ),
-                                  const SizedBox(width: 5),
-                                  Text(
-                                    'experience in software development. I have',
-                                    style: textColor2TextStyle.copyWith(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 5),
-                                  Text(
-                                    'expertise in several programming languages,',
-                                    style: textColor2TextStyle.copyWith(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 5),
-                                  Text(
-                                    'including Python, JavaScript, and Java. I have',
-                                    style: textColor2TextStyle.copyWith(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 5),
-                                  Text(
-                                    'experience in developing web and mobile',
-                                    style: textColor2TextStyle.copyWith(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 5),
-                                  Text(
-                                    'applications.',
-                                    style: textColor2TextStyle.copyWith(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                                    maxLines: 2,
+                                    textAlign: TextAlign.justify,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ],
                               ),
@@ -197,7 +209,7 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
                                   ),
                                   const SizedBox(width: 5),
                                   Text(
-                                    'Programmer',
+                                    widget.user.jobStatus ?? '-',
                                     style: textColor2TextStyle.copyWith(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w500,
@@ -210,85 +222,41 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
                         ),
                       ],
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Container(
-                              margin: EdgeInsets.only(top: 20, left: 25),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Skills',
-                                    style: textButtonTextStyle.copyWith(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Row(
-                                    children: [
-                                      Container(
-                                        padding: EdgeInsets.only(
-                                            left: 7.0, right: 7.0),
-                                        decoration: BoxDecoration(
-                                          color: textColorButton,
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                        ),
-                                        child: Text(
-                                          '#program',
-                                          style: textColor3TextStyle.copyWith(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 5),
-                                      Container(
-                                        padding: EdgeInsets.only(
-                                            left: 7.0, right: 7.0),
-                                        decoration: BoxDecoration(
-                                          color: textColorButton,
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                        ),
-                                        child: Text(
-                                          '#application',
-                                          style: textColor3TextStyle.copyWith(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 5),
-                                      Container(
-                                        padding: EdgeInsets.only(
-                                            left: 7.0, right: 7.0),
-                                        decoration: BoxDecoration(
-                                          color: textColorButton,
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                        ),
-                                        child: Text(
-                                          '#IT',
-                                          style: textColor3TextStyle.copyWith(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
+                    Container(
+                      margin: EdgeInsets.only(top: 20, left: 25, right: 25),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Skills',
+                            style: textButtonTextStyle.copyWith(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
                             ),
-                          ],
-                        ),
-                      ],
+                          ),
+                          SizedBox(height: 5,),
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: 5),
+                                Container(
+                                  child: Wrap(
+                                    spacing: 5,
+                                    children: widget.user.ability!
+                                        .map((ability) => skills(ability.skills![0].name!))
+                                        .toList(),
+                                  ),
+
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -299,12 +267,15 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
       );
     }
 
+
     return Scaffold(
       backgroundColor: backgroundColor,
-      body: Column(
-        children: [
-          profileDetails(),
-        ],
+      body: SingleChildScrollView( // Tambahkan SingleChildScrollView di sini
+        child: Column(
+          children: [
+            profileDetails(),
+          ],
+        ),
       ),
     );
   }

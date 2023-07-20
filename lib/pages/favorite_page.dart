@@ -6,6 +6,7 @@ import 'package:winwin/pages/constant.dart';
 import 'package:winwin/pages/main_page.dart';
 //import 'package:winwin/pages/main_page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:winwin/pages/profile/profile_details.dart';
 import 'package:winwin/pages/widgets/avatar_custom.dart';
 
 import '../bloc/user_bloc.dart';
@@ -100,30 +101,46 @@ class _FavoritePageState extends State<FavoritePage> {
         child: Center(
           child: Row(
             children: [
-              Container(
-                child: ClipOval(
-                    child: userFavorite.profilePhotoPath != null
-                        ? Image.network(
-                            '$baseUrlImage${userFavorite.profilePhotoPath}',
-                            fit: BoxFit.cover,
-                            width: 38,
-                            height: 38,
-                          )
-                        : AvatarCustom(
-                            user: userFavorite,
-                            width: 38,
-                            height: 38,
-                            color: Color(0xff85C5FFFF),
-                            fontSize: 14,
-                          )),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              ProfileDetailsPage(user: userFavorite,)));
+                },
+                child: Container(
+                  child: ClipOval(
+                      child: userFavorite.profilePhotoPath != null
+                          ? Image.network(
+                              '$baseUrlImage${userFavorite.profilePhotoPath}',
+                              fit: BoxFit.cover,
+                              width: 38,
+                              height: 38,
+                            )
+                          : AvatarCustom(
+                              user: userFavorite,
+                              width: 38,
+                              height: 38,
+                              color: Color(0xff85C5FFFF),
+                              fontSize: 14,
+                            )),
+                ),
               ),
               const SizedBox(width: 15),
-              Text(
-                "${userFavorite.username}, ${ageYears}th",
-                style: textButtonTextStyle.copyWith(
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.none,
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              ProfileDetailsPage(user: userFavorite,)));
+                },
+                child: Text(
+                  "${userFavorite.username}, ${ageYears}th",
+                  style: textButtonTextStyle.copyWith(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.none,
+                  ),
                 ),
               ),
               const SizedBox(width: 0.1),
